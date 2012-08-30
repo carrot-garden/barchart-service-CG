@@ -1,0 +1,66 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.barchart.base</groupId>
+		<artifactId>barchart-archon</artifactId>
+		<version>2.1.2</version>
+	</parent>
+
+	<groupId>com.barchart.int</groupId>
+	<artifactId>barchart-tanuki-service-int-basic</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<description>parent of integration tests</description>
+
+	<properties>
+
+		<!-- changes interactive/non-interactive -->
+		<integrationVersion>profile-version-override</integrationVersion>
+
+	</properties>
+
+	<modules>
+
+		<!-- keep in order -->
+
+		<module>../basic-module</module>
+		<module>../basic-app</module>
+		<module>../basic-tester</module>
+
+	</modules>
+
+	<profiles>
+
+		<!-- activated in eclipse -->
+		<profile>
+			<id>build-development</id>
+			<activation>
+				<file>
+					<missing>build.log</missing>
+				</file>
+			</activation>
+			<properties>
+				<integrationVersion>1.0.0-SNAPSHOT</integrationVersion>
+			</properties>
+		</profile>
+
+		<!-- activated in non-interactive build -->
+		<profile>
+			<id>build-integration</id>
+			<activation>
+				<file>
+					<exists>build.log</exists>
+				</file>
+			</activation>
+			<properties>
+				<integrationVersion>@project.version@</integrationVersion>
+			</properties>
+		</profile>
+
+	</profiles>
+
+</project>

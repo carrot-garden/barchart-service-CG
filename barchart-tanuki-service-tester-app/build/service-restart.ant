@@ -1,0 +1,11 @@
+<project default="service" basedir="./..">
+
+	<target name="service">
+
+		<echo message="basedir : ${basedir}" />
+
+		<exec executable="${basedir}/target/@nix-restart.sh" />
+
+	</target>
+
+</project>

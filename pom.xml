@@ -1,0 +1,31 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.barchart.base</groupId>
+		<artifactId>barchart-archon</artifactId>
+		<version>2.2.1</version>
+	</parent>
+
+	<groupId>com.barchart.tanuki</groupId>
+	<artifactId>barchart-service</artifactId>
+	<version>0.0.0</version>
+	<packaging>pom</packaging>
+	
+	<description>eclipse import helper</description>
+
+	<modules>
+	
+		<module>barchart-tanuki-service</module>
+		<module>barchart-tanuki-service-template</module>
+		<module>barchart-tanuki-service-tester-app</module>
+		
+		<module>barchart-karaf-service</module>
+		<module>barchart-karaf-base-app</module>
+		<module>barchart-karaf-test</module>
+		
+	</modules>
+
+</project>

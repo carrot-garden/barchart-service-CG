@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.barchart.tanuki</groupId>
+		<artifactId>barchart-tanuki-service</artifactId>
+		<version>2.0.8-SNAPSHOT</version>
+		<relativePath>../barchart-tanuki-service</relativePath>
+	</parent>
+
+	<artifactId>barchart-tanuki-service-tester-app</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>tester-app</name>
+
+	<properties>
+
+		<mainClass>com.barchart.test.Dummy</mainClass>
+		
+	</properties>
+
+	<dependencies>
+
+		<!-- logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+
+	</dependencies>
+
+</project>

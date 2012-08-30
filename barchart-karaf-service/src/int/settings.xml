@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!--
+
+    Copyright (C) 2011-2012 Barchart, Inc. <http://www.barchart.com/>
+
+    All rights reserved. Licensed under the OSI BSD License.
+
+    http://www.opensource.org/licenses/bsd-license.php
+
+-->
+
+<settings>
+
+	<profiles>
+
+		<profile>
+
+			<id>int-repo</id>
+
+			<repositories>
+				<repository>
+					<id>local.central</id>
+					<url>@localRepositoryUrl@</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+			</repositories>
+
+			<pluginRepositories>
+				<pluginRepository>
+					<id>local.central</id>
+					<url>@localRepositoryUrl@</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</pluginRepository>
+			</pluginRepositories>
+
+		</profile>
+
+	</profiles>
+
+	<activeProfiles>
+
+		<activeProfile>int-repo</activeProfile>
+
+	</activeProfiles>
+
+</settings>

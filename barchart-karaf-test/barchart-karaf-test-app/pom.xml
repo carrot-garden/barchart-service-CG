@@ -1,0 +1,69 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.barchart.karaf</groupId>
+		<artifactId>barchart-karaf-service</artifactId>
+		<version>1.0.1-SNAPSHOT</version>
+		<!-- need till release version available -->
+		<relativePath>../../barchart-karaf-service</relativePath>
+	</parent>
+
+	<groupId>com.barchart.test</groupId>
+	<artifactId>barchart-karaf-test-app</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<description>service test app</description>
+
+	<properties>
+
+		<!-- karaf will run under developer account -->
+		<serviceUsername>${user.name}</serviceUsername>
+
+		<!-- features available from karaf project -->
+		<!-- https://github.com/apache/karaf/blob/trunk/assemblies/features/standard/src/main/feature/feature.xml -->
+		<!-- https://github.com/apache/karaf/blob/trunk/assemblies/features/enterprise/src/main/feature/feature.xml -->
+		<karafBootupFeature0>standard</karafBootupFeature0>
+		<karafBootupFeature1>management</karafBootupFeature1>
+		<karafBootupFeature2>ssh</karafBootupFeature2>
+		<karafBootupFeature3>config</karafBootupFeature3>
+		<karafBootupFeature4>eventadmin</karafBootupFeature4>
+		<karafBootupFeature5>scr</karafBootupFeature5>
+
+	</properties>
+
+	<dependencies>
+
+		<!-- startup features -->
+
+		<!-- amazon sns logger -->
+		<dependency>
+			<groupId>com.carrotgarden.log</groupId>
+			<artifactId>carrot-log4j-aws-sns-pax-kar</artifactId>
+			<version>1.0.8-SNAPSHOT</version>
+			<classifier>features</classifier>
+			<type>xml</type>
+		</dependency>
+
+		<!-- auto deploy features -->
+
+		<!-- configration repository access -->
+		<dependency>
+			<groupId>com.barchart.conf</groupId>
+			<artifactId>barchart-conf-sync</artifactId>
+			<version>1.0.7</version>
+		</dependency>
+
+		<!-- tester modules -->
+		<dependency>
+			<groupId>com.barchart.test</groupId>
+			<artifactId>barchart-karaf-test-module1</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+
+	</dependencies>
+
+</project>

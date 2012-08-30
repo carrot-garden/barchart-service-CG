@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.barchart.tanuki</groupId>
+		<artifactId>barchart-tanuki-service</artifactId>
+
+		<!-- project version will be substituted by the maven-invoker-plugin -->
+		<version>@project.version@</version>
+
+	</parent>
+
+	<description>basic integration test app</description>
+
+	<groupId>com.barchart.int</groupId>
+	<version>1.0.0-SNAPSHOT</version>
+	<artifactId>barchart-tanuki-service-int-basic-app</artifactId>
+	<packaging>pom</packaging>
+
+	<properties>
+
+		<mainClass>com.barchart.test.Main</mainClass>
+
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.barchart.int</groupId>
+			<artifactId>barchart-tanuki-service-int-basic-module</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+
+	</dependencies>
+
+</project>
