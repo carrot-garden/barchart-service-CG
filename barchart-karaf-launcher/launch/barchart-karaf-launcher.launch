@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/barchart-karaf-launcher"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.apache.karaf.main.Main"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="barchart-karaf-launcher"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Djava.endorsed.dirs=${env_var:JAVA_HOME}/jre/lib/endorsed:${env_var:JAVA_HOME}/lib/endorsed:./lib/endorsed&#10;-Djava.ext.dirs=${env_var:JAVA_HOME}/jre/lib/ext:${env_var:JAVA_HOME}/lib/ext:./lib/ext&#10;-Dkaraf.startLocalConsole=true&#10;-Dkaraf.startRemoteShell=false&#10;-Dkaraf.home=.&#10;-Dkaraf.base=.&#10;-Dkaraf.data=./data&#10;-Dkaraf.instances=./instances&#10;-Djava.io.tmpdir=./data/tmp&#10;-Djava.util.logging.config.file=./etc/java.util.logging.properties"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:barchart-service/barchart-karaf-launcher/app}"/>
+</launchConfiguration>
