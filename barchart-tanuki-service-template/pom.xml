@@ -17,9 +17,9 @@
 	<packaging>jar</packaging>
 
 	<scm>
-		<url>https://github.com/barchart/barchart-tanuki</url>
-		<connection>scm:git:git://github.com/barchart/barchart-tanuki.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-tanuki.git</developerConnection>
+		<url>https://github.com/barchart/barchart-service</url>
+		<connection>scm:git:git://github.com/barchart/barchart-service.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-service.git</developerConnection>
 	</scm>
 
 	<description>folder layout for java-service-wrapper based applications</description>

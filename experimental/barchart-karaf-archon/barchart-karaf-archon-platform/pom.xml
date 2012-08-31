@@ -13,9 +13,9 @@
 	<packaging>pom</packaging>
 
 	<scm>
-		<url>https://github.com/barchart/barchart-karaf</url>
-		<connection>scm:git:git://github.com/barchart/barchart-karaf.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-karaf.git</developerConnection>
+		<url>https://github.com/barchart/barchart-service</url>
+		<connection>scm:git:git://github.com/barchart/barchart-service.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-service.git</developerConnection>
 	</scm>
 
 	<profiles>
