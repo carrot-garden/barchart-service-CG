@@ -319,6 +319,10 @@
 									<dst>${basedir}/target/@nix-stop.sh</dst>
 								</link>
 								<link>
+									<src>${appFolderTarget}</src>
+									<dst>${basedir}/target/@app</dst>
+								</link>
+								<link>
 									<src>${appFolderTarget}/conf</src>
 									<dst>${basedir}/target/@conf</dst>
 								</link>
