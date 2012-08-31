@@ -52,15 +52,20 @@
 		<!-- configration repository access -->
 		<dependency>
 			<groupId>com.barchart.conf</groupId>
-			<artifactId>barchart-conf-sync</artifactId>
-			<version>1.0.10</version>
+			<artifactId>barchart-conf-sync-api</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.barchart.conf</groupId>
+			<artifactId>barchart-conf-sync-impl</artifactId>
+			<version>1.1.0</version>
 		</dependency>
 
 		<!-- config update trigger -->
 		<dependency>
 			<groupId>com.barchart.conf</groupId>
 			<artifactId>barchart-conf-touch</artifactId>
-			<version>1.0.2</version>
+			<version>1.1.0</version>
 		</dependency>
 
 	</dependencies>
