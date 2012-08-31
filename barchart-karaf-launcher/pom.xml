@@ -4,15 +4,15 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.barchart.base</groupId>
-		<artifactId>barchart-archon</artifactId>
-		<version>2.1.2</version>
-		<relativePath />
+		<groupId>com.barchart.karaf</groupId>
+		<artifactId>barchart-karaf-service</artifactId>
+		<version>1.0.1-SNAPSHOT</version>
+		<relativePath>../barchart-karaf-service</relativePath>
 	</parent>
 
-	<groupId>com.barchart.karaf</groupId>
 	<artifactId>barchart-karaf-launcher</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
+	<!-- So that Eclipse will allow this project as a launch candidate -->
 	<packaging>jar</packaging>
 
 	<description>parent for karaf development launchers</description>
@@ -25,22 +25,7 @@
 
 	<properties>
 
-		<appFolderTarget>./app</appFolderTarget>
-		
 		<!-- KARAF -->
-
-		<karafVersion>3.0.0-SNAPSHOT</karafVersion>
-		
-		<karafStartupFeature0 />
-		<karafStartupFeature1 />
-		<karafStartupFeature2 />
-		<karafStartupFeature3 />
-		<karafStartupFeature4 />
-		<karafStartupFeature5 />
-		<karafStartupFeature6 />
-		<karafStartupFeature7 />
-		<karafStartupFeature8 />
-		<karafStartupFeature9 />
 
 		<karafBootupFeature0>standard</karafBootupFeature0>
 		<karafBootupFeature1>management</karafBootupFeature1>
@@ -48,54 +33,10 @@
 		<karafBootupFeature3>config</karafBootupFeature3>
 		<karafBootupFeature4>eventadmin</karafBootupFeature4>
 		<karafBootupFeature5>scr</karafBootupFeature5>
-		<karafBootupFeature6 />
-		<karafBootupFeature7 />
-		<karafBootupFeature8 />
-		<karafBootupFeature9 />
-
-		<karafInstallFeature0 />
-		<karafInstallFeature1 />
-		<karafInstallFeature2 />
-		<karafInstallFeature3 />
-		<karafInstallFeature4 />
-		<karafInstallFeature5 />
-		<karafInstallFeature6 />
-		<karafInstallFeature7 />
-		<karafInstallFeature8 />
-		<karafInstallFeature9 />
 		
-		<!-- will contain service dependencies -->
-		<serviceFeaturesFile>${project.artifactId}-features.xml</serviceFeaturesFile>
-
 	</properties>
 
 	<dependencies>
-
-		<!-- karaf base -->
-		<dependency>
-			<groupId>org.apache.karaf.features</groupId>
-			<artifactId>framework</artifactId>
-			<version>${karafVersion}</version>
-			<type>kar</type>
-		</dependency>
-
-		<!-- karaf extensions -->
-		<dependency>
-			<groupId>org.apache.karaf.features</groupId>
-			<artifactId>standard</artifactId>
-			<version>${karafVersion}</version>
-			<classifier>features</classifier>
-			<type>xml</type>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.karaf.features</groupId>
-			<artifactId>enterprise</artifactId>
-			<version>${karafVersion}</version>
-			<classifier>features</classifier>
-			<type>xml</type>
-			<scope>runtime</scope>
-		</dependency>
 
 		<!-- amazon sns logger -->
 		<dependency>
@@ -108,170 +49,13 @@
 
 		<!-- auto deploy features -->
 
-		<!-- configration repository access -->
+		<!-- configuration repository access -->
 		<dependency>
 			<groupId>com.barchart.conf</groupId>
-			<artifactId>barchart-conf-sync</artifactId>
-			<version>1.0.10</version>
+			<artifactId>barchart-conf-local</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 
-		<!-- config update trigger -->
-		<dependency>
-			<groupId>com.barchart.conf</groupId>
-			<artifactId>barchart-conf-touch</artifactId>
-			<version>1.0.2</version>
-		</dependency>
-		
 	</dependencies>
-
-	<build>
-
-		<plugins>
-
-			<plugin>
-				<groupId>org.apache.karaf.tooling</groupId>
-				<artifactId>karaf-maven-plugin</artifactId>
-				<version>${karafVersion}</version>
-				<executions>
-
-					<execution>
-						<id>generate-distribution</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>install-kars</goal>
-						</goals>
-						<configuration>
-							<startupFeatures>
-								<feature>${karafStartupFeature0}</feature>
-								<feature>${karafStartupFeature1}</feature>
-								<feature>${karafStartupFeature2}</feature>
-								<feature>${karafStartupFeature3}</feature>
-								<feature>${karafStartupFeature4}</feature>
-								<feature>${karafStartupFeature5}</feature>
-								<feature>${karafStartupFeature6}</feature>
-								<feature>${karafStartupFeature7}</feature>
-								<feature>${karafStartupFeature8}</feature>
-								<feature>${karafStartupFeature9}</feature>
-							</startupFeatures>
-							<bootFeatures>
-								<feature>${karafBootupFeature0}</feature>
-								<feature>${karafBootupFeature1}</feature>
-								<feature>${karafBootupFeature2}</feature>
-								<feature>${karafBootupFeature3}</feature>
-								<feature>${karafBootupFeature4}</feature>
-								<feature>${karafBootupFeature5}</feature>
-								<feature>${karafBootupFeature6}</feature>
-								<feature>${karafBootupFeature7}</feature>
-								<feature>${karafBootupFeature8}</feature>
-								<feature>${karafBootupFeature9}</feature>
-							</bootFeatures>
-							<installedFeatures>
-								<feature>${karafInstallFeature0}</feature>
-								<feature>${karafInstallFeature1}</feature>
-								<feature>${karafInstallFeature2}</feature>
-								<feature>${karafInstallFeature3}</feature>
-								<feature>${karafInstallFeature4}</feature>
-								<feature>${karafInstallFeature5}</feature>
-								<feature>${karafInstallFeature6}</feature>
-								<feature>${karafInstallFeature7}</feature>
-								<feature>${karafInstallFeature8}</feature>
-								<feature>${karafInstallFeature9}</feature>
-							</installedFeatures>
-						</configuration>
-					</execution>
-
-					<execution>
-						<id>generate-descriptor</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>features-generate-descriptor</goal>
-						</goals>
-						<configuration>
-							<installMode>auto</installMode>
-							<outputFile>target/assembly/etc/${serviceFeaturesFile}</outputFile>
-						</configuration>
-					</execution>
-
-				</executions>
-
-			</plugin>
-
-			<!-- copy karaf distribution -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-karaf-distro</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<overwrite>true</overwrite>
-							<includeEmptyDirs>true</includeEmptyDirs>
-							<resources>
-								<resource>
-									<filtering>false</filtering>
-									<directory>target/assembly</directory>
-								</resource>
-							</resources>
-							<outputDirectory>${appFolderTarget}</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-		</plugins>
-
-		<pluginManagement>
-
-			<plugins>
-
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.karaf.tooling</groupId>
-										<artifactId>karaf-maven-plugin</artifactId>
-										<versionRange>[0,)</versionRange>
-										<goals>
-											<goal>features-generate-descriptor</goal>
-											<goal>features-add-to-repository</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-dependency-plugin</artifactId>
-										<versionRange>[0,)</versionRange>
-										<goals>
-											<goal>copy-dependencies</goal>
-											<goal>unpack</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-
-			</plugins>
-
-		</pluginManagement>
-
-	</build>
-
+	
 </project>
