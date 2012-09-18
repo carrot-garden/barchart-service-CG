@@ -43,12 +43,29 @@
 		<dependency>
 			<groupId>com.carrotgarden.log</groupId>
 			<artifactId>carrot-log4j-aws-sns-pax-kar</artifactId>
-			<version>1.0.8-SNAPSHOT</version>
+			<version>1.0.9-SNAPSHOT</version>
 			<classifier>features</classifier>
 			<type>xml</type>
 		</dependency>
 
 		<!-- auto deploy features -->
+
+		<!-- common ds/scr functions -->
+		<dependency>
+			<groupId>com.barchart.osgi</groupId>
+			<artifactId>barchart-osgi-conf</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.barchart.osgi</groupId>
+			<artifactId>barchart-osgi-event</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.barchart.osgi</groupId>
+			<artifactId>barchart-osgi-factory-cm</artifactId>
+			<version>1.1.0</version>
+		</dependency>
 
 		<!-- configration repository access -->
 		<dependency>
@@ -59,14 +76,14 @@
 		<dependency>
 			<groupId>com.barchart.conf</groupId>
 			<artifactId>barchart-conf-sync-impl</artifactId>
-			<version>1.1.0</version>
+			<version>1.1.1</version>
 		</dependency>
 
 		<!-- config update trigger -->
 		<dependency>
 			<groupId>com.barchart.conf</groupId>
 			<artifactId>barchart-conf-touch</artifactId>
-			<version>1.1.0</version>
+			<version>1.1.1</version>
 		</dependency>
 
 		<!-- tester modules -->
