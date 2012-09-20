@@ -78,9 +78,9 @@
 		<karafInstallFeature7 />
 		<karafInstallFeature8 />
 		<karafInstallFeature9 />
-		
+
 		<!-- will contain service dependencies -->
-		<serviceFeaturesFile>${project.artifactId}-features.xml</serviceFeaturesFile>
+		<serviceFeaturesFile>${project.artifactId}-${project.version}-features.xml</serviceFeaturesFile>
 
 	</properties>
 
