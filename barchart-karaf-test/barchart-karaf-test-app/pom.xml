@@ -76,7 +76,7 @@
 		<dependency>
 			<groupId>com.barchart.conf</groupId>
 			<artifactId>barchart-conf-sync-impl</artifactId>
-			<version>1.1.1</version>
+			<version>1.1.2</version>
 		</dependency>
 
 		<!-- config update trigger -->
