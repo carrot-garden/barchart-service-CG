@@ -1,18 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!--
-
-    Copyright (C) 2011-2012 Barchart, Inc. <http://www.barchart.com/>
-
-    All rights reserved. Licensed under the OSI BSD License.
-
-    http://www.opensource.org/licenses/bsd-license.php
-
--->
-<features xmlns="http://karaf.apache.org/xmlns/features/v1.0.0" name="enterprise-3.0.0-SNAPSHOT">
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0" name="enterprise-3.0.0-SNAPSHOT">
     <feature resolver="(obr)" description="OSGi Transaction Manager" version="1.0.0" name="transaction">
         <details>JTA implementation provided by Apache Aries Transaction 1.0.0</details>
         <bundle dependency="true" start-level="30">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1.1</bundle>
-        <bundle start-level="30">mvn:org.apache.aries.transaction/org.apache.aries.transaction.blueprint/1.0.0-SNAPSHOT</bundle>
+        <bundle start-level="30">mvn:org.apache.aries.transaction/org.apache.aries.transaction.blueprint/1.0.0</bundle>
         <bundle start-level="30">mvn:org.apache.aries.transaction/org.apache.aries.transaction.manager/1.0.0</bundle>
         <bundle start-level="30">mvn:org.apache.aries.transaction/org.apache.aries.transaction.wrappers/1.0.0</bundle>
     </feature>
@@ -38,14 +29,21 @@
     <feature description="Provide EBA archive support" version="1.0.0" name="application-without-isolation">
         <details>Support of the Aries EBA archives</details>
         <feature version="3.0.0-SNAPSHOT">obr</feature>
+        <bundle dependency="true" start-level="20">mvn:org.apache.aries.blueprint/org.apache.aries.blueprint.api/1.0.0</bundle>
+        <bundle dependency="true" start-level="20">mvn:org.apache.aries.blueprint/org.apache.aries.blueprint.core/1.0.0</bundle>
+        <bundle dependency="true" start-level="20">mvn:org.apache.aries.blueprint/org.apache.aries.blueprint.cm/1.0.0</bundle>
+        <bundle dependency="true" start-level="20">mvn:org.apache.aries.proxy/org.apache.aries.proxy.api/1.0.0</bundle>
+        <bundle dependency="true" start-level="20">mvn:org.apache.aries.proxy/org.apache.aries.proxy.impl/1.0.0</bundle>
+        <bundle dependency="true" start-level="20">mvn:org.apache.aries/org.apache.aries.util/1.0.0</bundle>
         <bundle start-level="30">mvn:org.apache.aries.application/org.apache.aries.application.resolver.obr/1.0.0</bundle>
         <bundle start-level="30">mvn:org.apache.aries.application/org.apache.aries.application.install/1.0.0</bundle>
         <bundle start-level="30">mvn:org.apache.aries.application/org.apache.aries.application.api/1.0.0</bundle>
-        <bundle start-level="30">mvn:org.apache.aries.application/org.apache.aries.application.management/1.0.0-SNAPSHOT</bundle>
+        <bundle start-level="30">mvn:org.apache.aries.application/org.apache.aries.application.management/1.0.0</bundle>
         <bundle start-level="30">mvn:org.apache.aries.application/org.apache.aries.application.utils/1.0.0</bundle>
         <bundle start-level="30">mvn:org.apache.aries.application/org.apache.aries.application.modeller/1.0.0</bundle>
         <bundle start-level="30">mvn:org.apache.aries.application/org.apache.aries.application.default.local.platform/1.0.0</bundle>
-        <bundle start-level="30">mvn:org.apache.aries.application/org.apache.aries.application.deployment.management/1.0.0-SNAPSHOT</bundle>
+        <bundle start-level="30">mvn:org.apache.aries.application/org.apache.aries.application.resolver.noop/1.0.0</bundle>
+        <bundle start-level="30">mvn:org.apache.aries.application/org.apache.aries.application.deployment.management/1.0.0</bundle>
         <bundle start-level="30">mvn:org.apache.aries.application/org.apache.aries.application.runtime/1.0.0</bundle>
     </feature>
 </features>
