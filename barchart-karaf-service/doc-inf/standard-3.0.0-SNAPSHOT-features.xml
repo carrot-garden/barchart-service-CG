@@ -27,8 +27,8 @@
     <feature description="Aries Annotations" version="3.0.0-SNAPSHOT" name="aries-annotation">
         <bundle dependency="true" start-level="20">mvn:org.apache.commons/commons-jexl/2.1.1</bundle>
         <bundle dependency="true" start-level="20">mvn:org.ow2.asm/asm-all/4.0</bundle>
-        <bundle dependency="true" start-level="20">mvn:org.apache.xbean/xbean-bundleutils/3.11.1</bundle>
-        <bundle dependency="true" start-level="20">mvn:org.apache.xbean/xbean-finder/3.11.1</bundle>
+        <bundle dependency="true" start-level="20">mvn:org.apache.xbean/xbean-bundleutils/3.12</bundle>
+        <bundle dependency="true" start-level="20">mvn:org.apache.xbean/xbean-finder/3.12</bundle>
         <bundle start-level="20">mvn:org.apache.aries.blueprint/org.apache.aries.blueprint.annotation.api/1.0.0</bundle>
         <bundle start-level="20">mvn:org.apache.aries.blueprint/org.apache.aries.blueprint.annotation.impl/1.0.0</bundle>
         <bundle start-level="20">mvn:org.apache.aries.blueprint/org.apache.aries.blueprint.jexl.evaluator/1.0.0</bundle>
@@ -46,7 +46,7 @@
         <bundle start-level="30">mvn:org.apache.karaf.obr/org.apache.karaf.obr.command/3.0.0-SNAPSHOT</bundle>
         <bundle start-level="30">mvn:org.ops4j.pax.swissbox/pax-swissbox-lifecycle/1.5.1</bundle>
         <bundle start-level="30">mvn:org.ops4j.pax.swissbox/pax-swissbox-tracker/1.5.1</bundle>
-        <bundle start-level="30">mvn:org.ops4j.pax.url/pax-url-obr/1.5.0</bundle>
+        <bundle start-level="30">mvn:org.ops4j.pax.url/pax-url-obr/1.5.1-SNAPSHOT</bundle>
         <bundle start-level="31">mvn:org.apache.karaf.features/org.apache.karaf.features.obr/3.0.0-SNAPSHOT</bundle>
     </feature>
     <feature description="Provide OSGi ConfigAdmin support" version="3.0.0-SNAPSHOT" name="config">
@@ -58,14 +58,14 @@
         <bundle start-level="30">mvn:org.apache.karaf.region/org.apache.karaf.region.persist/3.0.0-SNAPSHOT</bundle>
         <bundle start-level="30">mvn:org.apache.karaf.region/org.apache.karaf.region.command/3.0.0-SNAPSHOT</bundle>
     </feature>
-    <feature resolver="(obr)" description="Provide Jetty engine support" version="8.1.5.v20120716" name="jetty">
-        <bundle dependency="true" start-level="30">mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.activation-api-1.1/2.0.0</bundle>
+    <feature resolver="(obr)" description="Provide Jetty engine support" version="8.1.7.v20120910" name="jetty">
+        <bundle dependency="true" start-level="30">mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.activation-api-1.1/2.1.0</bundle>
         <bundle dependency="true" start-level="30">mvn:org.apache.geronimo.specs/geronimo-servlet_3.0_spec/1.0</bundle>
         <bundle dependency="true" start-level="30">mvn:javax.mail/mail/1.4.5</bundle>
         <bundle dependency="true" start-level="30">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1.1</bundle>
         <bundle dependency="true" start-level="30">mvn:org.apache.geronimo.specs/geronimo-annotation_1.1_spec/1.0.1</bundle>
         <bundle dependency="true" start-level="30">mvn:org.apache.geronimo.specs/geronimo-jaspic_1.0_spec/1.1</bundle>
-        <bundle start-level="30">mvn:org.eclipse.jetty.aggregate/jetty-all-server/8.1.5.v20120716</bundle>
+        <bundle start-level="30">mvn:org.eclipse.jetty.aggregate/jetty-all-server/8.1.7.v20120910</bundle>
     </feature>
     <feature resolver="(obr)" description="Package commands and mbeans" version="3.0.0-SNAPSHOT" name="package">
         <bundle start-level="30">mvn:org.apache.karaf.package/org.apache.karaf.package.core/3.0.0-SNAPSHOT</bundle>
@@ -99,8 +99,8 @@
         <feature>http-whiteboard</feature>
         <bundle start-level="30">mvn:org.ops4j.pax.web/pax-web-extender-war/2.1.0</bundle>
         <bundle start-level="30">mvn:org.ops4j.pax.web/pax-web-deployer/2.1.0</bundle>
-        <bundle start-level="30">mvn:org.ops4j.pax.url/pax-url-war/1.5.0</bundle>
-        <bundle start-level="30">mvn:org.ops4j.pax.url/pax-url-commons/1.5.0</bundle>
+        <bundle start-level="30">mvn:org.ops4j.pax.url/pax-url-war/1.5.1-SNAPSHOT</bundle>
+        <bundle start-level="30">mvn:org.ops4j.pax.url/pax-url-commons/1.5.1-SNAPSHOT</bundle>
         <bundle start-level="30">mvn:org.ops4j.pax.swissbox/pax-swissbox-bnd/1.5.1</bundle>
         <bundle start-level="30">mvn:org.ops4j.pax.swissbox/pax-swissbox-property/1.5.1</bundle>
         <bundle start-level="30">mvn:biz.aQute/bndlib/1.50.0</bundle>
@@ -132,14 +132,14 @@
             sshRealm=karaf
             hostKey=${karaf.base}/etc/host.key
         </config>
-        <bundle start="true" start-level="30">mvn:org.apache.mina/mina-core/2.0.4</bundle>
-        <bundle start="true" start-level="30">mvn:org.apache.sshd/sshd-core/0.7.0</bundle>
+        <bundle start="true" start-level="30">mvn:org.apache.mina/mina-core/2.0.7</bundle>
+        <bundle start="true" start-level="30">mvn:org.apache.sshd/sshd-core/0.8.0</bundle>
         <bundle start="true" start-level="30">mvn:org.apache.karaf.shell/org.apache.karaf.shell.ssh/3.0.0-SNAPSHOT</bundle>
     </feature>
     <feature description="Provide a JMX MBeanServer and a set of MBeans in Karaf" version="3.0.0-SNAPSHOT" name="management">
         <bundle start-level="30">mvn:org.apache.karaf.management/org.apache.karaf.management.server/3.0.0-SNAPSHOT</bundle>
         <bundle start-level="30">mvn:org.apache.aries.jmx/org.apache.aries.jmx.api/1.0.0</bundle>
-        <bundle start-level="30">mvn:org.apache.aries.jmx/org.apache.aries.jmx.core/1.0.0</bundle>
+        <bundle start-level="30">mvn:org.apache.aries.jmx/org.apache.aries.jmx.core/1.0.1</bundle>
         <bundle start-level="30">mvn:org.apache.aries.jmx/org.apache.aries.jmx.blueprint.api/1.0.0</bundle>
         <bundle start-level="30">mvn:org.apache.aries.jmx/org.apache.aries.jmx.blueprint.core/1.0.1</bundle>
         <bundle start-level="30">mvn:org.apache.aries.jmx/org.apache.aries.jmx.whiteboard/1.0.0</bundle>
@@ -148,7 +148,7 @@
         <bundle start-level="30">mvn:org.apache.karaf.scheduler/org.apache.karaf.scheduler.core/3.0.0-SNAPSHOT</bundle>
     </feature>
     <feature resolver="(obr)" description="OSGi Event Admin service specification for event-based communication" version="3.0.0-SNAPSHOT" name="eventadmin">
-        <bundle start-level="30">mvn:org.apache.felix/org.apache.felix.eventadmin/1.2.14</bundle>
+        <bundle start-level="30">mvn:org.apache.felix/org.apache.felix.eventadmin/1.3.0</bundle>
     </feature>
     <feature resolver="(obr)" description="Advanced encryption support for Karaf security" version="3.0.0-SNAPSHOT" name="jasypt-encryption">
         <bundle dependency="true" start-level="30">mvn:commons-codec/commons-codec/1.6</bundle>
