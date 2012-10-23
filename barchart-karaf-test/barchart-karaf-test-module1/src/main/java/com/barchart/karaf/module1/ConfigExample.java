@@ -20,6 +20,8 @@ import com.typesafe.config.Config;
 @Component(immediate = true)
 public class ConfigExample implements EventHandler {
 
+	//
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	/** provide event subscription topic filter */
