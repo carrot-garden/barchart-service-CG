@@ -7,12 +7,13 @@
 		<groupId>com.barchart.karaf</groupId>
 		<artifactId>barchart-karaf-service</artifactId>
 		<version>1.0.1-SNAPSHOT</version>
+		<!-- need till release version available -->
 		<relativePath>../barchart-karaf-service</relativePath>
 	</parent>
 
 	<groupId>com.barchart.karaf</groupId>
 	<artifactId>barchart-karaf-base-app</artifactId>
-	<version>1.1.3-SNAPSHOT</version>
+	<version>1.1.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<description>base karaf application</description>
