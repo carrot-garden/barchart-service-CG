@@ -16,8 +16,6 @@
 			<arg value="clean" />
 			<arg value="package" />
 
-			<arg value="--update-snapshots" />
-
 			<arg value="--activate-profiles" />
 			<arg value="image-build,eu-west-1" />
 

@@ -15,10 +15,12 @@ ls -las
 echo "##################################################"
 
 #
-# disable apt-get dialogs
+# disable apt-get and oracle dialogs
 #
 export DEBIAN_FRONTEND=noninteractive
-
+echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
+	
 add-apt-repository --yes ppa:webupd8team/java
 apt-get --yes update
 apt-get --yes install oracle-jdk7-installer

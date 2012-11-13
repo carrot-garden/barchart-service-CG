@@ -96,7 +96,7 @@
 							<!-- used by elastic compute goals -->
 							<computeServerId>barchart-karaf-compute</computeServerId>
 							<imageName>java-7-karaf_${projectTimeFile}</imageName>
-							<imageDescription>java 7 for karaf (${projectTimeFile})</imageDescription>
+							<imageDescription>java 7 with karaf (${projectTimeFile})</imageDescription>
 
 						</configuration>
 
