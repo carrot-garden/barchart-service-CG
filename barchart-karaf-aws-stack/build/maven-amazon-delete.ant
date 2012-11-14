@@ -18,6 +18,8 @@
 
 			<arg value="--define" />
 			<arg value="amazonRegion=us-east-1" />
+			<arg value="--define" />
+			<arg value="stackName=karaf-stack" />
 
 			<arg value="--activate-profiles" />
 			<arg value="image-launch,stack-delete" />
