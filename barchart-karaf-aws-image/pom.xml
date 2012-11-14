@@ -52,7 +52,7 @@
 
 				<plugins>
 
-					<!-- copy templates -->
+					<!-- copy config templates -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-resources-plugin</artifactId>
@@ -66,11 +66,11 @@
 								<configuration>
 									<resources>
 										<resource>
-											<directory>src/main/script</directory>
+											<directory>${basedir}/src/main/script</directory>
 											<filtering>true</filtering>
 										</resource>
 										<resource>
-											<directory>src/main/template</directory>
+											<directory>${basedir}/src/main/template</directory>
 											<filtering>true</filtering>
 										</resource>
 										<resource>
@@ -84,7 +84,7 @@
 						</executions>
 					</plugin>
 
-					<!-- copy application -->
+					<!-- copy karaf app distro -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-dependency-plugin</artifactId>
@@ -93,17 +93,22 @@
 								<id>copy-karaf-app</id>
 								<phase>package</phase>
 								<goals>
-									<goal>copy-dependencies</goal>
+									<goal>copy</goal>
 								</goals>
 								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>${karafGroup}</groupId>
+											<artifactId>${karafArtifact}</artifactId>
+											<version>${karafVersion}</version>
+											<classifier>${karafClassifier}</classifier>
+											<type>${karafType}</type>
+											<destFileName>${karafFinalName}</destFileName>
+										</artifactItem>
+									</artifactItems>
 									<overWriteReleases>true</overWriteReleases>
 									<overWriteSnapshots>true</overWriteSnapshots>
 									<overWriteIfNewer>true</overWriteIfNewer>
-									<groupId>${karafGroup}</groupId>
-									<artifactId>${karafArtifact}</artifactId>
-									<version>${karafVersion}</version>
-									<classifier>${karafClassifier}</classifier>
-									<type>${karafType}</type>
 									<outputDirectory>${publishSource}</outputDirectory>
 								</configuration>
 							</execution>
@@ -141,7 +146,7 @@
 							<!-- used by elastic compute goals -->
 							<computeServerId>barchart-karaf-compute</computeServerId>
 							<imageName>java-karaf_${projectTimeFile}</imageName>
-							<imageDescription>java with karaf ${karafFinalName)</imageDescription>
+							<imageDescription>base image of java with karaf ${karafFinalName}</imageDescription>
 
 						</configuration>
 
