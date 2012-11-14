@@ -116,7 +116,10 @@ echo "##################################################"
 echo "### await fetch config repo and maven artifacts"
 echo "###"
 
-sleep 30s
+for step in {1..90} ; do
+	echo "step : $step"
+	sleep 1s
+done
 
 echo "##################################################"
 echo "### tanuki stop"
