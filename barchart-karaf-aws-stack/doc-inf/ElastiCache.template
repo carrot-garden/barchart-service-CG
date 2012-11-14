@@ -1,0 +1,315 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  
+  "Description" : "AWS CloudFormation Sample Template ElastiCache: Sample template showing how to create an Amazon ElastiCache Cache Cluster and access it from a very simple PHP application. **WARNING** This template creates an Amazon Ec2 Instance and an Amazon ElastiCache Cluster. You will be billed for the AWS resources used if you create a stack from this template.",
+  
+  "Parameters" : {
+
+    "WebServerKeyName" : {
+      "Description" : "Name of an existing Amazon EC2 KeyPair for SSH access to the Web Server",
+      "Type" : "String"
+    },
+          
+     "InstanceType" : {
+      "Description" : "WebServer EC2 instance type",
+      "Type" : "String",
+      "Default" : "m1.small",
+      "AllowedValues" : [ "t1.micro","m1.small","m1.medium","m1.large","m1.xlarge","m2.xlarge","m2.2xlarge","m2.4xlarge","c1.medium","c1.xlarge","cc1.4xlarge","cc2.8xlarge","cg1.4xlarge"],
+      "ConstraintDescription" : "must be a valid EC2 instance type."
+    },
+ 
+    "CacheNodeType" : {
+      "Default" : "cache.m1.small",
+      "Description" : "The compute and memory capacity of the nodes in the Cache Cluster",
+      "Type" : "String",
+      "AllowedValues" : [ "cache.m1.small", "cache.m1.large", "cache.m1.xlarge", "cache.m2.xlarge", "cache.m2.2xlarge", "cache.m2.4xlarge", "cache.c1.xlarge" ],
+      "ConstraintDescription" : "must select a valid Cache Node type."
+    },
+        
+    "NumberOfCacheNodes" : {
+      "Default": "1",
+      "Description" : "The number of Cache Nodes the Cache Cluster should have",
+      "Type": "Number",
+      "MinValue": "1",
+      "MaxValue": "10",
+      "ConstraintDescription" : "must be between 5 and 10."
+    }   
+  },
+  
+  "Mappings" : {
+    "AWSInstanceType2Arch" : {
+      "t1.micro"    : { "Arch" : "64" },
+      "m1.small"    : { "Arch" : "64" },
+      "m1.medium"   : { "Arch" : "64" },
+      "m1.large"    : { "Arch" : "64" },
+      "m1.xlarge"   : { "Arch" : "64" },
+      "m2.xlarge"   : { "Arch" : "64" },
+      "m2.2xlarge"  : { "Arch" : "64" },
+      "m2.4xlarge"  : { "Arch" : "64" },
+      "c1.medium"   : { "Arch" : "64" },
+      "c1.xlarge"   : { "Arch" : "64" },
+      "cc1.4xlarge" : { "Arch" : "64HVM" },
+      "cc2.8xlarge" : { "Arch" : "64HVM" },
+      "cg1.4xlarge" : { "Arch" : "64HVM" }
+    },
+
+    "AWSRegionArch2AMI" : {
+      "us-east-1"      : { "32" : "ami-31814f58", "64" : "ami-1b814f72", "64HVM" : "ami-0da96764" },
+      "us-west-2"      : { "32" : "ami-38fe7308", "64" : "ami-30fe7300", "64HVM" : "NOT_YET_SUPPORTED" },
+      "us-west-1"      : { "32" : "ami-11d68a54", "64" : "ami-1bd68a5e", "64HVM" : "NOT_YET_SUPPORTED" },
+      "eu-west-1"      : { "32" : "ami-973b06e3", "64" : "ami-953b06e1", "64HVM" : "NOT_YET_SUPPORTED" },
+      "ap-southeast-1" : { "32" : "ami-b4b0cae6", "64" : "ami-beb0caec", "64HVM" : "NOT_YET_SUPPORTED" },
+      "ap-northeast-1" : { "32" : "ami-0644f007", "64" : "ami-0a44f00b", "64HVM" : "NOT_YET_SUPPORTED" },
+      "sa-east-1"      : { "32" : "ami-3e3be423", "64" : "ami-3c3be421", "64HVM" : "NOT_YET_SUPPORTED" }
+    }
+  },
+    
+  "Resources" : {   
+
+    "CacheCluster" : {
+      "Type": "AWS::ElastiCache::CacheCluster",
+      "Properties": {
+        "CacheNodeType"           : { "Ref" : "CacheNodeType" },
+        "CacheSecurityGroupNames" : [ { "Ref" : "CacheSecurityGroup" } ],
+        "Engine"                  : "memcached",
+        "NumCacheNodes"           : { "Ref" : "NumberOfCacheNodes" }
+      }
+    },
+
+    "CacheSecurityGroup": {
+      "Type": "AWS::ElastiCache::SecurityGroup",
+      "Properties": {
+        "Description"  : "Lock cache down to Web Server access only"
+      }
+    },
+
+    "CacheSecurityGroupIngress": {
+      "Type": "AWS::ElastiCache::SecurityGroupIngress",
+      "Properties": {
+        "CacheSecurityGroupName"  : { "Ref" : "CacheSecurityGroup" },
+        "EC2SecurityGroupName"    : { "Ref" : "WebServerSecurityGroup" }
+      }        
+    },
+        
+    "WebServerUser" : {
+      "Type" : "AWS::IAM::User",
+      "Properties" : {
+        "Path": "/",
+        "Policies": [{
+          "PolicyName": "root",
+          "PolicyDocument": { "Statement":[{
+            "Effect": "Allow",
+            "Action": [
+              "cloudformation:DescribeStackResource",
+              "cloudformation:ListStackResources",
+              "elasticache:DescribeCacheClusters"
+            ],
+            "Resource": "*"
+          }]}
+        }]
+      }
+    },
+
+    "WebServerKeys" : {
+      "Type" : "AWS::IAM::AccessKey",
+      "Properties" : {
+        "UserName" : {"Ref": "WebServerUser"}
+      }
+    },
+
+    "WebServerSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Enable HTTP and SSH access",
+        "SecurityGroupIngress" : [
+          {"IpProtocol" : "tcp", "FromPort" : "22", "ToPort" : "22", "CidrIp" : "0.0.0.0/0"},
+          {"IpProtocol" : "tcp", "FromPort" : "80", "ToPort" : "80", "CidrIp" : "0.0.0.0/0"}
+        ]
+      }      
+    },  
+      
+    "WebServerHost": {  
+      "Type" : "AWS::EC2::Instance",
+      "Metadata" : {
+        "Comment1" : "Install a simple PHP application to connect to and test the Amazon ElastiCache Cache Cluster",
+        "Comment2" : "The sample application also starts up the cfn-hup daemon to ensure that the application can react to cache configuration changes via UpdateStack",
+
+        "ElastiCacheConfig" : {
+          "CacheName" : { "Ref" : "CacheCluster" },
+          "CacheSize" : { "Ref" : "NumberOfCacheNodes" }
+        },
+
+        "AWS::CloudFormation::Init" : {
+          "config" : {
+            "packages" : {
+              "yum" : {
+                "httpd"             : [],
+                "php"               : [],
+                "php-pecl-memcache" : [],
+                "aws-apitools-cfn"  : []
+              }
+            },
+
+            "files" : {
+              "/etc/cfn/cfn-credentials" : {
+                "content" : { "Fn::Join" : ["", [
+                  "AWSAccessKeyId=", { "Ref" : "WebServerKeys" }, "\n",
+                  "AWSSecretKey=", {"Fn::GetAtt": ["WebServerKeys", "SecretAccessKey"]}, "\n"
+                ]]},
+                "mode"    : "000400",
+                "owner"   : "root",
+                "group"   : "root"
+              },
+
+              "/etc/cfn/cfn-hup.conf" : {
+                "content" : { "Fn::Join" : ["", [
+                  "[main]\n",
+                  "stack=", { "Ref" : "AWS::StackName" }, "\n",
+                  "credential-file=/etc/cfn/cfn-credentials\n",
+                  "region=", { "Ref" : "AWS::Region" }, "\n"
+                ]]},
+                "mode"    : "000400",
+                "owner"   : "root",
+                "group"   : "root"
+              },
+
+              "/etc/cfn/get-cache-nodes" : {
+                "content" : { "Fn::Join" : ["", [
+                  "# Define environment variables for command line tools\n",
+                  "export AWS_ELASTICACHE_HOME=/home/ec2-user/elasticache/AmazonElastiCacheCli-1.5.000\n",
+                  "export AWS_CLOUDFORMATION_HOME=/opt/aws/apitools/cfn\n",
+                  "export PATH=$AWS_CLOUDFORMATION_HOME/bin:$AWS_ELASTICACHE_HOME/bin:$PATH\n",
+                  "export AWS_CREDENTIAL_FILE=/etc/cfn/cfn-credentials\n",
+                  "export JAVA_HOME=/usr/lib/jvm/jre\n",
+
+                  "# Grab the Cache node names and configure the PHP page\n",
+                  "cfn-list-stack-resources ", { "Ref" : "AWS::StackName" }, " --region ", { "Ref" : "AWS::Region" }, " | grep CacheCluster | awk '{print $3}' | xargs -I {} elasticache-describe-cache-clusters {} --region ", { "Ref" : "AWS::Region" }, " --show-cache-node-info | grep CACHENODE | awk '{print $4 \",\" $5}' > /var/www/html/nodelist\n"
+                ]]},
+                "mode"    : "000500",
+                "owner"   : "root",
+                "group"   : "root"
+              },
+
+              "/etc/cfn/hooks.d/cfn-cache-change.conf" : {
+                "content": { "Fn::Join" : ["", [
+                  "[cfn-cache-size-change]\n",
+                  "triggers=post.update\n",
+                  "path=Resources.WebServerHost.Metadata.ElastiCacheConfig\n",
+                  "action=/etc/cfn/get-cache-nodes\n",
+                  "runas=root\n"
+                ]]}
+              },
+
+              "/var/www/html/index.php" : {
+                "content" : { "Fn::Join" : ["", [
+                  "<?php\n",
+                  "echo '<h1>AWS CloudFormation sample application for Amazon ElastiCache</h1>';\n",
+                  "\n",
+                  "$memcache = new Memcache;\n",
+                  "\n",
+                  "echo 'Cache Servers:';\n",
+                  "echo '<ul>';\n",
+                  "$fh = @fopen('/var/www/html/nodelist', 'r');\n",
+                  "if ($fh) {\n",
+                  "  while (($line = fgets($fh)) !== false) {\n",
+                  "    $pieces = explode(',', $line);\n",
+                  "    echo '<li>'.$pieces[0].'</li>';\n",
+                  "    $memcache->addServer($pieces[0], $pieces[1]) or die ('Failed to add server');\n",
+                  "  }\n",
+                  "  fclose($fh);\n",
+                  "}\n",
+                  "echo '</ul>';\n",
+                  "\n",
+                  "$version = $memcache->getVersion();\n",
+                  "echo '<p>Server version: '.$version.'</p>';\n",
+                  "\n",
+                  "$tmp_object = new stdClass;\n",
+                  "$tmp_object->str_attr = 'test';\n",
+                  "$tmp_object->int_attr = 123;\n",
+                  "\n",
+                  "$memcache->set('key', $tmp_object, false, 10) or die ('Failed to save data to the cache');\n",
+                  "echo '<p>Store data in the cache (data will expire in 10 seconds)</p>';\n",
+                  "\n",
+                  "$get_result = $memcache->get('key');\n",
+                  "echo '<p>Data from the cache:<br/>';\n",
+                  "\n",
+                  "var_dump($get_result);\n",
+                  "\n",
+                  "echo '</p>';\n",
+                  "?>\n"
+                ]]},
+                "mode"    : "000644",
+                "owner"   : "apache",
+                "group"   : "apache"
+              }
+            },
+
+            "sources" : {
+              "/home/ec2-user/elasticache" : "https://s3.amazonaws.com/elasticache-downloads/AmazonElastiCacheCli-2011-07-15-1.5.000.zip"
+            },
+
+            "services" : {
+              "sysvinit" : {
+                "httpd"    : { "enabled" : "true", "ensureRunning" : "true" },
+                "sendmail" : { "enabled" : "false", "ensureRunning" : "false" }
+              }
+            }
+          }
+        }
+      },
+      "Properties": {
+        "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" }, "32" ]},
+        "InstanceType"   : "t1.micro",
+        "SecurityGroups" : [ {"Ref" : "WebServerSecurityGroup"} ],
+        "KeyName"        : { "Ref" : "WebServerKeyName" },
+        "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
+          "#!/bin/bash -v\n",
+          "yum update -y aws-cfn-bootstrap\n",
+
+          "# Helper function\n",
+          "function error_exit\n",
+          "{\n",
+          "  /opt/aws/bin/cfn-signal -e 1 -r \"$1\" '", { "Ref" : "WebServerWaitHandle" }, "'\n",
+          "  exit 1\n",
+          "}\n",
+
+          "# Setup the PHP sample application\n",
+          "/opt/aws/bin/cfn-init -s ", { "Ref" : "AWS::StackName" }, " -r WebServerHost ",
+          "         --access-key ", { "Ref" : "WebServerKeys" },
+          "         --secret-key ", {"Fn::GetAtt": ["WebServerKeys", "SecretAccessKey"]},
+          "         --region ", { "Ref" : "AWS::Region" }, " || error_exit 'Failed to run cfn-init'\n",
+          "chmod -R +x /home/ec2-user/elasticache\n",
+
+          "# Start up the cfn-hup daemon to listen for changes to the web server metadata\n",
+          "/opt/aws/bin/cfn-hup || error_exit 'Failed to start cfn-hup'\n",
+
+          "# Get initial set of cache nodes\n",
+          "/etc/cfn/get-cache-nodes\n",
+
+          "# Everything is happy so signal success\n",
+          "/opt/aws/bin/cfn-signal -e $? '", { "Ref" : "WebServerWaitHandle" }, "'\n"
+        ]]}}        
+      }
+    },
+
+    "WebServerWaitHandle" : {
+      "Type" : "AWS::CloudFormation::WaitConditionHandle"
+    },
+
+    "WebServerWaitCondition" : {
+      "Type" : "AWS::CloudFormation::WaitCondition",
+      "DependsOn" : "WebServerHost",
+      "Properties" : {
+        "Handle" : {"Ref" : "WebServerWaitHandle"},
+        "Timeout" : "300"
+      }
+    }
+  },
+  
+  "Outputs" : {
+    "WebsiteURL" : {
+      "Value" : { "Fn::Join" : ["", ["http://", { "Fn::GetAtt" : [ "WebServerHost", "PublicDnsName" ]} ]] },
+      "Description" : "Application URL"
+    }
+  }
+}
