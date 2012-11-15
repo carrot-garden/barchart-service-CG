@@ -103,7 +103,7 @@
          "HealthCheckType" : "EC2",
          "HealthCheckGracePeriod" : "60",
          "Tags": [
-             { "Key": "Name", "Value": { "Ref": "ParamIdentity" } }
+             { "Key": "Name", "Value": { "Ref": "ParamIdentity" }, "PropagateAtLaunch" : "true" }
           ]
          
       }
