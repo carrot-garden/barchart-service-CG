@@ -76,15 +76,17 @@
 
 						<configuration>
 
-							<!-- used by cloud formation & elastic compute goals -->
 							<amazonRegion>${amazonRegion}</amazonRegion>
 
-							<!-- used by cloud formation goals -->
 							<stackName>${stackName}</stackName>
+
 							<stackServerId>barchart-karaf-stack</stackServerId>
-							<stackTemplateFile>${publishSource}/formation.template</stackTemplateFile>
-							<stackPropertiesInputFile>${publishSource}/formation.properties</stackPropertiesInputFile>
+
+							<stackTemplateFile>${publishSource}/${stackTemplateFile}</stackTemplateFile>
+
 							<stackInputParams>
+								<ParamKeyName>${ParamKeyName}</ParamKeyName>
+								<ParamInstanceType>${ParamInstanceType}</ParamInstanceType>
 							</stackInputParams>
 
 						</configuration>

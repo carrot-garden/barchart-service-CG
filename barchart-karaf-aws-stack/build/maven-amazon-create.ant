@@ -16,13 +16,20 @@
 			<arg value="clean" />
 			<arg value="package" />
 
+			<arg value="--activate-profiles" />
+			<arg value="image-launch,stack-create" />
+
 			<arg value="--define" />
 			<arg value="amazonRegion=us-east-1" />
 			<arg value="--define" />
 			<arg value="stackName=karaf-stack" />
+			<arg value="--define" />
+			<arg value="stackTemplateFile=karaf-scaler.template" />
 
-			<arg value="--activate-profiles" />
-			<arg value="image-launch,stack-create" />
+			<arg value="--define" />
+			<arg value="ParamKeyName=barchart-karaf" />
+			<arg value="--define" />
+			<arg value="ParamInstanceType=m1.medium" />
 
 		</exec>
 

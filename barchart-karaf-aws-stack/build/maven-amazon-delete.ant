@@ -16,13 +16,13 @@
 			<arg value="clean" />
 			<arg value="package" />
 
+			<arg value="--activate-profiles" />
+			<arg value="image-launch,stack-delete" />
+
 			<arg value="--define" />
 			<arg value="amazonRegion=us-east-1" />
 			<arg value="--define" />
 			<arg value="stackName=karaf-stack" />
-
-			<arg value="--activate-profiles" />
-			<arg value="image-launch,stack-delete" />
 
 		</exec>
 
