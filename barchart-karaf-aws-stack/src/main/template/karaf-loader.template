@@ -140,7 +140,7 @@
 		      "Type": "CNAME",
 		      "TTL": "600",
 		      "ResourceRecords": [
-		          { "Fn::GetAtt" : [ "KarafLoadBalancer", "LoadBalancerDescription.DNSName" ] }
+		          { "Fn::GetAtt" : [ "KarafLoadBalancer", "DNSName" ] }
 		      ]
 		  }
 	},
