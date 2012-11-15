@@ -25,7 +25,7 @@
             "ap-southeast-1": { "AMI": "TODO" },
             "eu-west-1":      { "AMI": "TODO" },
             "sa-east-1":      { "AMI": "TODO" },
-            "us-east-1":      { "AMI": "ami-9e32b6f7" },
+            "us-east-1":      { "AMI": "ami-08cf4861" },
             "us-west-1":      { "AMI": "TODO" },
             "us-west-2":      { "AMI": "TODO" }
         }
