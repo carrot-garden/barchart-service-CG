@@ -1,0 +1,212 @@
+{
+	
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "karaf auto scale group with load balancer",
+
+  "Parameters" : {
+	  
+    "ParamInstanceType" : { 
+      "Type" : "String", 
+      "Default" : "m1.small"
+    },
+    
+    "ParamKeyName" : {
+        "Type" : "String",
+        "Default" : "barchart-karaf"
+    },
+      
+    "ParamIdentity" : {
+        "Type" : "String",
+        "Default" : "default.aws.barchart.com"
+    },
+      
+    "ParamTopicARN" : {
+        "Type" : "String",
+        "Default" : "arn:aws:sns:us-east-1:081121675754:barchart-application"
+    },
+      
+    "ParamMinSize" : {
+        "Type" : "String",
+        "Default" : "2"
+    },
+      
+    "ParamMaxSize" : {
+        "Type" : "String",
+        "Default" : "4"
+    },
+      
+    "ParamSecurityGroup" : {
+        "Type" : "String",
+        "Default" : "default"
+    }
+      
+  },
+
+  "Mappings" : {
+	  
+      "RegionImageMap": {
+          "ap-northeast-1": { "AMI": "TODO" },
+          "ap-southeast-1": { "AMI": "TODO" },
+          "ap-southeast-2": { "AMI": "TODO" },
+          "eu-west-1":      { "AMI": "TODO" },
+          "sa-east-1":      { "AMI": "TODO" },
+          "us-east-1":      { "AMI": "ami-9e32b6f7" },
+          "us-west-1":      { "AMI": "TODO" },
+          "us-west-2":      { "AMI": "TODO" }
+      },
+      
+	  "RegionZoneListMap": {
+	      "ap-northeast-1": { "list": [ "ap-northeast-1b" , "ap-northeast-1c" ] },
+	      "ap-southeast-1": { "list": [ "ap-southeast-1a" , "ap-southeast-1b" ] },
+	      "ap-southeast-2": { "list": [ "ap-southeast-2a" , "ap-southeast-2b" ] },
+	      "eu-west-1":      { "list": [ "eu-west-1b" , "eu-west-1c" ] },
+	      "sa-east-1":      { "list": [ "sa-east-1a" , "sa-east-1b" ] },
+	      "us-east-1":      { "list": [ "us-east-1d" , "us-east-1e" ] },
+	      "us-west-1":      { "list": [ "us-west-1b" , "us-west-1c" ] },
+	      "us-west-2":      { "list": [ "us-west-2b" , "us-west-2c" ] }
+	  }
+
+  },
+
+  "Resources" : {
+	  
+    "KarafLoadBalancer" : {
+        "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
+        "Properties" : {
+          "AvailabilityZones" : { "Fn::FindInMap": [ "RegionZoneListMap", { "Ref": "AWS::Region" }, "list" ] },
+          "Listeners" : [ {
+            "LoadBalancerPort" : "80",
+            "InstancePort" : "8080",
+            "Protocol" : "HTTP"
+          } ],
+          "HealthCheck" : {
+            "Target" : "TCP:2222",
+            "HealthyThreshold" : "3",
+            "UnhealthyThreshold" : "3",
+            "Interval" : "10",
+            "Timeout" : "5"
+          }
+        }
+    },
+	  
+    "KarafLaunchConfig" : {
+        "Type" : "AWS::AutoScaling::LaunchConfiguration",
+        "Properties" : {
+          "KeyName" : { "Ref" : "ParamKeyName" },
+          "ImageId": { "Fn::FindInMap": [ "RegionImageMap", { "Ref": "AWS::Region" }, "AMI" ] },
+          "InstanceType" : { "Ref" : "ParamInstanceType" },
+          "SecurityGroups" : [ { "Ref" : "ParamSecurityGroup" }, { "Ref" : "KarafSecurityGroup" } ],
+          "UserData" : { "Fn::Base64" : 
+          	{ "Fn::Join" : [ "", [
+          	    "{ barchart.config.identity = ", { "Ref" : "ParamIdentity" }, " }" 
+          	] ] } 
+          }
+        }
+      },
+
+    "KarafScalingGroup" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "AvailabilityZones" : { "Fn::FindInMap": [ "RegionZoneListMap", { "Ref": "AWS::Region" }, "list" ] },
+        "LaunchConfigurationName" : { "Ref" : "KarafLaunchConfig" },
+        "MinSize" : { "Ref" : "ParamMinSize" },
+        "MaxSize" : { "Ref" : "ParamMaxSize" },
+        "NotificationConfiguration" : {
+            "TopicARN" : { "Ref" : "ParamTopicARN" },
+            "NotificationTypes" : [ 
+               "autoscaling:EC2_INSTANCE_LAUNCH", "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
+               "autoscaling:EC2_INSTANCE_TERMINATE", "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
+            ]
+         },
+         "LoadBalancerNames" : [ { "Ref" : "KarafLoadBalancer" } ],
+         "HealthCheckType" : "ELB",
+         "HealthCheckGracePeriod" : "60",
+         "Tags": [
+             { "Key": "Name", "Value": { "Ref": "ParamIdentity" }, "PropagateAtLaunch" : "true" }
+          ]
+         
+      }
+    },
+
+    "KarafPolicyIncrease" : {
+      "Type" : "AWS::AutoScaling::ScalingPolicy",
+      "Properties" : {
+        "AdjustmentType" : "ChangeInCapacity",
+        "AutoScalingGroupName" : { "Ref" : "KarafScalingGroup" },
+        "Cooldown" : "60",
+        "ScalingAdjustment" : "1"
+      }
+    },
+    "KarafPolicyDecrease" : {
+      "Type" : "AWS::AutoScaling::ScalingPolicy",
+      "Properties" : {
+        "AdjustmentType" : "ChangeInCapacity",
+        "AutoScalingGroupName" : { "Ref" : "KarafScalingGroup" },
+        "Cooldown" : "60",
+        "ScalingAdjustment" : "-1"
+      }
+    },
+
+    "KarafAlarmHighCPU": {
+     "Type": "AWS::CloudWatch::Alarm",
+     "Properties": {
+        "AlarmDescription": "Scale-up if CPU > 70% for 1 minutes",
+        "MetricName": "CPUUtilization",
+        "Namespace": "AWS/EC2",
+        "Statistic": "Average",
+        "Period": "60",
+        "EvaluationPeriods": "1",
+        "Threshold": "70",
+        "AlarmActions": [ { "Ref": "KarafPolicyIncrease" } ],
+        "Dimensions": [
+          {
+            "Name": "AutoScalingGroupName",
+            "Value": { "Ref": "KarafScalingGroup" }
+          }
+        ],
+        "ComparisonOperator": "GreaterThanThreshold"
+      }
+    },
+    
+    "KarafAlarmLowCPU": {
+     "Type": "AWS::CloudWatch::Alarm",
+     "Properties": {
+        "AlarmDescription": "Scale-down if CPU < 40% for 1 minutes",
+        "MetricName": "CPUUtilization",
+        "Namespace": "AWS/EC2",
+        "Statistic": "Average",
+        "Period": "60",
+        "EvaluationPeriods": "1",
+        "Threshold": "40",
+        "AlarmActions": [ { "Ref": "KarafPolicyDecrease" } ],
+        "Dimensions": [
+          {
+            "Name": "AutoScalingGroupName",
+            "Value": { "Ref": "KarafScalingGroup" }
+          }
+        ],
+        "ComparisonOperator": "LessThanThreshold"
+      }
+    },
+
+    "KarafSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "TODO",
+        "SecurityGroupIngress" : [ 
+	        {
+	          "IpProtocol" : "tcp",
+	          "FromPort" : "22",
+	          "ToPort" : "22",
+	          "CidrIp" : "0.0.0.0/0"
+	        }
+        ]
+      }
+    }
+  },
+
+  "Outputs" : {
+  }
+  
+}
