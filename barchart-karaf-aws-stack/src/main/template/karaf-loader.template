@@ -39,6 +39,21 @@
     "ParamSecurityGroup" : {
         "Type" : "String",
         "Default" : "default"
+    },
+    
+    "ParamHttpPort" : {
+        "Type" : "String",
+        "Default" : "8080"
+    },
+    
+    "ParamHttpTest" : {
+        "Type" : "String",
+        "Default" : "/health-check/"
+    },
+      
+    "ParamHttpCert" : {
+        "Type" : "String",
+        "Default" : "arn:aws:iam::081121675754:server-certificate/star.aws.barchart.com"
     }
       
   },
@@ -75,17 +90,27 @@
         "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
         "Properties" : {
           "AvailabilityZones" : { "Fn::FindInMap": [ "RegionZoneListMap", { "Ref": "AWS::Region" }, "list" ] },
-          "Listeners" : [ {
-            "LoadBalancerPort" : "80",
-            "InstancePort" : "8080",
-            "Protocol" : "HTTP"
-          } ],
+          "Listeners" : [ 
+             {
+ 	            "LoadBalancerPort" : "80",
+ 	            "InstancePort" : { "Ref" : "ParamHttpPort" },
+ 	            "Protocol" : "HTTP"
+             }, 
+             {
+ 	            "LoadBalancerPort" : "443",
+ 	            "InstancePort" : { "Ref" : "ParamHttpPort" },
+ 	            "SSLCertificateId" : { "Ref" : "ParamHttpCert" },
+ 	            "Protocol" : "HTTPS"
+             } 
+          ],
           "HealthCheck" : {
-            "Target" : "TCP:2222",
+            "Target" : { "Fn::Join" : [ "", [ 
+                "HTTP:", { "Ref" : "ParamHttpPort" }, { "Ref" : "ParamHttpTest" }
+            ] ] },
             "HealthyThreshold" : "3",
             "UnhealthyThreshold" : "3",
-            "Interval" : "10",
-            "Timeout" : "5"
+            "Interval" : "9",
+            "Timeout" : "3"
           }
         }
     },
@@ -96,7 +121,10 @@
           "KeyName" : { "Ref" : "ParamKeyName" },
           "ImageId": { "Fn::FindInMap": [ "RegionImageMap", { "Ref": "AWS::Region" }, "AMI" ] },
           "InstanceType" : { "Ref" : "ParamInstanceType" },
-          "SecurityGroups" : [ { "Ref" : "ParamSecurityGroup" }, { "Ref" : "KarafSecurityGroup" } ],
+          "SecurityGroups" : [ 
+               { "Ref" : "ParamSecurityGroup" }, 
+               { "Ref" : "KarafSecurityGroup" } 
+          ],
           "UserData" : { "Fn::Base64" : 
           	{ "Fn::Join" : [ "", [
           	    "{ barchart.config.identity = ", { "Ref" : "ParamIdentity" }, " }" 
@@ -198,8 +226,15 @@
 	        {
 	          "IpProtocol" : "tcp",
 	          "FromPort" : "22",
-	          "ToPort" : "22",
+	          "ToPort" :   "22",
 	          "CidrIp" : "0.0.0.0/0"
+	        },
+	        {
+	          "IpProtocol" : "tcp",
+	          "FromPort" : { "Ref" : "ParamHttpPort" },
+	          "ToPort" :   { "Ref" : "ParamHttpPort" },
+	          "SourceSecurityGroupName" :    { "Fn::GetAtt" : [ "KarafLoadBalancer", "SourceSecurityGroup.GroupName" ] },
+	          "SourceSecurityGroupOwnerId" : { "Fn::GetAtt" : [ "KarafLoadBalancer", "SourceSecurityGroup.OwnerAlias" ] }
 	        }
         ]
       }
