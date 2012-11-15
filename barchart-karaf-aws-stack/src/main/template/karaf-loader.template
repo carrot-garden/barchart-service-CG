@@ -48,7 +48,7 @@
     
     "ParamHttpTest" : {
         "Type" : "String",
-        "Default" : "/health-check/"
+        "Default" : "/health-report/"
     },
       
     "ParamHttpCert" : {
