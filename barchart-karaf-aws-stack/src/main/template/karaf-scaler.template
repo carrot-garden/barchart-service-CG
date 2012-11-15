@@ -16,7 +16,7 @@
         "Default" : "barchart-karaf"
     },
       
-    "ParamInstanceIdentity" : {
+    "ParamIdentity" : {
         "Type" : "String",
         "Default" : "default.aws.barchart.com"
     },
@@ -80,7 +80,7 @@
           "SecurityGroups" : [ { "Ref" : "ParamSecurityGroup" }, { "Ref" : "KarafSecurityGroup" } ],
           "UserData" : { "Fn::Base64" : 
           	{ "Fn::Join" : [ "", [
-          	    "{ barchart.config.identity = ", { "Ref" : "ParamInstanceIdentity" }, " }" 
+          	    "{ barchart.config.identity = ", { "Ref" : "ParamIdentity" }, " }" 
           	] ] } 
           }
         }
@@ -103,7 +103,7 @@
          "HealthCheckType" : "EC2",
          "HealthCheckGracePeriod" : "60",
          "Tags": [
-             { "Key": "Name", "Value": { "Ref": "ParamInstanceIdentity" } }
+             { "Key": "Name", "Value": { "Ref": "ParamIdentity" } }
           ]
          
       }

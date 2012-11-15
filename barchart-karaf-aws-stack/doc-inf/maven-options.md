@@ -4,7 +4,7 @@ clean package
 --define stackName=${stackName}
 --define ParamInstanceType=${ParamInstanceType}
 --define ParamKeyName=${ParamKeyName}
---define ParamInstanceIdentity=${ParamInstanceIdentity}
+--define ParamIdentity=${ParamIdentity}
 --define ParamTopicARN=${ParamTopicARN}
 --define ParamMinSize=${ParamMinSize}
 --define ParamMaxSize=${ParamMaxSize}
