@@ -25,7 +25,7 @@ public class HealthReportComponent extends HttpServlet implements HealthReport {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	static String entry(final String key, final String value) {
-		return "\"" + key + "\"" + "=" + "\"" + value + "\"";
+		return " \"" + key + "\"" + " : " + "\"" + value + "\" ";
 	}
 
 	@Override
