@@ -45,7 +45,7 @@ public class HealthReportComponent extends HttpServlet implements HealthReport {
 	@Activate
 	protected void activate() throws Exception {
 
-		log.info("### activate : {}" + PATH);
+		log.info("### activate : {}", PATH);
 
 		httpService.registerServlet(PATH, this, null, null);
 
@@ -56,7 +56,7 @@ public class HealthReportComponent extends HttpServlet implements HealthReport {
 
 		httpService.unregister(PATH);
 
-		log.info("### deactivate : {}" + PATH);
+		log.info("### deactivate : {}", PATH);
 
 	}
 
