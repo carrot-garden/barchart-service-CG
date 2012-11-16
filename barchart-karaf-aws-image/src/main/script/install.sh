@@ -10,9 +10,6 @@ KARAF_USER="karaf"
 KARAF_ARCHIVE="${karafFinalName}"
 KARAF_APP_DIR="app"
 
-# identity during setup
-export BARCHART_CONFIG_IDENTITY="default.aws.barchart.com"
-
 # script location
 WORK=$(dirname $0 )
 
@@ -95,10 +92,6 @@ echo "###"
 chown --changes --recursive $KARAF_USER:$KARAF_GROUP $KARAF_HOME
 chmod --changes --recursive o-rwx,g+rw,ugo-s $KARAF_HOME
 find $KARAF_HOME -type d -exec chmod --changes g+s {} \;
-
-echo "##################################################"
-echo "### identity during setup : $BARCHART_CONFIG_IDENTITY"
-echo "###"
 
 echo "##################################################"
 echo "### install tanuki service"

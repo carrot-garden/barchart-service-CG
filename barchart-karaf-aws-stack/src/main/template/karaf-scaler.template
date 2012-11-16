@@ -2,43 +2,50 @@
 	
   "AWSTemplateFormatVersion" : "2010-09-09",
 
-  "Description" : "karaf auto scale group",
+  "Description" : "karaf auto scale group / ${project.artifactId}",
 
   "Parameters" : {
 	  
-    "ParamInstanceType" : { 
-      "Type" : "String", 
-      "Default" : "m1.small"
-    },
-    
-    "ParamKeyName" : {
-        "Type" : "String",
-        "Default" : "barchart-karaf"
-    },
-      
     "ParamIdentity" : {
         "Type" : "String",
-        "Default" : "default.aws.barchart.com"
+        "Default" : "default.aws.barchart.com",
+        "Description" : "see https://github.com/barchart/barchart-configuration"
+    },
+	      
+    "ParamInstanceType" : { 
+        "Type" : "String", 
+        "Default" : "m1.small",
+        "Description" : "EC2 cpu/memory instance size selector"
+    },
+      
+    "ParamKeyName" : {
+        "Type" : "String",
+        "Default" : "barchart-karaf",
+        "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the instances"
     },
       
     "ParamTopicARN" : {
         "Type" : "String",
-        "Default" : "arn:aws:sns:us-east-1:081121675754:barchart-application"
+        "Default" : "arn:aws:sns:us-east-1:081121675754:barchart-application",
+        "Description" : "see https://console.aws.amazon.com/sns/home?region=us-east-1"
     },
       
     "ParamMinSize" : {
         "Type" : "String",
-        "Default" : "2"
+        "Default" : "2",
+        "Description" : "minimum clususter size"
     },
       
     "ParamMaxSize" : {
         "Type" : "String",
-        "Default" : "4"
+        "Default" : "4",
+        "Description" : "maximum clususter size"
     },
       
     "ParamSecurityGroup" : {
         "Type" : "String",
-        "Default" : "default"
+        "Default" : "default",
+        "Description" : "additional security group for cluster access"
     }
       
   },
@@ -51,7 +58,7 @@
           "ap-southeast-2": { "AMI": "TODO" },
           "eu-west-1":      { "AMI": "TODO" },
           "sa-east-1":      { "AMI": "TODO" },
-          "us-east-1":      { "AMI": "ami-08cf4861" },
+          "us-east-1":      { "AMI": "ami-08fe7961" },
           "us-west-1":      { "AMI": "TODO" },
           "us-west-2":      { "AMI": "TODO" }
       },
@@ -178,8 +185,8 @@
 	        {
 	          "IpProtocol" : "tcp",
 	          "FromPort" : "22",
-	          "ToPort" : "22",
-	          "CidrIp" : "0.0.0.0/0"
+	          "ToPort" :   "22",
+	          "CidrIp" :   "0.0.0.0/0"
 	        }
         ]
       }

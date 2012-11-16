@@ -1,0 +1,124 @@
+{
+	
+    "AWSTemplateFormatVersion": "2010-09-09",
+    
+    "Description": "karaf image builder / ${project.artifactId}",
+    
+    "Parameters": {
+
+        "ParamIdentity" : {
+            "Type" : "String",
+            "Default" : "default.aws.barchart.com",
+            "Description" : "see https://github.com/barchart/barchart-configuration"
+        },
+    	
+        "ParamKeyName" : {
+            "Type" : "String",
+            "Default" : "barchart-karaf",
+            "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the instances"
+        },
+        
+        "ParamInstanceType" : { 
+            "Type" : "String", 
+            "Default" : "m1.small",
+            "Description" : "EC2 cpu/memory instance size selector"
+        },
+        
+        "ParamZoneName": {
+            "Type": "String",
+            "Default" : "aws.barchart.com.",
+            "Description": "Route 53 zone name which will contain the instance"
+        },
+        
+        "ParamHostName": {
+            "Type": "String",
+            "Default" : "karaf-image.aws.barchart.com.",
+            "Description": "Route 53 host name which will be assigned to the instance"
+        }
+        
+    },
+    
+    "Mappings": {
+    	
+        "RegionImageMap": {
+            "ap-northeast-1": { "AMI": "ami-4cc57c4d" },
+            "ap-southeast-1": { "AMI": "ami-a45211f6" },
+            "eu-west-1":      { "AMI": "ami-05585a71" },
+            "sa-east-1":      { "AMI": "ami-a66eb7bb" },
+            "us-east-1":      { "AMI": "ami-d6e367bf" },
+            "us-west-1":      { "AMI": "ami-2ead8b6b" },
+            "us-west-2":      { "AMI": "ami-e01f96d0" }
+        }
+    
+    },
+    
+    "Resources": {
+    	
+        "KarafInstance": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "KeyName": { "Ref": "ParamKeyName" },
+                "InstanceType": { "Ref": "ParamInstanceType" },
+                "ImageId": { "Fn::FindInMap": [ "RegionImageMap", { "Ref": "AWS::Region" }, "AMI" ] },
+                "UserData" : { "Fn::Base64" : 
+	              	{ "Fn::Join" : [ "", [
+	              	    "{ barchart.config.identity = ", { "Ref" : "ParamIdentity" }, " }" 
+	               	] ] } 
+	            },
+                "Tags": [
+                    { "Key": "Name", "Value": { "Ref": "ParamIdentity" } }
+                ]
+            }
+        },
+        
+        "KarafDNS": {
+            "Type": "AWS::Route53::RecordSet",
+            "Properties": {
+                "Name": { "Ref": "ParamHostName" },
+                "HostedZoneName": { "Ref": "ParamZoneName" },
+                "Comment": "CNAME for karaf-image",
+                "Type": "CNAME",
+                "TTL": "60",
+                "ResourceRecords": [
+                    { "Fn::GetAtt": [ "KarafInstance", "PublicDnsName" ] }
+                ]
+            }
+        }
+        
+    },
+    
+    "Outputs": {
+    	
+        "InstanceId": {
+            "Description": "EC2 InstanceId",
+            "Value": { "Ref": "KarafInstance" }
+        },
+        
+        "AvailabilityZone": {
+            "Description": "Availability Zone",
+            "Value": { "Fn::GetAtt": [ "KarafInstance", "AvailabilityZone" ] } 
+        },
+        
+        "PublicIp": {
+            "Description": "Public IP address",
+            "Value": { "Fn::GetAtt": [ "KarafInstance", "PublicIp" ] }
+        },
+        
+        "PrivateIp": {
+            "Description": "Private IP address",
+            "Value": { "Fn::GetAtt": [ "KarafInstance", "PrivateIp" ] } 
+        },
+        
+        "PublicDnsName": {
+            "Description": "Public Dns Name",
+            "Value": { "Fn::GetAtt": [ "KarafInstance", "PublicDnsName" ] }
+        },
+        
+        "PrivateDnsName": {
+            "Description": "Private Dns Name",
+            "Value": { "Fn::GetAtt": [ "KarafInstance", "PrivateDnsName" ] }
+        }
+        
+    }
+    
+}

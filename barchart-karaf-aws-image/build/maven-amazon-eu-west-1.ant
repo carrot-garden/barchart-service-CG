@@ -17,7 +17,10 @@
 			<arg value="package" />
 
 			<arg value="--activate-profiles" />
-			<arg value="image-build,eu-west-1" />
+			<arg value="image-build" />
+
+			<arg value="--define" />
+			<arg value="amazonRegion=eu-west-1" />
 
 		</exec>
 

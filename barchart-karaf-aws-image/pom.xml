@@ -19,6 +19,10 @@
 
 	<properties>
 
+		<!-- region-dependent parameters -->
+		<stackName>karaf-image-${amazonRegion}-barchart-com</stackName>
+		<ParamHostName>karaf-image.${amazonRegion}.aws.barchart.com.</ParamHostName>
+
 		<!-- karaf application to deploy -->
 		<karafGroup>com.barchart.karaf</karafGroup>
 		<karafArtifact>barchart-karaf-base-app</karafArtifact>
@@ -130,17 +134,15 @@
 							<!-- used by cloud formation goals -->
 							<stackName>${stackName}</stackName>
 							<stackServerId>barchart-karaf-stack</stackServerId>
-							<stackTemplateFile>${publishSource}/formation.template</stackTemplateFile>
-							<stackPropertiesInputFile>${publishSource}/formation.properties</stackPropertiesInputFile>
+							<stackTemplateFile>${publishSource}/karaf-image.template</stackTemplateFile>
+							<stackPropertiesInputFile>${publishSource}/karaf-image.properties</stackPropertiesInputFile>
 							<stackInputParams>
-								<KeyName>barchart-karaf</KeyName>
-								<InstanceType>m1.small</InstanceType>
-								<DNSZoneName>aws.barchart.com.</DNSZoneName>
-								<DNSHostName>${DNSHostName}</DNSHostName>
+								<!-- override karaf-image.properties -->
+								<ParamHostName>${ParamHostName}</ParamHostName>
 							</stackInputParams>
 
 							<!-- used by ssh goals -->
-							<sshHost>${DNSHostName}</sshHost>
+							<sshHost>${ParamHostName}</sshHost>
 							<sshKeyFile>${user.home}/.ssh/barchart-karaf/barchart-karaf.pem</sshKeyFile>
 
 							<!-- used by elastic compute goals -->
@@ -213,24 +215,6 @@
 
 			</build>
 
-		</profile>
-
-		<profile>
-			<id>us-east-1</id>
-			<properties>
-				<amazonRegion>us-east-1</amazonRegion>
-				<stackName>karaf-us-barchart-com</stackName>
-				<DNSHostName>karaf-image.us.aws.barchart.com.</DNSHostName>
-			</properties>
-		</profile>
-
-		<profile>
-			<id>eu-west-1</id>
-			<properties>
-				<amazonRegion>eu-west-1</amazonRegion>
-				<stackName>karaf-eu-barchart-com</stackName>
-				<DNSHostName>karaf-image.eu.aws.barchart.com.</DNSHostName>
-			</properties>
 		</profile>
 
 	</profiles>

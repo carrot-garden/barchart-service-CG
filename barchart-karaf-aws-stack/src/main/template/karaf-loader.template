@@ -2,10 +2,16 @@
 	
   "AWSTemplateFormatVersion" : "2010-09-09",
 
-  "Description" : "karaf auto scale group with load balancer and dns",
+  "Description" : "karaf auto scale group with load balancer and dns / ${project.artifactId}",
 
   "Parameters" : {
 	  
+    "ParamIdentity" : {
+        "Type" : "String",
+        "Default" : "default.aws.barchart.com",
+        "Description" : "see https://github.com/barchart/barchart-configuration"
+    },
+	    
     "ParamInstanceType" : { 
       "Type" : "String", 
       "Default" : "m1.small",
@@ -16,12 +22,6 @@
         "Type" : "String",
         "Default" : "barchart-karaf",
         "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the instances"
-    },
-      
-    "ParamIdentity" : {
-        "Type" : "String",
-        "Default" : "default.aws.barchart.com",
-        "Description" : "see https://github.com/barchart/barchart-configuration"
     },
       
     "ParamTopicARN" : {
@@ -66,7 +66,7 @@
         "Description" : "balancer ssl certificate for https access"
     },
 
-    "ParamHostedZone" : {
+    "ParamZoneName" : {
         "Type" : "String",
         "Default" : "aws.barchart.com.",
         "Description" : "dns zone for balancer address"
@@ -82,7 +82,7 @@
           "ap-southeast-2": { "AMI": "TODO" },
           "eu-west-1":      { "AMI": "TODO" },
           "sa-east-1":      { "AMI": "TODO" },
-          "us-east-1":      { "AMI": "ami-08cf4861" },
+          "us-east-1":      { "AMI": "ami-08fe7961" },
           "us-west-1":      { "AMI": "TODO" },
           "us-west-2":      { "AMI": "TODO" }
       },
@@ -135,10 +135,10 @@
 		  "Type": "AWS::Route53::RecordSet",
 		  "Properties": {
 		      "Name": { "Ref": "ParamIdentity" },
-		      "HostedZoneName": { "Ref": "ParamHostedZone" },
+		      "HostedZoneName": { "Ref": "ParamZoneName" },
 		      "Comment": "CNAME for karaf load balancer",
 		      "Type": "CNAME",
-		      "TTL": "600",
+		      "TTL": "60",
 		      "ResourceRecords": [
 		          { "Fn::GetAtt" : [ "KarafLoadBalancer", "DNSName" ] }
 		      ]
@@ -258,7 +258,7 @@
 	          "IpProtocol" : "tcp",
 	          "FromPort" : "22",
 	          "ToPort" :   "22",
-	          "CidrIp" : "0.0.0.0/0"
+	          "CidrIp" :   "0.0.0.0/0"
 	        },
 	        {
 	          "IpProtocol" : "tcp",
