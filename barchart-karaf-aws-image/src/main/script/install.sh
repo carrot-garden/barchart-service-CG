@@ -109,8 +109,10 @@ echo "##################################################"
 echo "### await fetch config repo and maven artifacts"
 echo "###"
 
-for step in {1..90} ; do
-	echo "step : $step"
+WAIT_SIZE="90"
+
+for step in { 1 .. $WAIT_SIZE } ; do
+	echo "step : $step/$WAIT_SIZE"
 	sleep 1s
 done
 
