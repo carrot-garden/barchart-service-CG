@@ -24,9 +24,9 @@
         "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the instances"
     },
       
-    "ParamTopicARN" : {
+    "ParamTopicName" : {
         "Type" : "String",
-        "Default" : "arn:aws:sns:us-east-1:081121675754:barchart-application",
+        "Default" : "barchart-application",
         "Description" : "see https://console.aws.amazon.com/sns/home?region=us-east-1"
     },
       
@@ -113,7 +113,9 @@
         "MinSize" : { "Ref" : "ParamMinSize" },
         "MaxSize" : { "Ref" : "ParamMaxSize" },
         "NotificationConfiguration" : {
-            "TopicARN" : { "Ref" : "ParamTopicARN" },
+            "TopicARN" : { "Fn::Join" : [ "", [ 
+	           "arn:aws:sns:", { "Ref" : "AWS::Region" }, ":081121675754:",  { "Ref" : "ParamTopicName" }
+	        ] ] },
             "NotificationTypes" : [ 
                "autoscaling:EC2_INSTANCE_LAUNCH", "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
                "autoscaling:EC2_INSTANCE_TERMINATE", "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
