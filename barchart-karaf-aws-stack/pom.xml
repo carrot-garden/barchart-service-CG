@@ -132,7 +132,7 @@
 								<ParamIdentity>${ParamIdentity}</ParamIdentity>
 								<ParamInstanceType>${ParamInstanceType}</ParamInstanceType>
 								<ParamKeyName>${ParamKeyName}</ParamKeyName>
-								<ParamTopicARN>${ParamTopicARN}</ParamTopicARN>
+								<ParamTopicName>${ParamTopicName}</ParamTopicName>
 								<ParamMinSize>${ParamMinSize}</ParamMinSize>
 								<ParamMaxSize>${ParamMaxSize}</ParamMaxSize>
 								<ParamSecurityGroup>${ParamSecurityGroup}</ParamSecurityGroup>

@@ -35,7 +35,7 @@
 			<arg value="--define" />
 			<arg value="ParamKeyName=barchart-karaf" />
 			<arg value="--define" />
-			<arg value="ParamTopicARN=arn:aws:sns:us-east-1:081121675754:barchart-application" />
+			<arg value="ParamTopicName=barchart-application" />
 			<arg value="--define" />
 			<arg value="ParamMinSize=2" />
 			<arg value="--define" />
