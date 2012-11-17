@@ -111,8 +111,8 @@ echo "###"
 
 WAIT_SIZE=90
 
-for step in { 1 .. $WAIT_SIZE } ; do
-	echo "step : $step/$WAIT_SIZE"
+for step in {1..$WAIT_SIZE} ; do
+	echo "step : $step of $WAIT_SIZE"
 	sleep 1s
 done
 
