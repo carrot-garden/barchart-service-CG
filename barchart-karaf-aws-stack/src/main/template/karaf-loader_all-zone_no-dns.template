@@ -1,0 +1,272 @@
+{
+	
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "karaf auto scale group with load balancer and dns / ${project.artifactId}",
+
+  "Parameters" : {
+	  
+    "ParamIdentity" : {
+        "Type" : "String",
+        "Default" : "default.aws.barchart.com",
+        "Description" : "see https://github.com/barchart/barchart-configuration"
+    },
+	    
+    "ParamInstanceType" : { 
+      "Type" : "String", 
+      "Default" : "m1.small",
+      "Description" : "EC2 cpu/memory instance size selector"
+    },
+    
+    "ParamKeyName" : {
+        "Type" : "String",
+        "Default" : "barchart-karaf",
+        "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the instances"
+    },
+      
+    "ParamTopicName" : {
+        "Type" : "String",
+        "Default" : "barchart-application",
+        "Description" : "see https://console.aws.amazon.com/sns/home?region=us-east-1"
+    },
+      
+    "ParamMinSize" : {
+        "Type" : "String",
+        "Default" : "2",
+        "Description" : "minimum clususter size"
+    },
+      
+    "ParamMaxSize" : {
+        "Type" : "String",
+        "Default" : "4",
+        "Description" : "maximum clususter size"
+    },
+      
+    "ParamSecurityGroup" : {
+        "Type" : "String",
+        "Default" : "default",
+        "Description" : "additional security group for cluster access"
+    },
+    
+    "ParamHttpPort" : {
+        "Type" : "String",
+        "Default" : "8080",
+        "Description" : "karaf web service port"
+    },
+    
+    "ParamHttpTest" : {
+        "Type" : "String",
+        "Default" : "/health-report/",
+        "Description" : "karaf web service health check url"
+    },
+      
+    "ParamHttpCert" : {
+        "Type" : "String",
+        "Default" : "arn:aws:iam::081121675754:server-certificate/star.aws.barchart.com",
+        "Description" : "balancer ssl certificate for https access"
+    },
+
+    "ParamHostName" : {
+        "Type" : "String",
+        "Default" : "default.aws.barchart.com.",
+        "Description" : "dns host for balancer address"
+    },
+    
+    "ParamZoneName" : {
+        "Type" : "String",
+        "Default" : "aws.barchart.com.",
+        "Description" : "dns zone for balancer address"
+    }
+      
+  },
+
+  "Mappings" : {
+	  
+      "RegionImageMap": {
+          "ap-northeast-1": { "AMI": "TODO" },
+          "ap-southeast-1": { "AMI": "TODO" },
+          "ap-southeast-2": { "AMI": "TODO" },
+          "eu-west-1":      { "AMI": "TODO" },
+          "sa-east-1":      { "AMI": "TODO" },
+          "us-east-1":      { "AMI": "ami-08fe7961" },
+          "us-west-1":      { "AMI": "ami-16634253" },
+          "us-west-2":      { "AMI": "ami-1e36bf2e" }
+      },
+      
+	  "RegionZoneListMap": {
+	      "ap-northeast-1": { "list": [ "ap-northeast-1b" , "ap-northeast-1c" ] },
+	      "ap-southeast-1": { "list": [ "ap-southeast-1a" , "ap-southeast-1b" ] },
+	      "ap-southeast-2": { "list": [ "ap-southeast-2a" , "ap-southeast-2b" ] },
+	      "eu-west-1":      { "list": [ "eu-west-1b" , "eu-west-1c" ] },
+	      "sa-east-1":      { "list": [ "sa-east-1a" , "sa-east-1b" ] },
+	      "us-east-1":      { "list": [ "us-east-1d" , "us-east-1e" ] },
+	      "us-west-1":      { "list": [ "us-west-1b" , "us-west-1c" ] },
+	      "us-west-2":      { "list": [ "us-west-2b" , "us-west-2c" ] }
+	  }
+
+  },
+
+  "Resources" : {
+
+    "KarafLoadBalancer" : {
+        "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
+        "Properties" : {
+          "AvailabilityZones" : { "Fn::GetAZs" : ""},
+          "Listeners" : [ 
+             {
+ 	            "LoadBalancerPort" : "80",
+ 	            "InstancePort" : { "Ref" : "ParamHttpPort" },
+ 	            "Protocol" : "HTTP"
+             }, 
+             {
+ 	            "LoadBalancerPort" : "443",
+ 	            "InstancePort" : { "Ref" : "ParamHttpPort" },
+ 	            "SSLCertificateId" : { "Ref" : "ParamHttpCert" },
+ 	            "Protocol" : "HTTPS"
+             } 
+          ],
+          "HealthCheck" : {
+            "Target" : { "Fn::Join" : [ "", [ 
+                "HTTP:", { "Ref" : "ParamHttpPort" }, { "Ref" : "ParamHttpTest" }
+            ] ] },
+            "HealthyThreshold" : "3",
+            "UnhealthyThreshold" : "3",
+            "Interval" : "9",
+            "Timeout" : "3"
+          }
+        }
+    },
+
+    "KarafLaunchConfig" : {
+        "Type" : "AWS::AutoScaling::LaunchConfiguration",
+        "Properties" : {
+          "KeyName" : { "Ref" : "ParamKeyName" },
+          "ImageId": { "Fn::FindInMap": [ "RegionImageMap", { "Ref": "AWS::Region" }, "AMI" ] },
+          "InstanceType" : { "Ref" : "ParamInstanceType" },
+          "SecurityGroups" : [ 
+               { "Ref" : "ParamSecurityGroup" }, 
+               { "Ref" : "KarafSecurityGroup" } 
+          ],
+          "UserData" : { "Fn::Base64" : 
+          	{ "Fn::Join" : [ "", [
+          	    "{ barchart.config.identity = ", { "Ref" : "ParamIdentity" }, " }" 
+          	] ] } 
+          }
+        }
+      },
+
+    "KarafScalingGroup" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "AvailabilityZones" : { "Fn::GetAZs" : ""},
+        "LaunchConfigurationName" : { "Ref" : "KarafLaunchConfig" },
+        "MinSize" : { "Ref" : "ParamMinSize" },
+        "MaxSize" : { "Ref" : "ParamMaxSize" },
+        "NotificationConfiguration" : {
+            "TopicARN" : { "Fn::Join" : [ "", [ 
+	           "arn:aws:sns:", { "Ref" : "AWS::Region" }, ":081121675754:",  { "Ref" : "ParamTopicName" }
+	        ] ] },
+            "NotificationTypes" : [ 
+               "autoscaling:EC2_INSTANCE_LAUNCH", "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
+               "autoscaling:EC2_INSTANCE_TERMINATE", "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
+            ]
+         },
+         "LoadBalancerNames" : [ { "Ref" : "KarafLoadBalancer" } ],
+         "HealthCheckType" : "ELB",
+         "HealthCheckGracePeriod" : "60",
+         "Tags": [
+             { "Key": "Name", "Value": { "Ref": "ParamIdentity" }, "PropagateAtLaunch" : "true" }
+          ]
+         
+      }
+    },
+
+    "KarafPolicyIncrease" : {
+      "Type" : "AWS::AutoScaling::ScalingPolicy",
+      "Properties" : {
+        "AdjustmentType" : "ChangeInCapacity",
+        "AutoScalingGroupName" : { "Ref" : "KarafScalingGroup" },
+        "Cooldown" : "60",
+        "ScalingAdjustment" : "1"
+      }
+    },
+    
+    "KarafPolicyDecrease" : {
+      "Type" : "AWS::AutoScaling::ScalingPolicy",
+      "Properties" : {
+        "AdjustmentType" : "ChangeInCapacity",
+        "AutoScalingGroupName" : { "Ref" : "KarafScalingGroup" },
+        "Cooldown" : "60",
+        "ScalingAdjustment" : "-1"
+      }
+    },
+
+    "KarafAlarmHighCPU": {
+     "Type": "AWS::CloudWatch::Alarm",
+     "Properties": {
+        "AlarmDescription": "Scale-up if CPU > 70% for 1 minutes",
+        "MetricName": "CPUUtilization",
+        "Namespace": "AWS/EC2",
+        "Statistic": "Average",
+        "Period": "60",
+        "EvaluationPeriods": "1",
+        "Threshold": "70",
+        "AlarmActions": [ { "Ref": "KarafPolicyIncrease" } ],
+        "Dimensions": [
+          {
+            "Name": "AutoScalingGroupName",
+            "Value": { "Ref": "KarafScalingGroup" }
+          }
+        ],
+        "ComparisonOperator": "GreaterThanThreshold"
+      }
+    },
+    
+    "KarafAlarmLowCPU": {
+     "Type": "AWS::CloudWatch::Alarm",
+     "Properties": {
+        "AlarmDescription": "Scale-down if CPU < 40% for 1 minutes",
+        "MetricName": "CPUUtilization",
+        "Namespace": "AWS/EC2",
+        "Statistic": "Average",
+        "Period": "60",
+        "EvaluationPeriods": "1",
+        "Threshold": "40",
+        "AlarmActions": [ { "Ref": "KarafPolicyDecrease" } ],
+        "Dimensions": [
+          {
+            "Name": "AutoScalingGroupName",
+            "Value": { "Ref": "KarafScalingGroup" }
+          }
+        ],
+        "ComparisonOperator": "LessThanThreshold"
+      }
+    },
+
+    "KarafSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "TODO",
+        "SecurityGroupIngress" : [ 
+	        {
+	          "IpProtocol" : "tcp",
+	          "FromPort" : "22",
+	          "ToPort" :   "22",
+	          "CidrIp" :   "0.0.0.0/0"
+	        },
+	        {
+	          "IpProtocol" : "tcp",
+	          "FromPort" : { "Ref" : "ParamHttpPort" },
+	          "ToPort" :   { "Ref" : "ParamHttpPort" },
+	          "SourceSecurityGroupName" :    { "Fn::GetAtt" : [ "KarafLoadBalancer", "SourceSecurityGroup.GroupName" ] },
+	          "SourceSecurityGroupOwnerId" : { "Fn::GetAtt" : [ "KarafLoadBalancer", "SourceSecurityGroup.OwnerAlias" ] }
+	        }
+        ]
+      }
+    }
+  },
+
+  "Outputs" : {
+  }
+  
+}
