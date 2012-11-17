@@ -71,7 +71,7 @@
           "eu-west-1":      { "AMI": "TODO" },
           "sa-east-1":      { "AMI": "TODO" },
           "us-east-1":      { "AMI": "ami-08fe7961" },
-          "us-west-1":      { "AMI": "TODO" },
+          "us-west-1":      { "AMI": "ami-16634253" },
           "us-west-2":      { "AMI": "ami-1e36bf2e" }
       },
       
