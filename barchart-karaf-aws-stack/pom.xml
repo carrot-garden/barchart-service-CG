@@ -85,7 +85,7 @@
 						<artifactId>groovy-maven-plugin</artifactId>
 						<executions>
 							<execution>
-								<id>provide-custom-properties</id>
+								<id>parse-template-parameters</id>
 								<phase>validate</phase>
 								<goals>
 									<goal>execute</goal>
