@@ -95,7 +95,13 @@
 					<![CDATA[
 					//
 					def ParamIdentity = project.properties["ParamIdentity"]
-					def KnownZoneList = [ "aws.barchart.com", "aws-dev.barchart.com" ]
+					def KnownZoneList = [ 
+						"aws.barchart.com", 
+						"aws-dev.barchart.com", 
+						"eqx.barchart.com", 
+						"eqx-dev.barchart.com", 
+						"websol.barchart.com" 
+					]
 					for ( zone in KnownZoneList ) {
 						if( ParamIdentity.endsWith(zone) ) {
 							project.properties["ParamHostName"] = ParamIdentity + "."
