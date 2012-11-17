@@ -67,6 +67,39 @@
 						</executions>
 					</plugin>
 
+					<!-- parse template parameters -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>groovy-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>provide-custom-properties</id>
+								<phase>validate</phase>
+								<goals>
+									<goal>execute</goal>
+								</goals>
+								<configuration>
+									<source>
+					<![CDATA[
+					//
+					def ParamIdentity = project.properties["ParamIdentity"]
+					def KnownZoneList = [ "aws.barchart.com", "aws-dev.barchart.com" ]
+					for ( zone in KnownZoneList ) {
+						if( ParamIdentity.endsWith(zone) ) {
+							project.properties["ParamHostName"] = ParamIdentity + "."
+							project.properties["ParamZoneName"] = zone + "."
+							return
+						}
+					}
+					throw new Exception("unknown identity dns zone")			
+					//
+					]]>
+									</source>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
 					<!-- image launch -->
 					<plugin>
 
@@ -85,8 +118,15 @@
 							<stackTemplateFile>${publishSource}/${stackTemplateFile}</stackTemplateFile>
 
 							<stackInputParams>
-								<ParamKeyName>${ParamKeyName}</ParamKeyName>
+								<ParamIdentity>${ParamIdentity}</ParamIdentity>
 								<ParamInstanceType>${ParamInstanceType}</ParamInstanceType>
+								<ParamKeyName>${ParamKeyName}</ParamKeyName>
+								<ParamTopicARN>${ParamTopicARN}</ParamTopicARN>
+								<ParamMinSize>${ParamMinSize}</ParamMinSize>
+								<ParamMaxSize>${ParamMaxSize}</ParamMaxSize>
+								<ParamSecurityGroup>${ParamSecurityGroup}</ParamSecurityGroup>
+								<ParamHostName>${ParamHostName}</ParamHostName>
+								<ParamZoneName>${ParamZoneName}</ParamZoneName>
 							</stackInputParams>
 
 						</configuration>

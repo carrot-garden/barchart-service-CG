@@ -46,8 +46,20 @@
         "Type" : "String",
         "Default" : "default",
         "Description" : "additional security group for cluster access"
+    },
+
+    "ParamHostName" : {
+        "Type" : "String",
+        "Default" : "default.aws.barchart.com.",
+        "Description" : "dns host for balancer address"
+    },
+    
+    "ParamZoneName" : {
+        "Type" : "String",
+        "Default" : "aws.barchart.com.",
+        "Description" : "dns zone for balancer address"
     }
-      
+    
   },
 
   "Mappings" : {

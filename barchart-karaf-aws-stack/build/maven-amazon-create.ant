@@ -22,14 +22,26 @@
 			<arg value="--define" />
 			<arg value="amazonRegion=us-east-1" />
 			<arg value="--define" />
-			<arg value="stackName=karaf-stack" />
+			<arg value="stackName=karaf-stack-test" />
 			<arg value="--define" />
 			<arg value="stackTemplateFile=karaf-scaler.template" />
 
 			<arg value="--define" />
+			<arg value="ParamIdentity=default.aws.barchart.com" />
+			<arg value="--define" />
 			<arg value="ParamKeyName=barchart-karaf" />
 			<arg value="--define" />
 			<arg value="ParamInstanceType=m1.medium" />
+			<arg value="--define" />
+			<arg value="ParamKeyName=barchart-karaf" />
+			<arg value="--define" />
+			<arg value="ParamTopicARN=arn:aws:sns:us-east-1:081121675754:barchart-application" />
+			<arg value="--define" />
+			<arg value="ParamMinSize=2" />
+			<arg value="--define" />
+			<arg value="ParamManSize=4" />
+			<arg value="--define" />
+			<arg value="ParamSecurityGroup=default" />
 
 		</exec>
 

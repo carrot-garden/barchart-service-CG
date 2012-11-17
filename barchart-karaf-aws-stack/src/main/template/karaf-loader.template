@@ -66,6 +66,12 @@
         "Description" : "balancer ssl certificate for https access"
     },
 
+    "ParamHostName" : {
+        "Type" : "String",
+        "Default" : "default.aws.barchart.com.",
+        "Description" : "dns host for balancer address"
+    },
+    
     "ParamZoneName" : {
         "Type" : "String",
         "Default" : "aws.barchart.com.",
@@ -134,7 +140,7 @@
 	"KarafBalancerDNS": {
 		  "Type": "AWS::Route53::RecordSet",
 		  "Properties": {
-		      "Name": { "Ref": "ParamIdentity" },
+		      "Name": { "Ref": "ParamHostName" },
 		      "HostedZoneName": { "Ref": "ParamZoneName" },
 		      "Comment": "CNAME for karaf load balancer",
 		      "Type": "CNAME",
