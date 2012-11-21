@@ -14,7 +14,7 @@
 //////////////////
 
 /**
- * such as "stack" as in "news-1.stack.aws-dev.barchart.com"
+ * such as "stack" as in "news-1.stack.aws-dev.barchart.com."
  */ 
 def ParamInfix = project.properties["ParamInfix"]
 
@@ -33,37 +33,68 @@ def ParamZoneName = project.properties["ParamZoneName"]
  */ 
 def ParamNameList = project.properties["ParamNameList"]
 
+/**
+ * calculated parameters result destination file
+ */
+def templateParamFile = project.properties["templateParamFile"] 
+
 //////////////////
+
+/** stack name constraint */
+def amazonFilter( name ) {
+	name.replaceAll("[^A-Za-z0-9-]","-")
+}
+
+def hostPrefix = (ParamIdentity + ".").replaceAll("." + ParamZoneName, "")
+
+def stackPrefix = amazonFilter(hostPrefix) 
+def stackSuffix = ParamInfix + "." + ParamZoneName
 
 def nameList = ParamNameList.split(";")
 
-def stackPrefix = ParamIdentity.replaceAll("." + ParamZoneName, "")
-def stackSuffix = ParamInfix + "." + ParamZoneName
-
-def indexList = [];
+def indexList = [ 0 ];
 
 for ( name in nameList ) {
 	if( name.startsWith(stackPrefix) && name.endsWith(stackSuffix) ){
 
-		def index = name
+		def index = "0" + name
 				.replaceFirst(stackPrefix,"")
 				.replaceAll(stackSuffix,"")
 				.replaceAll("\\D","")
-				.toLong()
-
-		indexList.add( index )
+				
+		indexList.add( index.toLong() )
 
 	}
 }
 
-def stackNumber = indexList.max() + 1
+def stackIndex = indexList.max() + 1
 
-def ParamHostName = "$stackPrefix-$stackNumber.$stackSuffix"
+/** final result */
+def stackName = "$stackPrefix-$stackIndex"
+def ParamHostName = "$stackName.$stackSuffix"
 
+/** report on console */
+println "### stackName : $stackName"
+println "### ParamZoneName : $ParamZoneName"
 println "### ParamHostName : $ParamHostName"
 
-/**
- * cloud formation uses strictly formatted dns names
- */
-project.properties["ParamZoneName"] = ParamZoneName + "."
-project.properties["ParamHostName"] = ParamHostName + "."
+/** store in pom */
+project.properties["stackName"] = stackName
+project.properties["ParamZoneName"] = ParamZoneName
+project.properties["ParamHostName"] = ParamHostName
+
+/** store in file */
+def timestamp = new Date()
+new File(templateParamFile).write(
+"""
+#
+# auto-generated on $timestamp
+#
+
+stackName=$stackName
+
+ParamZoneName=$ParamZoneName
+ParamHostName=$ParamHostName
+
+"""
+)

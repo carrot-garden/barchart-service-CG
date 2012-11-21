@@ -28,6 +28,8 @@
 		<!-- path to install script on remote -->
 		<publishInstall>${publishTarget}/install.sh</publishInstall>
 
+		<templateParamFile>./target/template-parameter.properties</templateParamFile>
+
 	</properties>
 
 	<dependencies>
@@ -48,7 +50,7 @@
 				<plugin>
 					<groupId>com.carrotgarden.maven</groupId>
 					<artifactId>carrot-maven-aws-plugin</artifactId>
-					<version>1.1.4</version>
+					<version>1.1.5-SNAPSHOT</version>
 				</plugin>
 
 				<plugin>
@@ -91,6 +93,7 @@
 		</pluginManagement>
 
 		<plugins>
+
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -104,6 +107,22 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+
+			<plugin>
+				<groupId>com.carrotgarden.maven</groupId>
+				<artifactId>carrot-maven-aws-plugin</artifactId>
+				<configuration>
+
+					<amazonRegion>${amazonRegion}</amazonRegion>
+
+					<dnsServerId>barchart-karaf-stack</dnsServerId>
+
+					<stackName>${stackName}</stackName>
+					<stackServerId>barchart-karaf-stack</stackServerId>
+
+				</configuration>
+			</plugin>
+
 		</plugins>
 
 	</build>
@@ -112,7 +131,7 @@
 
 		<profile>
 
-			<id>image-launch</id>
+			<id>stack-params</id>
 
 			<build>
 
@@ -128,7 +147,7 @@
 								<goals>
 									<goal>copy-resources</goal>
 								</goals>
-								<phase>package</phase>
+								<phase>prepare-package</phase>
 								<configuration>
 									<resources>
 										<resource>
@@ -146,14 +165,47 @@
 						</executions>
 					</plugin>
 
-					<!-- parse template parameters -->
+					<!-- lookup dns values -->
+					<plugin>
+						<groupId>com.carrotgarden.maven</groupId>
+						<artifactId>carrot-maven-aws-plugin</artifactId>
+						<executions>
+
+							<execution>
+								<id>zone-find</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>route53-find-zone</goal>
+								</goals>
+								<configuration>
+									<dnsHostName>${ParamIdentity}</dnsHostName>
+									<dnsResultProperty>ParamZoneName</dnsResultProperty>
+								</configuration>
+							</execution>
+
+							<execution>
+								<id>zone-list</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>route53-list-zone</goal>
+								</goals>
+								<configuration>
+									<dnsZoneName>${ParamZoneName}</dnsZoneName>
+									<dnsResultProperty>ParamNameList</dnsResultProperty>
+								</configuration>
+							</execution>
+						</executions>
+
+					</plugin>
+
+					<!-- provide template parameters -->
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>groovy-maven-plugin</artifactId>
 						<executions>
 							<execution>
 								<id>parse-template-parameters</id>
-								<phase>validate</phase>
+								<phase>prepare-package</phase>
 								<goals>
 									<goal>execute</goal>
 								</goals>
@@ -162,38 +214,6 @@
 								</configuration>
 							</execution>
 						</executions>
-					</plugin>
-
-					<!-- image launch -->
-					<plugin>
-
-						<groupId>com.carrotgarden.maven</groupId>
-						<artifactId>carrot-maven-aws-plugin</artifactId>
-
-						<configuration>
-
-							<amazonRegion>${amazonRegion}</amazonRegion>
-
-							<stackName>${stackName}</stackName>
-
-							<stackServerId>barchart-karaf-stack</stackServerId>
-
-							<stackTemplateFile>${publishSource}/${stackTemplateFile}</stackTemplateFile>
-
-							<stackInputParams>
-								<ParamIdentity>${ParamIdentity}</ParamIdentity>
-								<ParamInstanceType>${ParamInstanceType}</ParamInstanceType>
-								<ParamKeyName>${ParamKeyName}</ParamKeyName>
-								<ParamTopicName>${ParamTopicName}</ParamTopicName>
-								<ParamMinSize>${ParamMinSize}</ParamMinSize>
-								<ParamMaxSize>${ParamMaxSize}</ParamMaxSize>
-								<ParamSecurityGroup>${ParamSecurityGroup}</ParamSecurityGroup>
-								<ParamHostName>${ParamHostName}</ParamHostName>
-								<ParamZoneName>${ParamZoneName}</ParamZoneName>
-							</stackInputParams>
-
-						</configuration>
-
 					</plugin>
 
 				</plugins>
@@ -208,19 +228,39 @@
 			</properties>
 			<build>
 				<plugins>
+
+					<!-- create cloud formation -->
 					<plugin>
 						<groupId>com.carrotgarden.maven</groupId>
 						<artifactId>carrot-maven-aws-plugin</artifactId>
 						<executions>
+
 							<execution>
 								<id>stack-create</id>
 								<phase>package</phase>
 								<goals>
 									<goal>cloud-formation-create</goal>
 								</goals>
+								<configuration>
+									<stackTemplateFile>${publishSource}/${stackTemplateFile}</stackTemplateFile>
+									<stackPropertiesInputFile>${templateParamFile}</stackPropertiesInputFile>
+									<stackInputParams>
+										<ParamIdentity>${ParamIdentity}</ParamIdentity>
+										<ParamInstanceType>${ParamInstanceType}</ParamInstanceType>
+										<ParamKeyName>${ParamKeyName}</ParamKeyName>
+										<ParamTopicName>${ParamTopicName}</ParamTopicName>
+										<ParamMinSize>${ParamMinSize}</ParamMinSize>
+										<ParamMaxSize>${ParamMaxSize}</ParamMaxSize>
+										<ParamSecurityGroup>${ParamSecurityGroup}</ParamSecurityGroup>
+										<!-- <ParamHostName>${ParamHostName}</ParamHostName> -->
+										<!-- <ParamZoneName>${ParamZoneName}</ParamZoneName> -->
+									</stackInputParams>
+								</configuration>
 							</execution>
+
 						</executions>
 					</plugin>
+
 				</plugins>
 			</build>
 		</profile>

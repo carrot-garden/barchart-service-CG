@@ -1,0 +1,101 @@
+{
+	
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "test : make stack dns entry / ${project.artifactId}",
+
+  "Parameters" : {
+	  
+    "ParamIdentity" : {
+        "Type" : "String",
+        "Default" : "default.aws.barchart.com",
+        "Description" : "see https://github.com/barchart/barchart-configuration"
+    },
+	    
+    "ParamInstanceType" : { 
+      "Type" : "String", 
+      "Default" : "m1.small",
+      "Description" : "EC2 cpu/memory instance size selector"
+    },
+    
+    "ParamKeyName" : {
+        "Type" : "String",
+        "Default" : "barchart-karaf",
+        "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the instances"
+    },
+      
+    "ParamTopicName" : {
+        "Type" : "String",
+        "Default" : "barchart-application",
+        "Description" : "see https://console.aws.amazon.com/sns/home?region=us-east-1"
+    },
+      
+    "ParamMinSize" : {
+        "Type" : "String",
+        "Default" : "2",
+        "Description" : "minimum clususter size"
+    },
+      
+    "ParamMaxSize" : {
+        "Type" : "String",
+        "Default" : "4",
+        "Description" : "maximum clususter size"
+    },
+      
+    "ParamSecurityGroup" : {
+        "Type" : "String",
+        "Default" : "default",
+        "Description" : "additional security group for cluster access"
+    },
+    
+    "ParamHttpPort" : {
+        "Type" : "String",
+        "Default" : "8080",
+        "Description" : "karaf web service port"
+    },
+    
+    "ParamHttpTest" : {
+        "Type" : "String",
+        "Default" : "/health-report/",
+        "Description" : "karaf web service health check url"
+    },
+      
+    "ParamHttpCert" : {
+        "Type" : "String",
+        "Default" : "arn:aws:iam::081121675754:server-certificate/star.aws.barchart.com",
+        "Description" : "balancer ssl certificate for https access"
+    },
+
+    "ParamHostName" : {
+        "Type" : "String",
+        "Default" : "default.stack.aws.barchart.com.",
+        "Description" : "dns host for balancer address"
+    },
+    
+    "ParamZoneName" : {
+        "Type" : "String",
+        "Default" : "aws.barchart.com.",
+        "Description" : "dns zone for balancer address"
+    }
+      
+  },
+
+  "Resources" : {
+
+	"KarafBalancerDNS": {
+		  "Type": "AWS::Route53::RecordSet",
+		  "Properties": {
+		      "Name": { "Ref": "ParamHostName" },
+		      "HostedZoneName": { "Ref": "ParamZoneName" },
+		      "Comment": "CNAME for karaf load balancer",
+		      "Type": "CNAME",
+		      "TTL": "60",
+		      "ResourceRecords": [
+		          "www.barchart.com."
+		      ]
+		  }
+	}
+  
+  }
+  
+}
