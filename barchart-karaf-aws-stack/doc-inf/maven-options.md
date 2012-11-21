@@ -1,10 +1,11 @@
 clean package
 
---activate-profiles image-launch,stack-create
+--activate-profiles stack-params,stack-create
 
 --define amazonRegion=${amazonRegion} 
 --define stackName=${stackName}
 
+--define ParamInfix=${ParamInfix}
 --define ParamInstanceType=${ParamInstanceType}
 --define ParamKeyName=${ParamKeyName}
 --define ParamIdentity=${ParamIdentity}

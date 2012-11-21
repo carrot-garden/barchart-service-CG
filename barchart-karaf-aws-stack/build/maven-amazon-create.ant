@@ -17,14 +17,14 @@
 			<arg value="package" />
 
 			<arg value="--activate-profiles" />
-			<arg value="stack-template,stack-create" />
+			<arg value="stack-params,stack-create" />
 
 			<arg value="-e" />
 
 			<arg value="--define" />
 			<arg value="amazonRegion=us-east-1" />
 			<arg value="--define" />
-			<arg value="stackTemplateFile=karaf-scaler.template" />
+			<arg value="stackTemplateFile=karaf-loader_all-zone_dns.template" />
 
 			<arg value="--define" />
 			<arg value="ParamInfix=stack" />
