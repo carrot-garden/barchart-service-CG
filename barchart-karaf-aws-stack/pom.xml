@@ -91,28 +91,7 @@
 									<goal>execute</goal>
 								</goals>
 								<configuration>
-									<source>
-					<![CDATA[
-					//
-					def ParamIdentity = project.properties["ParamIdentity"]
-					def KnownZoneList = [ 
-						"aws.barchart.com", 
-						"aws-dev.barchart.com", 
-						"eqx.barchart.com", 
-						"eqx-dev.barchart.com", 
-						"websol.barchart.com" 
-					]
-					for ( zone in KnownZoneList ) {
-						if( ParamIdentity.endsWith(zone) ) {
-							project.properties["ParamHostName"] = ParamIdentity + "."
-							project.properties["ParamZoneName"] = zone + "."
-							return
-						}
-					}
-					throw new Exception("unknown identity dns zone")			
-					//
-					]]>
-									</source>
+									<source>./src/main/script/name-rule.groovy</source>
 								</configuration>
 							</execution>
 						</executions>

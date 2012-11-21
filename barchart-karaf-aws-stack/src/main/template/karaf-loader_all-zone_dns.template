@@ -68,7 +68,7 @@
 
     "ParamHostName" : {
         "Type" : "String",
-        "Default" : "default.aws.barchart.com.",
+        "Default" : "default.stack.aws.barchart.com.",
         "Description" : "dns host for balancer address"
     },
     
