@@ -1,0 +1,30 @@
+<project default="maven" basedir="./..">
+
+	<echo message="basedir : ${basedir}" />
+
+	<target name="maven">
+
+		<condition property="executable" value="mvn">
+			<os family="unix" />
+		</condition>
+		<condition property="executable" value="mvn.bat">
+			<os family="windows" />
+		</condition>
+
+		<exec executable="${executable}">
+
+			<arg value="clean" />
+
+			<arg value="resources:resources" />
+			<arg value="compiler:compile" />
+
+			<arg value="resources:testResources" />
+			<arg value="compiler:testCompile" />
+
+			<arg value="surefire:test" />
+
+		</exec>
+
+	</target>
+
+</project>

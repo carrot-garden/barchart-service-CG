@@ -1,5 +1,12 @@
 /**
- * barchart cloud formation stack naming rules:
+ * barchart cloud formation stack naming convention:
+ * 
+ * pattern: [prefix]-[index].[infix].[suffix]
+ * 
+ * prefix = first part of identity dns name
+ * index = auto increment
+ * infix = stack middle name
+ * suffix = last part of identity dns name
  * 
  * find existing, if any, and increment stack index
  */
@@ -33,26 +40,25 @@ def nameList = ParamNameList.split(";")
 def stackPrefix = ParamIdentity.replaceAll("." + ParamZoneName, "")
 def stackSuffix = ParamInfix + "." + ParamZoneName
 
-def numberList = [];
+def indexList = [];
 
-for( name in nameList ){
+for ( name in nameList ) {
 	if( name.startsWith(stackPrefix) && name.endsWith(stackSuffix) ){
 
 		def index = name
 				.replaceFirst(stackPrefix,"")
 				.replaceAll(stackSuffix,"")
 				.replaceAll("\\D","")
+				.toLong()
 
-		def number = index.toLong()
-
-		numberList.add( number )
+		indexList.add( index )
 
 	}
 }
 
-def number = numberList.max() + 1
+def stackNumber = indexList.max() + 1
 
-def ParamHostName = "$stackPrefix-$number.$stackSuffix"
+def ParamHostName = "$stackPrefix-$stackNumber.$stackSuffix"
 
 println "### ParamHostName : $ParamHostName"
 
