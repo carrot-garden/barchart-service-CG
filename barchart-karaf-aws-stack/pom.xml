@@ -117,7 +117,6 @@
 
 					<dnsServerId>barchart-karaf-stack</dnsServerId>
 
-					<stackName>${stackName}</stackName>
 					<stackServerId>barchart-karaf-stack</stackServerId>
 
 				</configuration>
