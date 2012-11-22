@@ -4,11 +4,11 @@
  * pattern: [prefix]-[index].[infix].[suffix]
  * 
  * prefix = first part of identity dns name
- * index = auto increment
- * infix = stack middle name
+ * index  = auto increment
+ * infix  = stack middle name
  * suffix = last part of identity dns name
  * 
- * find existing, if any, and increment stack index
+ * rule : find existing, if any, and increment stack index
  */
 
 //////////////////
@@ -29,7 +29,7 @@ def ParamIdentity = project.properties["ParamIdentity"]
 def ParamZoneName = project.properties["ParamZoneName"]
 
 /**
- * list of dns records from same dns zone as identity record
+ * list of all dns records from same dns zone as identity record
  */ 
 def ParamNameList = project.properties["ParamNameList"]
 
@@ -57,10 +57,10 @@ def indexList = [ 0 ];
 for ( name in nameList ) {
 	if( name.startsWith(stackPrefix) && name.endsWith(stackSuffix) ){
 
-		def index = "0" + name
-				.replaceFirst(stackPrefix,"")
-				.replaceAll(stackSuffix,"")
-				.replaceAll("\\D","")
+		def index = "0" + name // start with zero for empty records
+				.replaceFirst(stackPrefix,"") // remove prefix
+				.replaceAll(stackSuffix,"") // remove suffix
+				.replaceAll("\\D","") // remove non digits
 				
 		indexList.add( index.toLong() )
 
@@ -91,8 +91,14 @@ new File(templateParamFile).write(
 # auto-generated on $timestamp
 #
 
+#
+# stack name override; not available to the template
+#
 stackName=$stackName
 
+#
+# mandatory parameters available for the template
+#
 ParamZoneName=$ParamZoneName
 ParamHostName=$ParamHostName
 

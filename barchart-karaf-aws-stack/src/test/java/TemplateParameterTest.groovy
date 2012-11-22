@@ -7,7 +7,7 @@ class Project {
 	def properties = new HashMap()
 }
 
-class NameRuleTest {
+class TemplateParameterTest {
 
 	@Test
 	public void test1() {
@@ -60,7 +60,7 @@ class NameRuleTest {
 		Binding binding = new Binding();
 		binding.setVariable("project", project)
 
-		new NameRule(binding).run();
+		new TemplateParameter(binding).run();
 
 		assertEquals(properties["ParamHostName"].toString(), "news-127.stack.aws-dev.barchart.com.")
 		
@@ -92,7 +92,7 @@ class NameRuleTest {
 		Binding binding = new Binding();
 		binding.setVariable("project", project)
 
-		new NameRule(binding).run();
+		new TemplateParameter(binding).run();
 
 		assertEquals(properties["ParamHostName"].toString(), "news-media-7-1.hack.aws-dev.barchart.com.")
 		

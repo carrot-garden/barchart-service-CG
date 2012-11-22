@@ -54,6 +54,14 @@
 					<groupId>com.carrotgarden.maven</groupId>
 					<artifactId>carrot-maven-aws-plugin</artifactId>
 					<version>1.1.5</version>
+					<configuration>
+						<!-- external property -->
+						<amazonRegion>${amazonRegion}</amazonRegion>
+						<!-- amazon route53 admin account; see settings.xml -->
+						<dnsServerId>barchart-karaf-stack</dnsServerId>
+						<!-- amazon cloud-form admin account; see settings.xml -->
+						<stackServerId>barchart-karaf-stack</stackServerId>
+					</configuration>
 				</plugin>
 
 				<!-- ensure groovy version range -->
@@ -98,7 +106,7 @@
 
 		<plugins>
 
-			<!-- groovy compiler -->
+			<!-- groovy script development -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -111,22 +119,6 @@
 						<version>2.7.0-01</version>
 					</dependency>
 				</dependencies>
-			</plugin>
-
-			<plugin>
-				<groupId>com.carrotgarden.maven</groupId>
-				<artifactId>carrot-maven-aws-plugin</artifactId>
-				<configuration>
-				
-					<amazonRegion>${amazonRegion}</amazonRegion>
-					
-					<!-- amazon route53 admin account; see settings.xml -->
-					<dnsServerId>barchart-karaf-stack</dnsServerId>
-					
-					<!-- amazon cloud-form admin account; see settings.xml -->
-					<stackServerId>barchart-karaf-stack</stackServerId>
-					
-				</configuration>
 			</plugin>
 
 		</plugins>
@@ -158,10 +150,6 @@
 								<configuration>
 									<resources>
 										<resource>
-											<directory>${basedir}/src/main/script</directory>
-											<filtering>true</filtering>
-										</resource>
-										<resource>
 											<directory>${basedir}/src/main/template</directory>
 											<filtering>true</filtering>
 										</resource>
@@ -177,6 +165,7 @@
 						<groupId>com.carrotgarden.maven</groupId>
 						<artifactId>carrot-maven-aws-plugin</artifactId>
 						<executions>
+							<!-- discover ParamZoneName from ParamIdentity -->
 							<execution>
 								<id>zone-find</id>
 								<phase>prepare-package</phase>
@@ -188,6 +177,7 @@
 									<dnsResultProperty>ParamZoneName</dnsResultProperty>
 								</configuration>
 							</execution>
+							<!-- discover ParamNameList from ParamZoneName -->
 							<execution>
 								<id>zone-list</id>
 								<phase>prepare-package</phase>
@@ -214,7 +204,7 @@
 									<goal>execute</goal>
 								</goals>
 								<configuration>
-									<source>./src/main/java/NameRule.groovy</source>
+									<source>./src/main/java/TemplateParameter.groovy</source>
 								</configuration>
 							</execution>
 						</executions>
@@ -243,6 +233,7 @@
 									<goal>cloud-formation-create</goal>
 								</goals>
 								<configuration>
+									<!-- use stackPropertiesInputFile <stackName>${stackName}</stackName> -->
 									<stackTemplateFile>${publishSource}/${stackTemplateFile}</stackTemplateFile>
 									<stackPropertiesInputFile>${templateParamFile}</stackPropertiesInputFile>
 									<stackInputParams>
@@ -253,6 +244,8 @@
 										<ParamMinSize>${ParamMinSize}</ParamMinSize>
 										<ParamMaxSize>${ParamMaxSize}</ParamMaxSize>
 										<ParamSecurityGroup>${ParamSecurityGroup}</ParamSecurityGroup>
+										<!-- use stackPropertiesInputFile <ParamZoneName>${ParamZoneName}</ParamZoneName> -->
+										<!-- use stackPropertiesInputFile <ParamHostName>${ParamHostName}</ParamHostName> -->
 									</stackInputParams>
 								</configuration>
 							</execution>
@@ -279,6 +272,9 @@
 								<goals>
 									<goal>cloud-formation-delete</goal>
 								</goals>
+								<configuration>
+									<stackName>${stackName}</stackName>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
