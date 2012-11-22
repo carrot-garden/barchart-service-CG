@@ -273,7 +273,7 @@
 									<goal>cloud-formation-delete</goal>
 								</goals>
 								<configuration>
-									<stackName>${stackName}</stackName>
+									<!-- use stackPropertiesInputFile <stackName>${stackName}</stackName> -->
 								</configuration>
 							</execution>
 						</executions>
