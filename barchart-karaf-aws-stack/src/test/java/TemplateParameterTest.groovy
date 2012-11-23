@@ -62,6 +62,7 @@ class TemplateParameterTest {
 
 		new TemplateParameter(binding).run();
 
+		assertEquals(properties["ParamNickName"].toString(), "news-127")
 		assertEquals(properties["ParamHostName"].toString(), "news-127.stack.aws-dev.barchart.com.")
 		
 	}
@@ -94,6 +95,7 @@ class TemplateParameterTest {
 
 		new TemplateParameter(binding).run();
 
+		assertEquals(properties["ParamNickName"].toString(), "news-media-7-1")
 		assertEquals(properties["ParamHostName"].toString(), "news-media-7-1.hack.aws-dev.barchart.com.")
 		
 	}

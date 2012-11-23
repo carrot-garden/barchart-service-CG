@@ -22,14 +22,6 @@
 
 		<!-- location of build resources on local -->
 		<publishSource>${basedir}/target/publish</publishSource>
-		<!-- location of build resources on remote -->
-		<publishTarget>/tmp/publish_${projectTimeFile}</publishTarget>
-
-		<!-- path to install script on remote -->
-		<publishInstall>${publishTarget}/install.sh</publishInstall>
-
-		<!-- calculated template parameters -->
-		<templateParamFile>./target/template-parameter.properties</templateParamFile>
 
 	</properties>
 
@@ -53,7 +45,7 @@
 				<plugin>
 					<groupId>com.carrotgarden.maven</groupId>
 					<artifactId>carrot-maven-aws-plugin</artifactId>
-					<version>1.1.6</version>
+					<version>1.1.7-SNAPSHOT</version>
 					<configuration>
 						<!-- external property -->
 						<amazonRegion>${amazonRegion}</amazonRegion>
@@ -165,6 +157,7 @@
 						<groupId>com.carrotgarden.maven</groupId>
 						<artifactId>carrot-maven-aws-plugin</artifactId>
 						<executions>
+
 							<!-- discover ParamZoneName from ParamIdentity -->
 							<execution>
 								<id>zone-find</id>
@@ -177,6 +170,7 @@
 									<dnsResultProperty>ParamZoneName</dnsResultProperty>
 								</configuration>
 							</execution>
+
 							<!-- discover ParamNameList from ParamZoneName -->
 							<execution>
 								<id>zone-list</id>
@@ -189,24 +183,19 @@
 									<dnsResultProperty>ParamNameList</dnsResultProperty>
 								</configuration>
 							</execution>
-						</executions>
-					</plugin>
 
-					<!-- provide calculated template parameters -->
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>groovy-maven-plugin</artifactId>
-						<executions>
+							<!-- provide calculated parameters -->
 							<execution>
-								<id>provide-template-parameters</id>
+								<id>param-calc</id>
 								<phase>prepare-package</phase>
 								<goals>
-									<goal>execute</goal>
+									<goal>groovy-execute-script</goal>
 								</goals>
 								<configuration>
-									<source>./src/main/java/TemplateParameter.groovy</source>
+									<groovyFile>./src/main/java/TemplateParameter.groovy</groovyFile>
 								</configuration>
 							</execution>
+
 						</executions>
 					</plugin>
 
@@ -233,20 +222,8 @@
 									<goal>cloud-formation-create</goal>
 								</goals>
 								<configuration>
-									<!-- use stackPropertiesInputFile <stackName>${stackName}</stackName> -->
+									<stackNameProperty>ParamNickName</stackNameProperty>
 									<stackTemplateFile>${publishSource}/${stackTemplateFile}</stackTemplateFile>
-									<stackPropertiesInputFile>${templateParamFile}</stackPropertiesInputFile>
-									<stackInputParams>
-										<ParamIdentity>${ParamIdentity}</ParamIdentity>
-										<ParamInstanceType>${ParamInstanceType}</ParamInstanceType>
-										<ParamKeyName>${ParamKeyName}</ParamKeyName>
-										<ParamTopicName>${ParamTopicName}</ParamTopicName>
-										<ParamMinSize>${ParamMinSize}</ParamMinSize>
-										<ParamMaxSize>${ParamMaxSize}</ParamMaxSize>
-										<ParamSecurityGroup>${ParamSecurityGroup}</ParamSecurityGroup>
-										<!-- use stackPropertiesInputFile <ParamZoneName>${ParamZoneName}</ParamZoneName> -->
-										<!-- use stackPropertiesInputFile <ParamHostName>${ParamHostName}</ParamHostName> -->
-									</stackInputParams>
 								</configuration>
 							</execution>
 						</executions>
@@ -273,7 +250,33 @@
 									<goal>cloud-formation-delete</goal>
 								</goals>
 								<configuration>
-									<!-- use stackPropertiesInputFile <stackName>${stackName}</stackName> -->
+									<stackName>${stackName}</stackName>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>stack-update</id>
+			<properties>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.carrotgarden.maven</groupId>
+						<artifactId>carrot-maven-aws-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>stack-update</id>
+								<phase>package</phase>
+								<goals>
+									<goal>cloud-formation-update</goal>
+								</goals>
+								<configuration>
+									<stackName>${stackName}</stackName>
 								</configuration>
 							</execution>
 						</executions>

@@ -11,57 +11,56 @@
  * rule : find existing, if any, and increment stack index
  */
 
-//////////////////
+///////////////////////////////////////////
 
 /**
  * such as "stack" as in "news-1.stack.aws-dev.barchart.com."
  */ 
 def ParamInfix = project.properties["ParamInfix"]
+println "@@@ ParamInfix=$ParamInfix"
 
 /**
  * such as "news.aws-dev.barchart.com" from https://github.com/barchart/barchart-configuration
  */ 
 def ParamIdentity = project.properties["ParamIdentity"]
+println "@@@ ParamIdentity=$ParamIdentity"
 
 /**
  * dns zone hosting identity record
  */ 
 def ParamZoneName = project.properties["ParamZoneName"]
+println "@@@ ParamZoneName=$ParamZoneName"
 
 /**
  * list of all dns records from same dns zone as identity record
  */ 
 def ParamNameList = project.properties["ParamNameList"]
+println "@@@ ParamNameList=$ParamNameList"
 
-/**
- * calculated parameters result destination file
- */
-def templateParamFile = project.properties["templateParamFile"] 
+///////////////////////////////////////////
 
-//////////////////
-
-/** stack name constraint */
+/** amazon naming convention constraint */
 def amazonFilter( name ) {
 	name.replaceAll("[^A-Za-z0-9-]","-")
 }
 
 def hostPrefix = (ParamIdentity + ".").replaceAll("." + ParamZoneName, "")
 
-def stackPrefix = amazonFilter(hostPrefix) 
+def stackPrefix = amazonFilter(hostPrefix)
 def stackSuffix = ParamInfix + "." + ParamZoneName
 
 def nameList = ParamNameList.split(";")
 
-def indexList = [ 0 ];
+def indexList = []
 
 for ( name in nameList ) {
 	if( name.startsWith(stackPrefix) && name.endsWith(stackSuffix) ){
 
-		def index = "0" + name // start with zero for empty records
+		def index = "0" + name // start with zero for missing records
 				.replaceFirst(stackPrefix,"") // remove prefix
 				.replaceAll(stackSuffix,"") // remove suffix
 				.replaceAll("\\D","") // remove non digits
-				
+
 		indexList.add( index.toLong() )
 
 	}
@@ -69,38 +68,15 @@ for ( name in nameList ) {
 
 def stackIndex = indexList.max() + 1
 
-/** final result */
+///////////////////////////////////////////
+
 def stackName = "$stackPrefix-$stackIndex"
-def ParamHostName = "$stackName.$stackSuffix"
+def stackHost = "$stackName.$stackSuffix"
 
-/** report on console */
-println "### stackName : $stackName"
-println "### ParamZoneName : $ParamZoneName"
-println "### ParamHostName : $ParamHostName"
+project.properties["ParamNickName"] = stackName
+project.properties["ParamHostName"] = stackHost
 
-/** store in pom */
-project.properties["stackName"] = stackName
-project.properties["ParamZoneName"] = ParamZoneName
-project.properties["ParamHostName"] = ParamHostName
+println "### ParamNickName : " + project.properties["ParamNickName"]
+println "### ParamHostName : " + project.properties["ParamHostName"]
 
-/** store in file */
-def timestamp = new Date()
-new File(templateParamFile).write(
-"""
-#
-# auto-generated on $timestamp
-#
-
-#
-# stack name override; not available to the template
-#
-stackName=$stackName
-
-#
-# mandatory parameters available for the template
-#
-ParamZoneName=$ParamZoneName
-ParamHostName=$ParamHostName
-
-"""
-)
+///////////////////////////////////////////

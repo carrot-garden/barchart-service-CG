@@ -6,12 +6,18 @@
 
   "Parameters" : {
 	  
+    "ParamNickName" : {
+        "Type" : "String",
+        "Default" : "default-1",
+        "Description" : "external formation name, per name convention"
+    },
+		    
     "ParamIdentity" : {
         "Type" : "String",
         "Default" : "default.aws.barchart.com",
         "Description" : "see https://github.com/barchart/barchart-configuration"
     },
-	    
+		    
     "ParamInstanceType" : { 
       "Type" : "String", 
       "Default" : "m1.small",
