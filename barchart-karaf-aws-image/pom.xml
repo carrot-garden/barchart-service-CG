@@ -124,31 +124,28 @@
 
 						<groupId>com.carrotgarden.maven</groupId>
 						<artifactId>carrot-maven-aws-plugin</artifactId>
-						<version>1.1.4</version>
+						<version>1.2.0-SNAPSHOT</version>
 
 						<configuration>
 
-							<!-- used by cloud formation & elastic compute goals -->
+							<!-- used by all goals -->
 							<amazonRegion>${amazonRegion}</amazonRegion>
 
-							<!-- used by cloud formation goals -->
+							<!-- used by cloud-formation goals -->
 							<stackName>${stackName}</stackName>
 							<stackServerId>barchart-karaf-stack</stackServerId>
 							<stackTemplateFile>${publishSource}/karaf-image.template</stackTemplateFile>
-							<stackPropertiesInputFile>${publishSource}/karaf-image.properties</stackPropertiesInputFile>
-							<stackInputParams>
-								<!-- override karaf-image.properties -->
-								<ParamHostName>${ParamHostName}</ParamHostName>
-							</stackInputParams>
 
 							<!-- used by ssh goals -->
+							<sshUser>ubuntu</sshUser>
 							<sshHost>${ParamHostName}</sshHost>
 							<sshKeyFile>${user.home}/.ssh/barchart-karaf/barchart-karaf.pem</sshKeyFile>
 
-							<!-- used by elastic compute goals -->
+							<!-- used by elastic-compute goals -->
 							<computeServerId>barchart-karaf-compute</computeServerId>
 							<imageName>java-karaf_${projectTimeFile}</imageName>
 							<imageDescription>base image of java with karaf ${karafFinalName}</imageDescription>
+							<imageInstanceIdProperty>OutputInstanceId</imageInstanceIdProperty>
 
 						</configuration>
 
@@ -172,6 +169,7 @@
 									<sshSource>${publishSource}</sshSource>
 									<sshTarget>${publishTarget}</sshTarget>
 									<sshStatusSuccess>
+										<status>0</status>
 										<status>-1</status>
 									</sshStatusSuccess>
 								</configuration>
@@ -192,10 +190,10 @@
 							</execution>
 
 							<execution>
-								<id>image-register</id>
+								<id>image-create</id>
 								<phase>package</phase>
 								<goals>
-									<goal>elastic-compute-image-register</goal>
+									<goal>elastic-compute-image-create</goal>
 								</goals>
 							</execution>
 

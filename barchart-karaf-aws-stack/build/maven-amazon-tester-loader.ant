@@ -1,0 +1,52 @@
+<project default="maven" basedir="./..">
+
+	<echo message="basedir : ${basedir}" />
+
+	<target name="maven">
+
+		<condition property="executable" value="mvn">
+			<os family="unix" />
+		</condition>
+		<condition property="executable" value="mvn.bat">
+			<os family="windows" />
+		</condition>
+
+		<exec executable="${executable}">
+
+			<arg value="clean" />
+			<arg value="package" />
+
+			<arg value="--activate-profiles" />
+			<arg value="stack-params,stack-create" />
+
+			<arg value="-e" />
+
+			<arg value="--define" />
+			<arg value="amazonRegion=us-east-1" />
+			<arg value="--define" />
+			<arg value="stackTemplateFile=karaf-tester_loader.template" />
+
+			<arg value="--define" />
+			<arg value="ParamInfix=stack" />
+			<arg value="--define" />
+			<arg value="ParamIdentity=news.media.aws-dev.barchart.com" />
+			<arg value="--define" />
+			<arg value="ParamKeyName=barchart-karaf" />
+			<arg value="--define" />
+			<arg value="ParamInstanceType=m1.medium" />
+			<arg value="--define" />
+			<arg value="ParamKeyName=barchart-karaf" />
+			<arg value="--define" />
+			<arg value="ParamTopicName=barchart-application" />
+			<arg value="--define" />
+			<arg value="ParamMinSize=2" />
+			<arg value="--define" />
+			<arg value="ParamMaxSize=4" />
+			<arg value="--define" />
+			<arg value="ParamSecurityGroup=default" />
+
+		</exec>
+
+	</target>
+
+</project>

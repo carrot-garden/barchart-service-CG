@@ -41,13 +41,14 @@
     "Mappings": {
     	
         "RegionImageMap": {
-            "ap-northeast-1": { "AMI": "ami-4cc57c4d" },
-            "ap-southeast-1": { "AMI": "ami-a45211f6" },
-            "eu-west-1":      { "AMI": "ami-05585a71" },
-            "sa-east-1":      { "AMI": "ami-a66eb7bb" },
-            "us-east-1":      { "AMI": "ami-d6e367bf" },
-            "us-west-1":      { "AMI": "ami-2ead8b6b" },
-            "us-west-2":      { "AMI": "ami-e01f96d0" }
+            "ap-northeast-1": { "AMI": "ami-eaa719eb" },
+            "ap-southeast-1": { "AMI": "ami-f8fcbcaa" },
+            "ap-southeast-2": { "AMI": "ami-858611bf" },
+            "eu-west-1":      { "AMI": "ami-3965664d" },
+            "sa-east-1":      { "AMI": "ami-ba5b82a7" },
+            "us-east-1":      { "AMI": "ami-9878c0f1" },
+            "us-west-1":      { "AMI": "ami-b94f69fc" },
+            "us-west-2":      { "AMI": "ami-7cab224c" }
         }
     
     },
@@ -89,32 +90,32 @@
     
     "Outputs": {
     	
-        "InstanceId": {
+        "OutputInstanceId": {
             "Description": "EC2 InstanceId",
             "Value": { "Ref": "KarafInstance" }
         },
         
-        "AvailabilityZone": {
+        "OutputAvailabilityZone": {
             "Description": "Availability Zone",
             "Value": { "Fn::GetAtt": [ "KarafInstance", "AvailabilityZone" ] } 
         },
         
-        "PublicIp": {
+        "OutputPublicIp": {
             "Description": "Public IP address",
             "Value": { "Fn::GetAtt": [ "KarafInstance", "PublicIp" ] }
         },
         
-        "PrivateIp": {
+        "OutputPrivateIp": {
             "Description": "Private IP address",
             "Value": { "Fn::GetAtt": [ "KarafInstance", "PrivateIp" ] } 
         },
         
-        "PublicDnsName": {
+        "OutputPublicDnsName": {
             "Description": "Public Dns Name",
             "Value": { "Fn::GetAtt": [ "KarafInstance", "PublicDnsName" ] }
         },
         
-        "PrivateDnsName": {
+        "OutputPrivateDnsName": {
             "Description": "Private Dns Name",
             "Value": { "Fn::GetAtt": [ "KarafInstance", "PrivateDnsName" ] }
         }

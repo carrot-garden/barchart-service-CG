@@ -51,7 +51,7 @@ def stackSuffix = ParamInfix + "." + ParamZoneName
 
 def nameList = ParamNameList.split(";")
 
-def indexList = []
+def indexList = [ 0 ]
 
 for ( name in nameList ) {
 	if( name.startsWith(stackPrefix) && name.endsWith(stackSuffix) ){
