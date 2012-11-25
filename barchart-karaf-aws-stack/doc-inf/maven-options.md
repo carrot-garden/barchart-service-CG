@@ -1,5 +1,7 @@
 clean package
 
+--errors
+
 --activate-profiles stack-params,stack-create
 
 --define amazonRegion=${amazonRegion} 

@@ -88,7 +88,7 @@
 
   "Resources" : {
 
-    "KarafLoadBalancer" : {
+    "KELB" : {
         "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
         "Properties" : {
           "AvailabilityZones" : { "Fn::GetAZs" : ""},

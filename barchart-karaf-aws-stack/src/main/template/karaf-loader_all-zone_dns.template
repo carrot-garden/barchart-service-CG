@@ -108,7 +108,7 @@
 
   "Resources" : {
 
-    "KarafLoadBalancer" : {
+    "KELB" : {
         "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
         "Properties" : {
           "AvailabilityZones" : { "Fn::GetAZs" : ""},
@@ -146,7 +146,7 @@
 		      "Type": "CNAME",
 		      "TTL": "60",
 		      "ResourceRecords": [
-		          { "Fn::GetAtt" : [ "KarafLoadBalancer", "DNSName" ] }
+		          { "Fn::GetAtt" : [ "KELB", "DNSName" ] }
 		      ]
 		  }
 	},
@@ -185,7 +185,7 @@
                "autoscaling:EC2_INSTANCE_TERMINATE", "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
             ]
          },
-         "LoadBalancerNames" : [ { "Ref" : "KarafLoadBalancer" } ],
+         "LoadBalancerNames" : [ { "Ref" : "KELB" } ],
          "HealthCheckType" : "ELB",
          "HealthCheckGracePeriod" : "90",
          "Tags": [
@@ -272,8 +272,8 @@
 	          "IpProtocol" : "tcp",
 	          "FromPort" : { "Ref" : "ParamHttpPort" },
 	          "ToPort" :   { "Ref" : "ParamHttpPort" },
-	          "SourceSecurityGroupName" :    { "Fn::GetAtt" : [ "KarafLoadBalancer", "SourceSecurityGroup.GroupName" ] },
-	          "SourceSecurityGroupOwnerId" : { "Fn::GetAtt" : [ "KarafLoadBalancer", "SourceSecurityGroup.OwnerAlias" ] }
+	          "SourceSecurityGroupName" :    { "Fn::GetAtt" : [ "KELB", "SourceSecurityGroup.GroupName" ] },
+	          "SourceSecurityGroupOwnerId" : { "Fn::GetAtt" : [ "KELB", "SourceSecurityGroup.OwnerAlias" ] }
 	        }
         ]
       }
