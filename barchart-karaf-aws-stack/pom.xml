@@ -251,7 +251,7 @@
 									<goal>cloud-formation-delete</goal>
 								</goals>
 								<configuration>
-									<stackName>${stackName}</stackName>
+									<stackNameProperty>ParamNickName</stackNameProperty>
 								</configuration>
 							</execution>
 						</executions>
@@ -277,7 +277,7 @@
 									<goal>cloud-formation-update</goal>
 								</goals>
 								<configuration>
-									<stackName>${stackName}</stackName>
+									<stackNameProperty>ParamNickName</stackNameProperty>
 								</configuration>
 							</execution>
 						</executions>
