@@ -187,7 +187,7 @@
          },
          "LoadBalancerNames" : [ { "Ref" : "KarafLoadBalancer" } ],
          "HealthCheckType" : "ELB",
-         "HealthCheckGracePeriod" : "60",
+         "HealthCheckGracePeriod" : "90",
          "Tags": [
              { "Key": "Name", "Value": { "Ref": "ParamIdentity" }, "PropagateAtLaunch" : "true" }
           ]

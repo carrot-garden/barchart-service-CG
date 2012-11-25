@@ -22,6 +22,8 @@
 			<arg value="--define" />
 			<arg value="amazonRegion=us-east-1" />
 
+			<arg value="--errors" />
+
 		</exec>
 
 	</target>

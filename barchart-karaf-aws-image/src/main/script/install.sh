@@ -42,10 +42,10 @@ echo "###"
 
 export DEBIAN_FRONTEND=noninteractive
 echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
-echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
+echo debconf shared/accepted-oracle-license-v1-1 seen true    | debconf-set-selections
 	
 echo "##################################################"
-echo "### install utilities"
+echo "### install packages"
 echo "###"
 add-apt-repository --yes ppa:webupd8team/java
 apt-get --yes update
@@ -67,6 +67,8 @@ echo "###"
 addgroup --system $KARAF_GROUP
 adduser  --system --shell=/bin/bash --ingroup $KARAF_GROUP --home $KARAF_HOME $KARAF_USER
 
+adduser  $ADMIN_USER $KARAF_GROUP
+
 echo "##################################################"
 echo "### copy karaf home resources"
 echo "###"
@@ -86,18 +88,18 @@ echo "###"
 mv --verbose "$KARAF_HOME/$KARAF_APP_DIR"* "$KARAF_HOME/$KARAF_APP_DIR" 
 
 echo "##################################################"
-echo "### setup karaf home access permissions"
-echo "###"
-
-chown --changes --recursive $KARAF_USER:$KARAF_GROUP $KARAF_HOME
-chmod --changes --recursive o-rwx,g+rw,ugo-s $KARAF_HOME
-find $KARAF_HOME -type d -exec chmod --changes g+s {} \;
-
-echo "##################################################"
 echo "### install tanuki service"
 echo "###"
 
 $KARAF_HOME/$KARAF_APP_DIR/nix-install.sh
+
+echo "##################################################"
+echo "### setup karaf home access permissions"
+echo "###"
+
+chown --recursive $KARAF_USER:$KARAF_GROUP $KARAF_HOME
+chmod --recursive o-rwx,ug+rw,ugo-s $KARAF_HOME
+find $KARAF_HOME -type d | xargs chmod g+xs
 
 echo "##################################################"
 echo "### tanuki start"
@@ -106,7 +108,7 @@ echo "###"
 $KARAF_HOME/$KARAF_APP_DIR/nix-start.sh
 
 echo "##################################################"
-echo "### await fetch config repo and maven artifacts"
+echo "### karaf fetching config repo and maven artifacts"
 echo "###"
 
 WAIT_SIZE=90

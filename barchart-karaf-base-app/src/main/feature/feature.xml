@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0" >
+
+    <feature name="${project.artifactId}" >
+
+	    <feature>scr</feature>
+	    <feature>config</feature>
+	    <feature>eventadmin</feature>
+	    
+    </feature>
+    
+</features>

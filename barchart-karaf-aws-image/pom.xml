@@ -26,7 +26,7 @@
 		<!-- karaf application to deploy -->
 		<karafGroup>com.barchart.karaf</karafGroup>
 		<karafArtifact>barchart-karaf-base-app</karafArtifact>
-		<karafVersion>1.1.6-SNAPSHOT</karafVersion>
+		<karafVersion>1.1.7-SNAPSHOT</karafVersion>
 		<karafClassifier>tanuki-distro</karafClassifier>
 		<karafType>zip</karafType>
 
@@ -43,6 +43,11 @@
 
 		<!-- path to install script on remote -->
 		<publishInstall>${publishTarget}/install.sh</publishInstall>
+
+		<!-- location of logs on remote -->
+		<retrieveSource>/var/karaf/app/log</retrieveSource>
+		<!-- location of logs on local -->
+		<retrieveTarget>./target/retrieve/log</retrieveTarget>
 
 	</properties>
 
@@ -151,6 +156,7 @@
 
 						<executions>
 
+							<!-- create instance -->
 							<execution>
 								<id>stack-create</id>
 								<phase>package</phase>
@@ -159,8 +165,9 @@
 								</goals>
 							</execution>
 
+							<!-- copy install script -->
 							<execution>
-								<id>script-publish</id>
+								<id>ssh-publish</id>
 								<phase>package</phase>
 								<goals>
 									<goal>secure-shell-publish</goal>
@@ -175,8 +182,9 @@
 								</configuration>
 							</execution>
 
+							<!-- execute install script -->
 							<execution>
-								<id>script-execute</id>
+								<id>ssh-execute</id>
 								<phase>package</phase>
 								<goals>
 									<goal>secure-shell-execute</goal>
@@ -189,6 +197,24 @@
 								</configuration>
 							</execution>
 
+							<!-- retrieve startup logs -->
+							<execution>
+								<id>ssh-retrieve</id>
+								<phase>package</phase>
+								<goals>
+									<goal>secure-shell-retrieve</goal>
+								</goals>
+								<configuration>
+									<sshSource>${retrieveSource}</sshSource>
+									<sshTarget>${retrieveTarget}</sshTarget>
+									<sshStatusSuccess>
+										<status>0</status>
+										<status>-1</status>
+									</sshStatusSuccess>
+								</configuration>
+							</execution>
+
+							<!-- create image form instance -->
 							<execution>
 								<id>image-create</id>
 								<phase>package</phase>
@@ -197,6 +223,7 @@
 								</goals>
 							</execution>
 
+							<!-- remove instance -->
 							<execution>
 								<id>stack-delete</id>
 								<phase>package</phase>
