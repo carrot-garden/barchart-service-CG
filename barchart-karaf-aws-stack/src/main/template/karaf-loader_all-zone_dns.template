@@ -129,10 +129,10 @@
             "Target" : { "Fn::Join" : [ "", [ 
                 "HTTP:", { "Ref" : "ParamHttpPort" }, { "Ref" : "ParamHttpTest" }
             ] ] },
-            "HealthyThreshold" : "3",
-            "UnhealthyThreshold" : "3",
-            "Interval" : "9",
-            "Timeout" : "3"
+            "HealthyThreshold" : "2",
+            "UnhealthyThreshold" : "4",
+            "Interval" : "15",
+            "Timeout" : "5"
           }
         }
     },
