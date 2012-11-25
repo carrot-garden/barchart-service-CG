@@ -1,17 +1,32 @@
 #!/bin/bash
 
+#
+# java + karaf install script for ubuntu
+#
+
+# super group in ubuntu image
 ADMIN_GROUP="root"
+# super user in ubuntu image
 ADMIN_USER="ubuntu"
 
+# karaf install home
 KARAF_HOME="/var/karaf"
+# karaf group name
 KARAF_GROUP="karaf"
+# karaf user name
 KARAF_USER="karaf"
 
+# karaf distro file name
 KARAF_ARCHIVE="${karafFinalName}"
+# karaf distro application folder prefix
 KARAF_APP_DIR="app"
 
-# script location
+# this script location
 WORK=$(dirname $0 )
+
+#
+#
+#
 
 echo "##################################################"
 echo "### project : ${project.artifactId}"
