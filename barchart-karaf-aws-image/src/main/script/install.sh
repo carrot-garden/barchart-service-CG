@@ -18,7 +18,7 @@ echo "### project : ${project.artifactId}"
 echo "###"
 
 echo "##################################################"
-echo "### verify work location"
+echo "### verify current location"
 echo "###"
 
 pwd
