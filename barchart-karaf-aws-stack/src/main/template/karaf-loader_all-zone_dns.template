@@ -130,8 +130,8 @@
                 "HTTP:", { "Ref" : "ParamHttpPort" }, { "Ref" : "ParamHttpTest" }
             ] ] },
             "HealthyThreshold" : "2",
-            "UnhealthyThreshold" : "4",
-            "Interval" : "15",
+            "UnhealthyThreshold" : "6",
+            "Interval" : "10",
             "Timeout" : "5"
           }
         }
