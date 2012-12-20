@@ -62,7 +62,7 @@
 		<dependency>
 			<groupId>com.barchart.conf</groupId>
 			<artifactId>barchart-conf-local</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.0.2</version>
 		</dependency>
 
 	</dependencies>

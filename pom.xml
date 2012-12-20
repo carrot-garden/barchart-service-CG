@@ -34,6 +34,8 @@
 		<module>barchart-karaf-service</module>
 		<module>barchart-karaf-base-app</module>
 		<module>barchart-karaf-test</module>
+
+		<module>barchart-karaf-launcher</module>
 		
 	</modules>
 
