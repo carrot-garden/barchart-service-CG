@@ -7,7 +7,6 @@
 		<groupId>com.barchart.karaf</groupId>
 		<artifactId>barchart-karaf-service</artifactId>
 		<version>1.0.1-SNAPSHOT</version>
-		<!-- need till release version available -->
 		<relativePath>../../barchart-karaf-service</relativePath>
 	</parent>
 
