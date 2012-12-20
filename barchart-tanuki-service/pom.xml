@@ -356,13 +356,14 @@
 						</configuration>
 						<executions>
 							<execution>
-								<id>unlink</id>
+								<id>link-delete</id>
 								<phase>clean</phase>
 								<goals>
 									<goal>unlink</goal>
 								</goals>
 							</execution>
 							<execution>
+								<id>link-create</id>
 								<phase>package</phase>
 								<goals>
 									<goal>link</goal>
