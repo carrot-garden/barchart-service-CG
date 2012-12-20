@@ -1,6 +1,6 @@
 <!--
 
-    Copyright (C) 2011-2012 Barchart, Inc. <http://www.barchart.com/>
+    Copyright (C) 2011-2012 Barchart, Inc. <http://www.barchart.com />
 
     All rights reserved. Licensed under the OSI BSD License.
 
@@ -15,21 +15,22 @@
 		<groupId>com.barchart.base</groupId>
 		<artifactId>barchart-archon</artifactId>
 		<version>2.3.7</version>
-		<relativePath/>
+		<relativePath />
 	</parent>
 
 	<!-- note: use original tanuki version as the first maven version term; 
 		it will be used as ${distroVersion} for tanuki download -->
 	<groupId>com.barchart.tanuki</groupId>
 	<artifactId>barchart-tanuki-service-template</artifactId>
-	<version>3.5.17-build001-SNAPSHOT</version>
+	<version>3.5.17-build001</version>
 	<packaging>jar</packaging>
 
 	<scm>
 		<url>https://github.com/barchart/barchart-service</url>
 		<connection>scm:git:git://github.com/barchart/barchart-service.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-service.git</developerConnection>
-	</scm>
+	  <tag>barchart-tanuki-service-template-3.5.17-build001</tag>
+  </scm>
 
 	<description>folder layout for java-service-wrapper based applications</description>
 
