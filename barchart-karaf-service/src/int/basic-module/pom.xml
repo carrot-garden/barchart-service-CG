@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.barchart.base</groupId>
 		<artifactId>barchart-archon</artifactId>
-		<version>2.1.2</version>
+		<version>2.3.7</version>
 	</parent>
 
 	<description>basic integration test module; provides main()</description>
@@ -35,60 +35,5 @@
 		</dependency>
 
 	</dependencies>
-
-	<build>
-
-		<plugins>
-
-			<plugin>
-				<groupId>com.carrotgarden.maven</groupId>
-				<artifactId>carrot-maven-scr-plugin</artifactId>
-				<version>1.1.4</version>
-				<configuration>
-					<targetDirectorySCR>OSGI-INF/service-component</targetDirectorySCR>
-					<excludedServices>
-						<service>java.lang.Runnable</service>
-						<service>java.lang.Cloneable</service>
-					</excludedServices>
-					<eclipseSettings>
-						<!-- eclipse maven console -->
-						<logBuildTimes>true</logBuildTimes>
-						<logErrorTraces>true</logErrorTraces>
-						<logExcludedServices>true</logExcludedServices>
-						<logInvocationDetails>true</logInvocationDetails>
-						<logComponentDescriptors>true</logComponentDescriptors>
-					</eclipseSettings>
-				</configuration>
-				<executions>
-					<execution>
-						<id>clean</id>
-						<phase>clean</phase>
-						<goals>
-							<goal>clean</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>generate</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<configuration>
-					<instructions>
-						<Service-Component>OSGI-INF/service-component/*.xml</Service-Component>
-					</instructions>
-				</configuration>
-			</plugin>
-
-		</plugins>
-
-	</build>
 
 </project>
