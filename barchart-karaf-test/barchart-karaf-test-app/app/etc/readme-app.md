@@ -7,3 +7,11 @@
     http://www.opensource.org/licenses/bsd-license.php
 
 -->
+
+## must provide separately:
+
+see http://karaf.apache.org/manual/2.2.5/users-guide/security.html
+
+keys.properties
+ssh-authorized-keys
+users.properties

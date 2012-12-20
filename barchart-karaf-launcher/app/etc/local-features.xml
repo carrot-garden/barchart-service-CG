@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+
+    Copyright (C) 2011-2012 Barchart, Inc. <http://www.barchart.com/>
+
+    All rights reserved. Licensed under the OSI BSD License.
+
+    http://www.opensource.org/licenses/bsd-license.php
+
+-->
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.1.0" name="local-features">
     <feature name="local-features" version="1.0.0-SNAPSHOT" description="local-features" install="auto">
         <bundle>jardir:../../../barchart-karaf-test/barchart-karaf-test-module1/target/classes</bundle>

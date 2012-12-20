@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+
+    Copyright (C) 2011-2012 Barchart, Inc. <http://www.barchart.com/>
+
+    All rights reserved. Licensed under the OSI BSD License.
+
+    http://www.opensource.org/licenses/bsd-license.php
+
+-->
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0" name="standard-3.0.0-SNAPSHOT">
     <feature description="Karaf standard feature" version="3.0.0-SNAPSHOT" name="standard">
         <details>Standard providing core Karaf features</details>
