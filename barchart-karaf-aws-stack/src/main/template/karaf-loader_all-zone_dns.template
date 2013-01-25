@@ -86,11 +86,11 @@
           "ap-northeast-1": { "AMI": "TODO" },
           "ap-southeast-1": { "AMI": "TODO" },
           "ap-southeast-2": { "AMI": "TODO" },
-          "eu-west-1":      { "AMI": "ami-53a7a527" },
-          "sa-east-1":      { "AMI": "ami-04bd6519" },
-          "us-east-1":      { "AMI": "ami-c7e564ae" },
-          "us-west-1":      { "AMI": "ami-b42302f1" },
-          "us-west-2":      { "AMI": "ami-56f37b66" }
+          "eu-west-1":      { "AMI": "ami-58111f2c" },
+          "sa-east-1":      { "AMI": "ami-656cb478" },
+          "us-east-1":      { "AMI": "ami-ad9b0ec4" },
+          "us-west-1":      { "AMI": "ami-ac3a19e9" },
+          "us-west-2":      { "AMI": "ami-20cd4710" }
       },
       
 	  "RegionZoneListMap": {
