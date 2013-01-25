@@ -35,7 +35,7 @@
 		<!-- karaf application to deploy -->
 		<karafGroup>com.barchart.karaf</karafGroup>
 		<karafArtifact>barchart-karaf-base-app</karafArtifact>
-		<karafVersion>1.1.7-SNAPSHOT</karafVersion>
+		<karafVersion>1.1.8-SNAPSHOT</karafVersion>
 		<karafClassifier>tanuki-distro</karafClassifier>
 		<karafType>zip</karafType>
 
