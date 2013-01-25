@@ -9,3 +9,13 @@
 
 http://cloud-images.ubuntu.com/precise/current/
 
+Region	arch	root store	ami
+ap-northeast-1	32-bit	ebs	ami-8964e188
+ap-southeast-1	32-bit	ebs	ami-3ce0a26e
+ap-southeast-2	32-bit	ebs	ami-1cbd2b26
+eu-west-1	32-bit	ebs	ami-ae1c12da
+sa-east-1	32-bit	ebs	ami-bf69b1a2
+us-east-1	32-bit	ebs	ami-d5f96cbc
+us-west-1	32-bit	ebs	ami-fe3112bb
+us-west-2	32-bit	ebs	ami-b8cb4188
+
