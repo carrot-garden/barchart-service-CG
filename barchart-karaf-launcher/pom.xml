@@ -56,9 +56,9 @@
 			<type>xml</type>
 		</dependency>
 
-		<!-- auto deploy features -->
+		<!-- dev modules should be added as jardir: handlers in app/conf/local-features.xml -->
 
-		<!-- configuration repository access -->
+		<!-- local configuration handler -->
 		<dependency>
 			<groupId>com.barchart.conf</groupId>
 			<artifactId>barchart-conf-local</artifactId>
