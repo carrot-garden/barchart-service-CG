@@ -6,12 +6,6 @@
     
     "Parameters": {
 
-        "ParamIdentity" : {
-            "Type" : "String",
-            "Default" : "default.aws.barchart.com",
-            "Description" : "see https://github.com/barchart/barchart-configuration"
-        },
-    	
         "ParamKeyName" : {
             "Type" : "String",
             "Default" : "barchart-karaf",
@@ -60,15 +54,7 @@
             "Properties": {
                 "KeyName": { "Ref": "ParamKeyName" },
                 "InstanceType": { "Ref": "ParamInstanceType" },
-                "ImageId": { "Fn::FindInMap": [ "RegionImageMap", { "Ref": "AWS::Region" }, "AMI" ] },
-                "UserData" : { "Fn::Base64" : 
-	              	{ "Fn::Join" : [ "", [
-	              	    "{ barchart.config.identity = ", { "Ref" : "ParamIdentity" }, " }" 
-	               	] ] } 
-	            },
-                "Tags": [
-                    { "Key": "Name", "Value": { "Ref": "ParamIdentity" } }
-                ]
+                "ImageId": { "Fn::FindInMap": [ "RegionImageMap", { "Ref": "AWS::Region" }, "AMI" ] }
             }
         },
         
