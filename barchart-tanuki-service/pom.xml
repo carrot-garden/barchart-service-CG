@@ -1,6 +1,6 @@
 <!--
 
-    Copyright (C) 2011-2012 Barchart, Inc. <http://www.barchart.com />
+    Copyright (C) 2011-2013 Barchart, Inc. <http://www.barchart.com/>
 
     All rights reserved. Licensed under the OSI BSD License.
 
@@ -393,13 +393,7 @@
 							<streamLogs>true</streamLogs>
 							<projectsDirectory>src/int</projectsDirectory>
 							<cloneProjectsTo>target/int-work</cloneProjectsTo>
-							<!-- <localRepositoryPath>target/int-repo</localRepositoryPath> -->
-							<!-- <settingsFile>src/int/settings.xml</settingsFile> -->
 							<invokerPropertiesFile>invoker.properties</invokerPropertiesFile>
-							<!-- group one, runs first -->
-							<setupIncludes>
-							</setupIncludes>
-							<!-- group two, runs second -->
 							<pomIncludes>
 								<include>basic/pom.xml</include>
 							</pomIncludes>
