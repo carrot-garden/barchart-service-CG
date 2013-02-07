@@ -1,5 +1,5 @@
 @REM
-@REM Copyright (C) 2011-2012 Barchart, Inc. <http://www.barchart.com/>
+@REM Copyright (C) 2011-2013 Barchart, Inc. <http://www.barchart.com/>
 @REM
 @REM All rights reserved. Licensed under the OSI BSD License.
 @REM
