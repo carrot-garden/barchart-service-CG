@@ -439,15 +439,31 @@
 									<goal>jdeb</goal>
 								</goals>
 								<configuration>
+									<classifier>noarch</classifier>
+									<controlDir>${basedir}/src/deb</controlDir>
 									<dataSet>
 										<data>
-											<src>${appFolderTarget}</src>
 											<type>directory</type>
+											<src>${appFolderTarget}</src>
+											<excludes>**/*.sh</excludes>
 											<mapper>
 												<type>perm</type>
 												<prefix>${serviceInstallFolder}</prefix>
 												<user>${serviceUsername}</user>
 												<group>${serviceUsername}</group>
+												<filemode>600</filemode>
+											</mapper>
+										</data>
+										<data>
+											<type>directory</type>
+											<src>${appFolderTarget}</src>
+											<includes>**/*.sh</includes>
+											<mapper>
+												<type>perm</type>
+												<prefix>${serviceInstallFolder}</prefix>
+												<user>${serviceUsername}</user>
+												<group>${serviceUsername}</group>
+												<filemode>700</filemode>
 											</mapper>
 										</data>
 									</dataSet>
@@ -468,7 +484,67 @@
 				</file>
 			</activation>
 			<build>
-				<!-- TODO -->
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>rpm-maven-plugin</artifactId>
+						<version>2.1-alpha-2</version>
+						<executions>
+							<execution>
+								<id>package-redhat</id>
+								<phase>package</phase>
+								<goals>
+									<goal>attached-rpm</goal>
+								</goals>
+								<configuration>
+									<classifier>noarch</classifier>
+									<group>barchart</group>
+									<needarch>false</needarch>
+									<defaultUsername>${serviceUsername}</defaultUsername>
+									<defaultGroupname>${serviceUsername}</defaultGroupname>
+									<defineStatements>
+										<defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
+										<defineStatement>_binaries_in_noarch_packages_terminate_build 0</defineStatement>
+									</defineStatements>
+									<mappings>
+										<mapping>
+											<sources>
+												<source>
+													<location>${appFolderTarget}</location>
+													<excludes>
+														<exclude>**/*.sh</exclude>
+													</excludes>
+												</source>
+											</sources>
+											<directory>${serviceInstallFolder}</directory>
+											<filemode>600</filemode>
+										</mapping>
+										<mapping>
+											<sources>
+												<source>
+													<location>${appFolderTarget}</location>
+													<includes>
+														<include>**/*.sh</include>
+													</includes>
+												</source>
+											</sources>
+											<directory>${serviceInstallFolder}</directory>
+											<filemode>700</filemode>
+										</mapping>
+									</mappings>
+									<requires>
+										<require>mc</require>
+										<require>oracle-java7-installer</require>
+									</requires>
+									<preinstallScript>${basedir}/src/rpm/preinst</preinstallScript>
+									<postinstallScript>${basedir}/src/rpm/postinst</postinstallScript>
+									<preremoveScript>${basedir}/src/rpm/prerm</preremoveScript>
+									<postremoveScript>${basedir}/src/rpm/postrm</postremoveScript>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
 			</build>
 		</profile>
 
