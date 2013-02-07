@@ -1,0 +1,9 @@
+Package: barchart-tanuki-service-tester-app
+Version: [[version]]
+Section: misc
+Priority: optional
+Architecture: all
+Depends: adduser, realpath, mc, oracle-java7-installer
+Maintainer: Barchart Inc <support@barchart.com>
+Homepage: https://github.com/barchart/barchart-service
+Description: Barchart Tanuki Service Wrapper Tester Application
