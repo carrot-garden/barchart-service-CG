@@ -23,6 +23,7 @@
 		<!-- note: must setup 'karaf' user on target server -->
 		<serviceUsername>karaf</serviceUsername>
 
+		<!-- install these features during karaf startup -->
 		<!-- features available from karaf project by default -->
 		<!-- https://github.com/apache/karaf/blob/trunk/assemblies/features/standard/src/main/feature/feature.xml -->
 		<!-- https://github.com/apache/karaf/blob/trunk/assemblies/features/enterprise/src/main/feature/feature.xml -->
@@ -37,7 +38,7 @@
 
 	<dependencies>
 
-		<!-- "feature" dependency -->
+		<!-- required "feature" dependency -->
 		<!-- see ./src/main/feature/feature.xml -->
 
 		<!-- STARTUP FEATURES -->
@@ -81,11 +82,6 @@
 			<artifactId>barchart-conf-sync-api</artifactId>
 			<version>1.1.1</version>
 		</dependency>
-		<dependency>
-			<groupId>com.barchart.conf</groupId>
-			<artifactId>barchart-conf-sync-impl</artifactId>
-			<version>1.1.8</version>
-		</dependency>
 
 		<!-- config deployer -->
 		<dependency>
@@ -103,10 +99,27 @@
 
 	</dependencies>
 
-	<build>
-	</build>
-
 	<profiles>
+
+		<!-- required dependencies specific for the project, to allow dependency 
+			override in the derived projects -->
+		<profile>
+			<id>barchart-karaf-base-app</id>
+			<activation>
+				<file>
+					<exists>barchart-karaf-base-app.md</exists>
+				</file>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>com.barchart.conf</groupId>
+					<artifactId>barchart-conf-sync-impl</artifactId>
+					<version>1.1.8</version>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<!-- run integration tests inside base app -->
 		<profile>
 			<id>integration</id>
 			<activation>
@@ -129,6 +142,7 @@
 				</plugins>
 			</build>
 		</profile>
+
 	</profiles>
 
 </project>

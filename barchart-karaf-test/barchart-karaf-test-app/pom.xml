@@ -14,9 +14,9 @@
 
 	<parent>
 		<groupId>com.barchart.karaf</groupId>
-		<artifactId>barchart-karaf-service</artifactId>
-		<version>1.0.1-SNAPSHOT</version>
-		<relativePath>../../barchart-karaf-service</relativePath>
+		<artifactId>barchart-karaf-base-app</artifactId>
+		<version>1.1.9-SNAPSHOT</version>
+		<relativePath>../../barchart-karaf-base-app</relativePath>
 	</parent>
 
 	<groupId>com.barchart.test</groupId>
@@ -26,85 +26,7 @@
 
 	<description>service test app</description>
 
-	<properties>
-
-		<!-- karaf will run under developer account -->
-		<serviceUsername>${user.name}</serviceUsername>
-
-		<!-- features available from karaf project -->
-		<!-- https://github.com/apache/karaf/blob/trunk/assemblies/features/standard/src/main/feature/feature.xml -->
-		<!-- https://github.com/apache/karaf/blob/trunk/assemblies/features/enterprise/src/main/feature/feature.xml -->
-		<karafBootupFeature0>standard</karafBootupFeature0>
-		<karafBootupFeature1>management</karafBootupFeature1>
-		<karafBootupFeature2>ssh</karafBootupFeature2>
-		<karafBootupFeature3>config</karafBootupFeature3>
-		<karafBootupFeature4>eventadmin</karafBootupFeature4>
-		<karafBootupFeature5>scr</karafBootupFeature5>
-
-	</properties>
-
 	<dependencies>
-
-		<!-- STARTUP FEATURES -->
-
-		<!-- amazon sns logger -->
-		<dependency>
-			<groupId>com.carrotgarden.log</groupId>
-			<artifactId>carrot-log4j-aws-sns-pax-kar</artifactId>
-			<version>1.0.9-SNAPSHOT</version>
-			<classifier>features</classifier>
-			<type>xml</type>
-		</dependency>
-
-		<!-- AUTO DEPLOY FEATURES -->
-
-		<!-- common ds/scr functions -->
-		<dependency>
-			<groupId>com.carrotgarden.osgi</groupId>
-			<artifactId>carrot-osgi-anno-scr-core</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.barchart.osgi</groupId>
-			<artifactId>barchart-osgi-conf</artifactId>
-			<version>1.1.3</version>
-		</dependency>
-		<dependency>
-			<groupId>com.barchart.osgi</groupId>
-			<artifactId>barchart-osgi-event</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.barchart.osgi</groupId>
-			<artifactId>barchart-osgi-factory-cm</artifactId>
-			<version>1.3.1</version>
-		</dependency>
-
-		<!-- configration repository access -->
-		<dependency>
-			<groupId>com.barchart.conf</groupId>
-			<artifactId>barchart-conf-sync-api</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.barchart.conf</groupId>
-			<artifactId>barchart-conf-sync-impl</artifactId>
-			<version>1.1.8</version>
-		</dependency>
-
-		<!-- config deployer -->
-		<dependency>
-			<groupId>com.barchart.conf</groupId>
-			<artifactId>barchart-conf-deployer</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-
-		<!-- config update trigger -->
-		<dependency>
-			<groupId>com.barchart.conf</groupId>
-			<artifactId>barchart-conf-touch</artifactId>
-			<version>1.1.3</version>
-		</dependency>
 
 		<!-- tester modules -->
 		<dependency>

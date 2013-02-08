@@ -10,6 +10,10 @@
 -->
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0" >
 
+	<!-- These features will be listed as required dependencies, 
+		to ensure that this project components are started only
+		after these dependencies are resolved and activated.
+	-->
     <feature name="${project.artifactId}" >
 
 	    <feature>scr</feature>
