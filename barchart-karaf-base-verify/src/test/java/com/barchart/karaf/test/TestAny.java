@@ -38,6 +38,7 @@ import org.ops4j.pax.exam.TestProbeBuilder;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.ProbeBuilder;
 import org.ops4j.pax.exam.options.MavenUrlReference;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
@@ -127,7 +128,7 @@ public class TestAny {
 	 * @param command
 	 * @return
 	 */
-	protected String executeCommand(final String command) {
+	public String executeCommand(final String command) {
 		return executeCommand(command, COMMAND_TIMEOUT, false);
 	}
 
@@ -144,7 +145,7 @@ public class TestAny {
 	 *            Specifies if the command should be displayed in the screen.
 	 * @return
 	 */
-	protected String executeCommand(final String command, final Long timeout,
+	public String executeCommand(final String command, final Long timeout,
 			final Boolean silent) {
 		String response;
 		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -180,16 +181,16 @@ public class TestAny {
 		return response;
 	}
 
-	protected <T> T getOsgiService(final Class<T> type, final long timeout) {
+	public <T> T getOsgiService(final Class<T> type, final long timeout) {
 		return getOsgiService(type, null, timeout);
 	}
 
-	protected <T> T getOsgiService(final Class<T> type) {
+	public <T> T getOsgiService(final Class<T> type) {
 		return getOsgiService(type, null, SERVICE_TIMEOUT);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected <T> T getOsgiService(final Class<T> type, final String filter,
+	public <T> T getOsgiService(final Class<T> type, final String filter,
 			final long timeout) {
 		ServiceTracker tracker = null;
 		try {
@@ -281,6 +282,22 @@ public class TestAny {
 				return true;
 			}
 		}
+		return false;
+	}
+
+	public boolean isBundleInstalled(final String bundleSymbolicName,
+			final int bundleState) {
+
+		final Bundle[] bundleArray = bundleContext.getBundles();
+
+		for (final Bundle bundle : bundleArray) {
+
+			if (bundle.getSymbolicName().equals(bundleSymbolicName)
+					&& bundle.getState() == bundleState) {
+
+			}
+		}
+
 		return false;
 	}
 
