@@ -379,7 +379,7 @@
 			<id>integration</id>
 			<activation>
 				<file>
-					<exists>barchart-tanuki-service.md</exists>
+					<exists>maven-integration.md</exists>
 				</file>
 			</activation>
 			<build>

@@ -25,9 +25,6 @@
 			<arg value="clean" />
 			<arg value="install" />
 
-			<arg value="--activate-profiles" />
-			<arg value="integration" />
-
 		</exec>
 
 	</target>
