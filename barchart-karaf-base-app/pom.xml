@@ -1,12 +1,5 @@
-<!--
-
-    Copyright (C) 2011-2013 Barchart, Inc. <http://www.barchart.com/>
-
-    All rights reserved. Licensed under the OSI BSD License.
-
-    http://www.opensource.org/licenses/bsd-license.php
-
--->
+<!-- Copyright (C) 2011-2013 Barchart, Inc. <http://www.barchart.com/> All 
+	rights reserved. Licensed under the OSI BSD License. http://www.opensource.org/licenses/bsd-license.php -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
@@ -20,25 +13,25 @@
 	</parent>
 
 	<artifactId>barchart-karaf-base-app</artifactId>
-	<version>1.1.8-SNAPSHOT</version>
+	<version>1.1.9-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<description>base karaf application</description>
 
 	<properties>
 
-		<!-- must setup 'karaf' user on target server -->
+		<!-- note: must setup 'karaf' user on target server -->
 		<serviceUsername>karaf</serviceUsername>
 
-		<!-- features available from karaf project -->
+		<!-- features available from karaf project by default -->
 		<!-- https://github.com/apache/karaf/blob/trunk/assemblies/features/standard/src/main/feature/feature.xml -->
 		<!-- https://github.com/apache/karaf/blob/trunk/assemblies/features/enterprise/src/main/feature/feature.xml -->
 		<karafBootupFeature0>standard</karafBootupFeature0>
-		<karafBootupFeature1>management</karafBootupFeature1>
-		<karafBootupFeature2>ssh</karafBootupFeature2>
-		<karafBootupFeature3>config</karafBootupFeature3>
-		<karafBootupFeature4>eventadmin</karafBootupFeature4>
-		<karafBootupFeature5>scr</karafBootupFeature5>
+		<karafBootupFeature1>config</karafBootupFeature1>
+		<karafBootupFeature2>eventadmin</karafBootupFeature2>
+		<karafBootupFeature3>scr</karafBootupFeature3>
+		<karafBootupFeature4>management</karafBootupFeature4>
+		<karafBootupFeature5>ssh</karafBootupFeature5>
 
 	</properties>
 
@@ -109,5 +102,26 @@
 		</dependency>
 
 	</dependencies>
+
+	<profiles>
+		<!-- invoke integration tests -->
+		<profile>
+			<id>integration</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-invoker-plugin</artifactId>
+						<configuration>
+							<projectsDirectory>${basedir}/../.</projectsDirectory>
+							<pomIncludes>
+								<include>barchart-karaf-base-verify/pom.xml</include>
+							</pomIncludes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>

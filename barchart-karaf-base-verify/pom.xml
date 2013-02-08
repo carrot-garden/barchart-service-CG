@@ -13,41 +13,54 @@
 	</parent>
 
 	<groupId>com.barchart.test</groupId>
-	<artifactId>barchart-karaf-verify</artifactId>
+	<artifactId>barchart-karaf-base-verify</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 
+	<description>
+		base app integration tests
+	</description>
+
 	<properties>
-		<projectAppVersion>1.1.8-SNAPSHOT</projectAppVersion>
+
+		<!-- should be set by developer during interactive work to reflect current 
+			barchart-karaf-base-app -->
+		<integrationVersion>1.1.9-SNAPSHOT</integrationVersion>
+
+		<projectJavaVersion>1.7</projectJavaVersion>
+
 		<projectKarafVersion>3.0.0-SNAPSHOT</projectKarafVersion>
-		<projectExamVersion>2.6.0</projectExamVersion>
 		<projectGogoVersion>0.10.0</projectGogoVersion>
-		<projectOsgiVersion>4.3.1</projectOsgiVersion>
+		<projectExamVersion>2.6.0</projectExamVersion>
+
 	</properties>
 
 	<dependencies>
 
+		<!-- karaf distro under test -->
 		<dependency>
 			<groupId>com.barchart.karaf</groupId>
 			<artifactId>barchart-karaf-base-app</artifactId>
-			<version>${projectAppVersion}</version>
+			<version>${projectIntegrationVersion}</version>
+			<classifier>tanuki-distro</classifier>
 			<type>zip</type>
 			<scope>test</scope>
 		</dependency>
 
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.gogo.runtime</artifactId>
-            <version>${projectGogoVersion}</version>
-			<scope>test</scope>
-        </dependency>
-
+		<!-- karaf pax exam runner -->
 		<dependency>
 			<groupId>org.apache.karaf.tooling.exam</groupId>
 			<artifactId>org.apache.karaf.tooling.exam.container</artifactId>
 			<version>${projectKarafVersion}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.gogo.runtime</artifactId>
+			<version>${projectGogoVersion}</version>
+			<scope>test</scope>
+		</dependency>
 
+		<!-- pax exam junit driver -->
 		<dependency>
 			<groupId>org.ops4j.pax.exam</groupId>
 			<artifactId>pax-exam-junit4</artifactId>
@@ -55,19 +68,42 @@
 			<scope>test</scope>
 		</dependency>
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.osgi</groupId> -->
-<!-- 			<artifactId>org.osgi.core</artifactId> -->
-<!-- 			<version>${projectOsgiVersion}</version> -->
-<!-- 			<scope>test</scope> -->
-<!-- 		</dependency> -->
-
 	</dependencies>
+
+	<profiles>
+
+		<!-- developer-interactive / manual mode -->
+		<profile>
+			<id>build-human</id>
+			<activation>
+				<property>
+					<name>!env.JENKINS_HOME</name>
+				</property>
+			</activation>
+			<properties>
+				<projectIntegrationVersion>${integrationVersion}</projectIntegrationVersion>
+			</properties>
+		</profile>
+
+		<!-- continuous-integration / automatic mode -->
+		<profile>
+			<id>build-robot</id>
+			<activation>
+				<property>
+					<name>env.JENKINS_HOME</name>
+				</property>
+			</activation>
+			<properties>
+				<projectIntegrationVersion>@project.version@</projectIntegrationVersion>
+			</properties>
+		</profile>
+
+	</profiles>
 
 	<build>
 		<plugins>
 
-			<!-- make versions available for pax exam -->
+			<!-- provide dependency versions for pax exam -->
 			<plugin>
 				<groupId>org.apache.servicemix.tooling</groupId>
 				<artifactId>depends-maven-plugin</artifactId>
@@ -80,6 +116,16 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<!-- do not deploy this artifact -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 

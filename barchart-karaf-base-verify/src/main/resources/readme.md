@@ -7,16 +7,3 @@
     http://www.opensource.org/licenses/bsd-license.php
 
 -->
-### users to roles mapping
-
-file name
-
-```
-users.properties
-```
-
-file format
-
-```
-userName=userPass,userRole
-```

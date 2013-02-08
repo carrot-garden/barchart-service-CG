@@ -374,7 +374,7 @@
 
 		</profile>
 
-		<!-- always invoke integration tests -->
+		<!-- invoke integration tests -->
 		<profile>
 			<id>integration</id>
 			<activation>

@@ -32,7 +32,10 @@
 		<module>barchart-tanuki-service-tester-app</module>
 		
 		<module>barchart-karaf-service</module>
+		
 		<module>barchart-karaf-base-app</module>
+		<module>barchart-karaf-base-verify</module>
+		
 		<module>barchart-karaf-test</module>
 
 		<module>barchart-karaf-launcher</module>
