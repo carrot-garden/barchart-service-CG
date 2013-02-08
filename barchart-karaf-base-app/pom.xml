@@ -103,10 +103,17 @@
 
 	</dependencies>
 
+	<build>
+	</build>
+
 	<profiles>
-		<!-- invoke integration tests -->
 		<profile>
 			<id>integration</id>
+			<activation>
+				<file>
+					<exists>maven-integration.md</exists>
+				</file>
+			</activation>
 			<build>
 				<plugins>
 					<plugin>
