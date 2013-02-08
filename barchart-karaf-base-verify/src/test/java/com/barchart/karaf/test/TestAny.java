@@ -274,15 +274,26 @@ public class TestAny {
 		return connector;
 	}
 
-	public void assertFeatureInstalled(final String featureName) {
+	public boolean isFeatureInstalled(final String featureName) {
 		final Feature[] features = featureService.listInstalledFeatures();
 		for (final Feature feature : features) {
 			if (featureName.equals(feature.getName())) {
-				return;
+				return true;
 			}
 		}
-		Assert.fail("Feature " + featureName
-				+ " should be installed but is not");
+		return false;
+	}
+
+	public void assertFeatureInstalled(final String featureName) {
+		if (!isFeatureInstalled(featureName)) {
+			Assert.fail("Feature " + featureName + " is missing.");
+		}
+	}
+
+	public void assertFeatureNotInstalled(final String featureName) {
+		if (isFeatureInstalled(featureName)) {
+			Assert.fail("Feature " + featureName + " is present");
+		}
 	}
 
 	public void assertFeaturesInstalled(final String... expectedFeatures) {
