@@ -54,20 +54,43 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class TestAny {
 
-	public static final String RMI_SERVER_PORT = "44445";
-	public static final String HTTP_PORT = "9081";
-	public static final String RMI_REG_PORT = "1100";
+	protected static final Long COMMAND_TIMEOUT = 10000L;
+	protected static final String HTTP_PORT = "9081";
+	protected static final String RMI_REG_PORT = "1100";
 
-	static final Long COMMAND_TIMEOUT = 10000L;
-	static final Long SERVICE_TIMEOUT = 30000L;
+	protected static final String RMI_SERVER_PORT = "44445";
+	protected static final Long SERVICE_TIMEOUT = 30000L;
 
-	ExecutorService executor = Executors.newCachedThreadPool();
+	protected static final String IDENTITY_KEY = "barchart.config.identity";
+	protected static final String IDENTITY_VALUE = "default.barchart.com";
 
-	@Inject
-	protected BundleContext bundleContext;
+	/**
+	 * Provides an iterable collection of references, even if the original array
+	 * is null
+	 */
+	@SuppressWarnings("rawtypes")
+	private static Collection<ServiceReference> asCollection(
+			final ServiceReference[] references) {
+		return references != null ? Arrays.asList(references) : Collections
+				.<ServiceReference> emptyList();
+	}
 
-	@Inject
-	protected FeaturesService featureService;
+	/*
+	 * Explode the dictionary into a ,-delimited list of key=value pairs
+	 */
+	@SuppressWarnings("rawtypes")
+	private static String explode(final Dictionary dictionary) {
+		final Enumeration keys = dictionary.keys();
+		final StringBuffer result = new StringBuffer();
+		while (keys.hasMoreElements()) {
+			final Object key = keys.nextElement();
+			result.append(String.format("%s=%s", key, dictionary.get(key)));
+			if (keys.hasMoreElements()) {
+				result.append(", ");
+			}
+		}
+		return result.toString();
+	}
 
 	/**
 	 * To make sure the tests run only when the boot features are fully
@@ -76,13 +99,60 @@ public class TestAny {
 	@Inject
 	BootFinished bootFinished;
 
-	@ProbeBuilder
-	public TestProbeBuilder probeConfiguration(final TestProbeBuilder probe) {
+	@Inject
+	protected BundleContext bundleContext;
 
-		probe.setHeader(Constants.DYNAMICIMPORT_PACKAGE,
-				"*,org.apache.felix.service.*;status=provisional");
+	ExecutorService executor = Executors.newCachedThreadPool();
 
-		return probe;
+	@Inject
+	protected FeaturesService featureService;
+
+	public void assertBundleInstalled(final String bundleSymbolicName) {
+		if (!isBundleInstalled(bundleSymbolicName)) {
+			Assert.fail("Bundle " + bundleSymbolicName + " is missing.");
+		}
+	}
+
+	public void assertBundleNotInstalled(final String bundleSymbolicName) {
+		if (isBundleInstalled(bundleSymbolicName)) {
+			Assert.fail("Bundle " + bundleSymbolicName + " is missing.");
+		}
+	}
+
+	public void assertContains(final String expectedPart, final String actual) {
+		assertTrue("Should contain '" + expectedPart + "' but was : " + actual,
+				actual.contains(expectedPart));
+	}
+
+	public void assertContainsNot(final String expectedPart, final String actual) {
+		Assert.assertFalse("Should not contain '" + expectedPart
+				+ "' but was : " + actual, actual.contains(expectedPart));
+	}
+
+	public void assertFeatureInstalled(final String featureName) {
+		if (!isFeatureInstalled(featureName)) {
+			Assert.fail("Feature " + featureName + " is missing.");
+		}
+	}
+
+	public void assertFeatureNotInstalled(final String featureName) {
+		if (isFeatureInstalled(featureName)) {
+			Assert.fail("Feature " + featureName + " is present");
+		}
+	}
+
+	public void assertFeaturesInstalled(final String... expectedFeatures) {
+		final Set<String> expectedFeaturesSet = new HashSet<String>(
+				Arrays.asList(expectedFeatures));
+		final Feature[] features = featureService.listInstalledFeatures();
+		final Set<String> installedFeatures = new HashSet<String>();
+		for (final Feature feature : features) {
+			installedFeatures.add(feature.getName());
+		}
+		final String msg = "Expecting the following features to be installed : "
+				+ expectedFeaturesSet + " but found " + installedFeatures;
+		Assert.assertTrue(msg,
+				installedFeatures.containsAll(expectedFeaturesSet));
 	}
 
 	@Configuration
@@ -97,16 +167,14 @@ public class TestAny {
 
 		return new Option[] {
 
+				systemProperty(IDENTITY_KEY).value(IDENTITY_VALUE),
+
 				karafDistributionConfiguration().frameworkUrl(karafUrl)
 						.name("Barchart Karaf").unpackDirectory(unpack),
 
 				keepRuntimeFolder(),
 
 				logLevel(LogLevelOption.LogLevel.INFO),
-
-				// editConfigurationFilePut("etc/org.apache.karaf.features.cfg",
-				// "featuresBoot",
-				// "config,standard,region,package,kar,management"),
 
 				editConfigurationFilePut("etc/org.ops4j.pax.web.cfg",
 						"org.osgi.service.http.port", HTTP_PORT),
@@ -181,12 +249,23 @@ public class TestAny {
 		return response;
 	}
 
-	public <T> T getOsgiService(final Class<T> type, final long timeout) {
-		return getOsgiService(type, null, timeout);
+	public JMXConnector getJMXConnector() throws Exception {
+		final JMXServiceURL url = new JMXServiceURL(
+				"service:jmx:rmi:///jndi/rmi://localhost:" + RMI_REG_PORT
+						+ "/karaf-root");
+		final Hashtable<String, Object> env = new Hashtable<String, Object>();
+		final String[] credentials = new String[] { "karaf", "karaf" };
+		env.put("jmx.remote.credentials", credentials);
+		final JMXConnector connector = JMXConnectorFactory.connect(url, env);
+		return connector;
 	}
 
 	public <T> T getOsgiService(final Class<T> type) {
 		return getOsgiService(type, null, SERVICE_TIMEOUT);
+	}
+
+	public <T> T getOsgiService(final Class<T> type, final long timeout) {
+		return getOsgiService(type, null, timeout);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -236,43 +315,26 @@ public class TestAny {
 		}
 	}
 
-	/*
-	 * Explode the dictionary into a ,-delimited list of key=value pairs
-	 */
-	@SuppressWarnings("rawtypes")
-	private static String explode(final Dictionary dictionary) {
-		final Enumeration keys = dictionary.keys();
-		final StringBuffer result = new StringBuffer();
-		while (keys.hasMoreElements()) {
-			final Object key = keys.nextElement();
-			result.append(String.format("%s=%s", key, dictionary.get(key)));
-			if (keys.hasMoreElements()) {
-				result.append(", ");
+	public boolean isBundleInstalled(final String bundleSymbolicName) {
+		final Bundle[] bundleArray = bundleContext.getBundles();
+		for (final Bundle bundle : bundleArray) {
+			if (bundle.getSymbolicName().equals(bundleSymbolicName)) {
+				return true;
 			}
 		}
-		return result.toString();
+		return false;
 	}
 
-	/**
-	 * Provides an iterable collection of references, even if the original array
-	 * is null
-	 */
-	@SuppressWarnings("rawtypes")
-	private static Collection<ServiceReference> asCollection(
-			final ServiceReference[] references) {
-		return references != null ? Arrays.asList(references) : Collections
-				.<ServiceReference> emptyList();
-	}
-
-	public JMXConnector getJMXConnector() throws Exception {
-		final JMXServiceURL url = new JMXServiceURL(
-				"service:jmx:rmi:///jndi/rmi://localhost:" + RMI_REG_PORT
-						+ "/karaf-root");
-		final Hashtable<String, Object> env = new Hashtable<String, Object>();
-		final String[] credentials = new String[] { "karaf", "karaf" };
-		env.put("jmx.remote.credentials", credentials);
-		final JMXConnector connector = JMXConnectorFactory.connect(url, env);
-		return connector;
+	public boolean isBundleState(final String bundleSymbolicName,
+			final int bundleState) {
+		final Bundle[] bundleArray = bundleContext.getBundles();
+		for (final Bundle bundle : bundleArray) {
+			if (bundle.getSymbolicName().equals(bundleSymbolicName)
+					&& bundle.getState() == bundleState) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public boolean isFeatureInstalled(final String featureName) {
@@ -285,55 +347,12 @@ public class TestAny {
 		return false;
 	}
 
-	public boolean isBundleInstalled(final String bundleSymbolicName,
-			final int bundleState) {
+	@ProbeBuilder
+	public TestProbeBuilder probeConfiguration(final TestProbeBuilder probe) {
 
-		final Bundle[] bundleArray = bundleContext.getBundles();
+		probe.setHeader(Constants.DYNAMICIMPORT_PACKAGE,
+				"*,org.apache.felix.service.*;status=provisional");
 
-		for (final Bundle bundle : bundleArray) {
-
-			if (bundle.getSymbolicName().equals(bundleSymbolicName)
-					&& bundle.getState() == bundleState) {
-
-			}
-		}
-
-		return false;
-	}
-
-	public void assertFeatureInstalled(final String featureName) {
-		if (!isFeatureInstalled(featureName)) {
-			Assert.fail("Feature " + featureName + " is missing.");
-		}
-	}
-
-	public void assertFeatureNotInstalled(final String featureName) {
-		if (isFeatureInstalled(featureName)) {
-			Assert.fail("Feature " + featureName + " is present");
-		}
-	}
-
-	public void assertFeaturesInstalled(final String... expectedFeatures) {
-		final Set<String> expectedFeaturesSet = new HashSet<String>(
-				Arrays.asList(expectedFeatures));
-		final Feature[] features = featureService.listInstalledFeatures();
-		final Set<String> installedFeatures = new HashSet<String>();
-		for (final Feature feature : features) {
-			installedFeatures.add(feature.getName());
-		}
-		final String msg = "Expecting the following features to be installed : "
-				+ expectedFeaturesSet + " but found " + installedFeatures;
-		Assert.assertTrue(msg,
-				installedFeatures.containsAll(expectedFeaturesSet));
-	}
-
-	public void assertContains(final String expectedPart, final String actual) {
-		assertTrue("Should contain '" + expectedPart + "' but was : " + actual,
-				actual.contains(expectedPart));
-	}
-
-	public void assertContainsNot(final String expectedPart, final String actual) {
-		Assert.assertFalse("Should not contain '" + expectedPart
-				+ "' but was : " + actual, actual.contains(expectedPart));
+		return probe;
 	}
 }

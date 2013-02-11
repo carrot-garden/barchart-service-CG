@@ -20,6 +20,14 @@ public class DropAndKillFeaturesTest extends TestAny {
 
 	final Logger log = LoggerFactory.getLogger(getClass());
 
+	/**
+	 * Test bundle name.
+	 */
+	final String BUNDLE = "com.barchart.test.barchart-karaf-base-test01";
+
+	/**
+	 * Test feature name.
+	 */
 	final String FEATURE = "barchart-karaf-base-test01-feature";
 
 	@Configuration
@@ -32,8 +40,7 @@ public class DropAndKillFeaturesTest extends TestAny {
 		return new Option[] {};
 	}
 
-	@Test
-	public void dropFeaturesInstalled() throws Exception {
+	public void featureDropAndKill() throws Exception {
 
 		final Path home = Paths.get(System.getProperty("karaf.home"));
 		final Path test = home.resolve("../../../src/test/resources");
@@ -42,7 +49,7 @@ public class DropAndKillFeaturesTest extends TestAny {
 
 		final Path source = test.resolve("case-01/feature.xml");
 
-		final Path target = home.resolve("conf/feature.xml");
+		final Path target = home.resolve("etc/feature.xml");
 
 		assertFeatureNotInstalled(FEATURE);
 
@@ -57,6 +64,7 @@ public class DropAndKillFeaturesTest extends TestAny {
 		}
 
 		assertFeatureInstalled(FEATURE);
+		assertBundleInstalled(BUNDLE);
 
 		log.info("\n\t kill");
 		Files.delete(target);
@@ -69,7 +77,15 @@ public class DropAndKillFeaturesTest extends TestAny {
 		}
 
 		assertFeatureNotInstalled(FEATURE);
+		assertBundleNotInstalled(BUNDLE);
 
+	}
+
+	@Test
+	public void featureDropAndKillMany() throws Exception {
+		for (int k = 0; k < 3; k++) {
+			featureDropAndKill();
+		}
 	}
 
 }
