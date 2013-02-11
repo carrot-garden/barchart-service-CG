@@ -10,10 +10,12 @@ import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -32,7 +34,6 @@ import org.apache.karaf.features.BootFinished;
 import org.apache.karaf.features.Feature;
 import org.apache.karaf.features.FeaturesService;
 import org.apache.karaf.tooling.exam.options.LogLevelOption;
-import org.junit.Assert;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.TestProbeBuilder;
 import org.ops4j.pax.exam.junit.Configuration;
@@ -45,6 +46,7 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.Version;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,17 +58,29 @@ import org.slf4j.LoggerFactory;
  */
 public class TestAny {
 
+	public static Comparator<Bundle> BUNDLE_SORT = new Comparator<Bundle>() {
+		@Override
+		public int compare(final Bundle o1, final Bundle o2) {
+			return o1.getSymbolicName().compareTo(o2.getSymbolicName());
+		}
+	};
 	protected static final Long COMMAND_TIMEOUT = 10000L;
+	public static Comparator<Feature> FEATURE_SORT = new Comparator<Feature>() {
+		@Override
+		public int compare(final Feature o1, final Feature o2) {
+			return o1.getName().compareTo(o2.getName());
+		}
+	};
+
 	protected static final String HTTP_PORT = "9081";
+	protected static final String IDENTITY_KEY = "barchart.config.identity";
+
+	protected static final String IDENTITY_VALUE = "default.barchart.com";
 	protected static final String RMI_REG_PORT = "1100";
 
 	protected static final String RMI_SERVER_PORT = "44445";
+
 	protected static final Long SERVICE_TIMEOUT = 30000L;
-
-	protected static final String IDENTITY_KEY = "barchart.config.identity";
-	protected static final String IDENTITY_VALUE = "default.barchart.com";
-
-	protected final Logger log = LoggerFactory.getLogger(getClass());
 
 	/**
 	 * Provides an iterable collection of references, even if the original array
@@ -111,16 +125,24 @@ public class TestAny {
 	@Inject
 	protected FeaturesService featureService;
 
+	protected final Logger log = LoggerFactory.getLogger(getClass());
+
 	public void assertBundleInstalled(final String bundleSymbolicName) {
 		if (!isBundleInstalled(bundleSymbolicName)) {
-			Assert.fail("Bundle " + bundleSymbolicName + " is missing.");
+			fail("Bundle " + bundleSymbolicName + " is missing.");
 		}
 	}
 
 	public void assertBundleNotInstalled(final String bundleSymbolicName) {
 		if (isBundleInstalled(bundleSymbolicName)) {
-			Assert.fail("Bundle " + bundleSymbolicName + " is missing.");
+			fail("Bundle " + bundleSymbolicName + " is installed.");
 		}
+	}
+
+	public void assertBundleVersion(final String bundleSymbolicName,
+			final String bundleVersion) {
+		final Bundle bundle = bundle(bundleSymbolicName, bundleVersion);
+		assertNotNull("Bundle " + bundleSymbolicName + " is missing.", bundle);
 	}
 
 	public void assertContains(final String expectedPart, final String actual) {
@@ -129,19 +151,26 @@ public class TestAny {
 	}
 
 	public void assertContainsNot(final String expectedPart, final String actual) {
-		Assert.assertFalse("Should not contain '" + expectedPart
-				+ "' but was : " + actual, actual.contains(expectedPart));
+		assertFalse("Should not contain '" + expectedPart + "' but was : "
+				+ actual, actual.contains(expectedPart));
 	}
 
 	public void assertFeatureInstalled(final String featureName) {
 		if (!isFeatureInstalled(featureName)) {
-			Assert.fail("Feature " + featureName + " is missing.");
+			fail("Feature " + featureName + " is missing.");
+		}
+	}
+
+	public void assertFeatureInstalled(final String featureName,
+			final String featureVersion) throws Exception {
+		if (!isFeatureInstalled(featureName, featureVersion)) {
+			fail("Feature " + featureName + " is missing.");
 		}
 	}
 
 	public void assertFeatureNotInstalled(final String featureName) {
 		if (isFeatureInstalled(featureName)) {
-			Assert.fail("Feature " + featureName + " is present");
+			fail("Feature " + featureName + " is present");
 		}
 	}
 
@@ -155,15 +184,39 @@ public class TestAny {
 		}
 		final String msg = "Expecting the following features to be installed : "
 				+ expectedFeaturesSet + " but found " + installedFeatures;
-		Assert.assertTrue(msg,
-				installedFeatures.containsAll(expectedFeaturesSet));
+		assertTrue(msg, installedFeatures.containsAll(expectedFeaturesSet));
+	}
+
+	public void assertFeatureVersion(final String featureName,
+			final String featureVersion) throws Exception {
+		final Feature feature = feature(featureName, featureVersion);
+		assertNotNull("Feature " + featureName + "@" + featureVersion
+				+ " is missing.", feature);
+	}
+
+	public Bundle bundle(final String bundleSymbolicName,
+			final String bundleVersion) {
+		final Bundle[] bundleArray = bundleContext.getBundles();
+		for (final Bundle bundle : bundleArray) {
+			if (!bundle.getSymbolicName().equals(bundleSymbolicName)) {
+				continue;
+			}
+			if (!bundle.getVersion()
+					.equals(Version.parseVersion(bundleVersion))) {
+				continue;
+			}
+			return bundle;
+		}
+		return null;
 	}
 
 	@Configuration
 	public Option[] config() {
 
+		/** Work folder. */
 		final File unpack = new File("./target/verify");
 
+		/** Application under test. */
 		final MavenUrlReference karafUrl = maven()
 				.groupId("com.barchart.karaf")
 				.artifactId("barchart-karaf-base-app")
@@ -253,6 +306,11 @@ public class TestAny {
 		return response;
 	}
 
+	public Feature feature(final String featureName, final String featureVersion)
+			throws Exception {
+		return featureService.getFeature(featureName, featureVersion);
+	}
+
 	public JMXConnector getJMXConnector() throws Exception {
 		final JMXServiceURL url = new JMXServiceURL(
 				"service:jmx:rmi:///jndi/rmi://localhost:" + RMI_REG_PORT
@@ -329,6 +387,12 @@ public class TestAny {
 		return false;
 	}
 
+	public boolean isBundleInstalled(final String bundleSymbolicName,
+			final String bundleVersion) {
+		final Bundle bundle = bundle(bundleSymbolicName, bundleVersion);
+		return bundle != null;
+	}
+
 	public boolean isBundleState(final String bundleSymbolicName,
 			final int bundleState) {
 		final Bundle[] bundleArray = bundleContext.getBundles();
@@ -351,12 +415,41 @@ public class TestAny {
 		return false;
 	}
 
+	public boolean isFeatureInstalled(final String featureName,
+			final String featureVersion) throws Exception {
+		final Feature feature = feature(featureVersion, featureVersion);
+		return feature != null;
+	}
+
+	public void logBundles() {
+		final Bundle[] bundleArray = bundleContext.getBundles();
+		final List<Bundle> bundleList = Arrays.asList(bundleArray);
+		Collections.sort(bundleList, BUNDLE_SORT);
+		final StringBuilder text = new StringBuilder(1024);
+		for (final Bundle bundle : bundleList) {
+			text.append("\t");
+			text.append(bundle);
+		}
+		log.info("\n bundles: \n{}", text);
+	}
+
+	public void logFeatures() throws Exception {
+		final Feature[] featureArray = featureService.listFeatures();
+		final List<Feature> featureleList = Arrays.asList(featureArray);
+		Collections.sort(featureleList, FEATURE_SORT);
+		final StringBuilder text = new StringBuilder(1024);
+		for (final Feature feature : featureleList) {
+			text.append("\t");
+			text.append(feature);
+		}
+		log.info("\n features: \n{}", text);
+	}
+
 	@ProbeBuilder
 	public TestProbeBuilder probeConfiguration(final TestProbeBuilder probe) {
-
 		probe.setHeader(Constants.DYNAMICIMPORT_PACKAGE,
 				"*,org.apache.felix.service.*;status=provisional");
-
 		return probe;
 	}
+
 }

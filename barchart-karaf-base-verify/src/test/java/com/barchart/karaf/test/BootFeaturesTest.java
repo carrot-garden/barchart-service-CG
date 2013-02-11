@@ -10,6 +10,9 @@ import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
 public class BootFeaturesTest extends TestAny {
 
+	/**
+	 * Ensure base-app features are present.
+	 */
 	@Test
 	public void bootFeaturesInstalled() throws Exception {
 		assertFeaturesInstalled( //
@@ -21,4 +24,5 @@ public class BootFeaturesTest extends TestAny {
 				"ssh" //
 		);
 	}
+
 }
