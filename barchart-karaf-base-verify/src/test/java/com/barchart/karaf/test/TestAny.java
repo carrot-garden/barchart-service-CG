@@ -428,7 +428,12 @@ public class TestAny {
 		final StringBuilder text = new StringBuilder(1024);
 		for (final Bundle bundle : bundleList) {
 			text.append("\t");
-			text.append(bundle);
+			text.append(bundle.getSymbolicName());
+			text.append(" ");
+			text.append(bundle.getVersion());
+			text.append(" [");
+			text.append(bundle.getState());
+			text.append("] ");
 			text.append("\n");
 		}
 		log.info("\n bundles: \n{}", text);
@@ -441,7 +446,15 @@ public class TestAny {
 		final StringBuilder text = new StringBuilder(1024);
 		for (final Feature feature : featureleList) {
 			text.append("\t");
-			text.append(feature);
+			if (isFeatureInstalled(feature.getName())) {
+				text.append("+");
+			} else {
+				text.append("-");
+			}
+			text.append(" ");
+			text.append(feature.getName());
+			text.append(" ");
+			text.append(feature.getVersion());
 			text.append("\n");
 		}
 		log.info("\n features: \n{}", text);
