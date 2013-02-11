@@ -1,12 +1,5 @@
-<!--
-
-    Copyright (C) 2011-2013 Barchart, Inc. <http://www.barchart.com/>
-
-    All rights reserved. Licensed under the OSI BSD License.
-
-    http://www.opensource.org/licenses/bsd-license.php
-
--->
+<!-- Copyright (C) 2011-2013 Barchart, Inc. <http://www.barchart.com/> All 
+	rights reserved. Licensed under the OSI BSD License. http://www.opensource.org/licenses/bsd-license.php -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
@@ -16,7 +9,7 @@
 		<groupId>com.barchart.base</groupId>
 		<artifactId>barchart-archon</artifactId>
 		<version>2.3.9</version>
-		<relativePath/>
+		<relativePath />
 	</parent>
 
 	<groupId>com.barchart.karaf</groupId>
@@ -30,7 +23,9 @@
 		<module>../barchart-karaf-base-brand</module>
 		<module>../barchart-karaf-base-test01</module>
 		<module>../barchart-karaf-base-test01-feature</module>
-		<module>../barchart-karaf-base-verify</module>
+		
+		<!-- do not include, used by invoker plugin -->
+		<!-- <module>../barchart-karaf-ba se-verify</module> -->
 
 	</modules>
 
