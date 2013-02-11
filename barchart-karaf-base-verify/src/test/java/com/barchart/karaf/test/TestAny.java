@@ -46,6 +46,8 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @see <a href=
@@ -63,6 +65,8 @@ public class TestAny {
 
 	protected static final String IDENTITY_KEY = "barchart.config.identity";
 	protected static final String IDENTITY_VALUE = "default.barchart.com";
+
+	protected final Logger log = LoggerFactory.getLogger(getClass());
 
 	/**
 	 * Provides an iterable collection of references, even if the original array
