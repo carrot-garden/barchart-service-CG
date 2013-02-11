@@ -1,12 +1,5 @@
-<!--
-
-    Copyright (C) 2011-2013 Barchart, Inc. <http://www.barchart.com/>
-
-    All rights reserved. Licensed under the OSI BSD License.
-
-    http://www.opensource.org/licenses/bsd-license.php
-
--->
+<!-- Copyright (C) 2011-2013 Barchart, Inc. <http://www.barchart.com/> All 
+	rights reserved. Licensed under the OSI BSD License. http://www.opensource.org/licenses/bsd-license.php -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -22,24 +15,23 @@
 	<artifactId>barchart-service</artifactId>
 	<version>0.0.0</version>
 	<packaging>pom</packaging>
-	
+
 	<description>eclipse import helper</description>
 
 	<modules>
-	
-		<module>barchart-tanuki-service</module>
-		<module>barchart-tanuki-service-template</module>
-		<module>barchart-tanuki-service-tester-app</module>
-		
-		<module>barchart-karaf-service</module>
-		
-		<module>barchart-karaf-base-app</module>
-		<module>barchart-karaf-base-verify</module>
-		
+
+		<module>barchart-tanuki</module>
+
+		<module>barchart-karaf-aws</module>
+
+		<module>barchart-karaf-base</module>
 		<module>barchart-karaf-test</module>
 
+		<module>barchart-karaf-service</module>
 		<module>barchart-karaf-launcher</module>
-		
+
+		<module>barchart-karaf-http-health-report</module>
+
 	</modules>
 
 </project>

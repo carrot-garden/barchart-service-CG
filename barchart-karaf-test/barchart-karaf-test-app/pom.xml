@@ -12,7 +12,7 @@
 		<relativePath>../../barchart-karaf-base-app</relativePath>
 	</parent>
 
-	<groupId>com.barchart.test</groupId>
+	<groupId>com.barchart.karaf</groupId>
 	<artifactId>barchart-karaf-test-app</artifactId>
 	<version>1.1.6-SNAPSHOT</version>
 	<packaging>pom</packaging>

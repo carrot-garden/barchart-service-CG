@@ -19,7 +19,7 @@
 		<relativePath />
 	</parent>
 
-	<groupId>com.barchart.test</groupId>
+	<groupId>com.barchart.karaf</groupId>
 	<artifactId>barchart-karaf-test-module1</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>bundle</packaging>

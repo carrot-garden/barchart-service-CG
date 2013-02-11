@@ -20,14 +20,14 @@
 	</parent>
 
 	<groupId>com.barchart.karaf</groupId>
-	<artifactId>barchart-karaf-test</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<artifactId>barchart-karaf-aws</artifactId>
+	<version>0.0.0</version>
 	<packaging>pom</packaging>
 
 	<modules>
 
-		<module>barchart-karaf-test-module1</module>
-		<module>barchart-karaf-test-app</module>
+		<module>../barchart-karaf-aws-image</module>
+		<module>../barchart-karaf-aws-stack</module>
 
 	</modules>
 
