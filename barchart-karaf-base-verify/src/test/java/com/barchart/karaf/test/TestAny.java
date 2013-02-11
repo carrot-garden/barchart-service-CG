@@ -429,6 +429,7 @@ public class TestAny {
 		for (final Bundle bundle : bundleList) {
 			text.append("\t");
 			text.append(bundle);
+			text.append("\n");
 		}
 		log.info("\n bundles: \n{}", text);
 	}
@@ -441,6 +442,7 @@ public class TestAny {
 		for (final Feature feature : featureleList) {
 			text.append("\t");
 			text.append(feature);
+			text.append("\n");
 		}
 		log.info("\n features: \n{}", text);
 	}
