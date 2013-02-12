@@ -1,0 +1,43 @@
+<settings>
+
+	<!-- emulate karaf user setup -->
+
+	<servers>
+
+		<server>
+			<id>server-1</id>
+		</server>
+
+	</servers>
+
+	<profiles>
+
+		<profile>
+			<id>profile-1</id>
+			<repositories>
+				<!-- location of artifacts before they are published to maven central -->
+				<repository>
+					<id>server-1</id>
+					<name>sonatype-public</name>
+					<url>http://oss.sonatype.org/content/groups/public/</url>
+					<releases>
+						<enabled>true</enabled>
+						<updatePolicy>always</updatePolicy>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+						<updatePolicy>always</updatePolicy>
+					</snapshots>
+				</repository>
+			</repositories>
+		</profile>
+
+	</profiles>
+
+	<activeProfiles>
+
+		<activeProfile>profile-1</activeProfile>
+
+	</activeProfiles>
+
+</settings>
