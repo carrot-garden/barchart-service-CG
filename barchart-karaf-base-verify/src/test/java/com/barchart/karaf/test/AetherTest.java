@@ -19,12 +19,17 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Proof of concept. Replaced by:
+ * <p>
+ * See https://github.com/ops4j/org.ops4j.pax.url/pull/7
  */
+@Ignore
 public class AetherTest {
 
 	static final String MARKER_NAME = "build.marker";
