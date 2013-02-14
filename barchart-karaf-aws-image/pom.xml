@@ -67,7 +67,7 @@
 
 						<groupId>com.carrotgarden.maven</groupId>
 						<artifactId>carrot-maven-aws-plugin</artifactId>
-						<version>1.2.7-SNAPSHOT</version>
+						<version>1.2.6</version>
 
 						<configuration>
 
