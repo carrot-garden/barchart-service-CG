@@ -1,12 +1,5 @@
-<!--
-
-    Copyright (C) 2011-2013 Barchart, Inc. <http://www.barchart.com/>
-
-    All rights reserved. Licensed under the OSI BSD License.
-
-    http://www.opensource.org/licenses/bsd-license.php
-
--->
+<!-- Copyright (C) 2011-2013 Barchart, Inc. <http://www.barchart.com/> All 
+	rights reserved. Licensed under the OSI BSD License. http://www.opensource.org/licenses/bsd-license.php -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
@@ -61,6 +54,103 @@
 	</properties>
 
 	<profiles>
+
+		<profile>
+
+			<id>image-list</id>
+
+			<build>
+
+				<plugins>
+
+					<plugin>
+
+						<groupId>com.carrotgarden.maven</groupId>
+						<artifactId>carrot-maven-aws-plugin</artifactId>
+						<version>1.2.7-SNAPSHOT</version>
+
+						<configuration>
+
+							<amazonRegion>${amazonRegion}</amazonRegion>
+
+							<computeServerId>barchart-karaf-compute</computeServerId>
+
+							<imageFilter>is-public=false</imageFilter>
+							<imageRegex>.*java-karaf.*</imageRegex>
+
+						</configuration>
+
+						<executions>
+
+							<execution>
+								<id>image-list-us-east-1</id>
+								<phase>package</phase>
+								<goals>
+									<goal>elastic-compute-image-list</goal>
+								</goals>
+								<configuration>
+									<amazonRegion>us-east-1</amazonRegion>
+								</configuration>
+							</execution>
+
+							<execution>
+								<id>image-list-us-west-1</id>
+								<phase>package</phase>
+								<goals>
+									<goal>elastic-compute-image-list</goal>
+								</goals>
+								<configuration>
+									<amazonRegion>us-west-1</amazonRegion>
+								</configuration>
+							</execution>
+
+							<execution>
+								<id>image-list-us-west-2</id>
+								<phase>package</phase>
+								<goals>
+									<goal>elastic-compute-image-list</goal>
+								</goals>
+								<configuration>
+									<amazonRegion>us-west-2</amazonRegion>
+								</configuration>
+							</execution>
+
+							<execution>
+								<id>image-list-result</id>
+								<phase>package</phase>
+								<goals>
+									<goal>groovy-execute-script</goal>
+								</goals>
+								<configuration>
+									<groovyText>
+									<![CDATA[
+
+										def imageList = project.properties["amazonImageList"]
+										for ( image in imageList ) {
+											println "### imageId=$image.imageId"
+										} 
+
+										def imageMap = project.properties["amazonImageMap"]
+										for ( entry in imageMap.entrySet() ) {
+											region = entry.key
+											imageList = entry.value
+											println "@@@ region=$region imageList=$imageList.imageId"
+										} 
+										
+									]]>
+									</groovyText>
+								</configuration>
+							</execution>
+
+						</executions>
+
+					</plugin>
+
+				</plugins>
+
+			</build>
+
+		</profile>
 
 		<profile>
 
