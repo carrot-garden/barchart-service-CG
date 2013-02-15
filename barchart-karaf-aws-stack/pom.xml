@@ -234,6 +234,7 @@
 									<!-- stack name property set by groovy -->
 									<stackNameProperty>ParamNickName</stackNameProperty>
 									<stackTemplateFile>${publishSource}/${stackTemplateFile}</stackTemplateFile>
+									<stackTimeout>1000</stackTimeout>
 								</configuration>
 							</execution>
 						</executions>
