@@ -1,0 +1,712 @@
+{
+
+	"AWSTemplateFormatVersion" : "2010-09-09",
+
+	"Description" : "Barchart News Service",
+
+	"Parameters" : {
+
+	    "ParamDomain" : {
+	        "Type" : "String",
+	        "Default" : "news.aws.barchart.com",
+	        "Description" : "see https://github.com/barchart/barchart-configuration"
+	    },
+		    
+		"ParamClusterName" : {
+			"Type" : "String",
+			"Default" : "news-index",
+			"Description" : "The unique search cluster name (also used as S3 bucket for index snapshots)"
+		},
+
+		"ParamNewsStore" : {
+			"Type" : "String",
+			"Default" : "news-store",
+			"Description" : "The S3 bucket used for the data store (must already exist)"
+		},
+
+		"ParamMediaStore" : {
+			"Type" : "String",
+			"Default" : "news-media",
+			"Description" : "The S3 bucket used for the media store (must already exist)"
+		},
+
+		"ParamKeyName" : {
+			"Type" : "String",
+			"Default" : "barchart-karaf",
+			"Description" : "Name of an existing EC2 KeyPair to enable SSH access to the instances"
+		},
+
+		"ParamMinSize" : {
+			"Type" : "String",
+			"Default" : "2",
+			"Description" : "Minimum news cluster size"
+		},
+
+		"ParamMaxSize" : {
+			"Type" : "String",
+			"Default" : "4",
+			"Description" : "Maximum news cluster size"
+		},
+
+		"ParamESMinSize" : {
+			"Type" : "String",
+			"Default" : "2",
+			"Description" : "Minimum search cluster size"
+		},
+
+		"ParamESMaxSize" : {
+			"Type" : "String",
+			"Default" : "4",
+			"Description" : "Maximum search cluster size"
+		}
+
+	},
+
+	"Mappings" : {
+
+		"ESImageMap": {
+			"ap-northeast-1": { "AMI": "TODO" },
+			"ap-southeast-1": { "AMI": "TODO" },
+			"ap-southeast-2": { "AMI": "TODO" },
+			"eu-west-1":	  { "AMI": "TODO" },
+			"sa-east-1":	  { "AMI": "TODO" },
+			"us-east-1":	  { "AMI": "ami-d16bffb8" },
+			"us-west-1":	  { "AMI": "TODO" },
+			"us-west-2":	  { "AMI": "TODO" }
+		},
+
+		"KarafImageMap": {
+			"ap-northeast-1": { "AMI": "TODO" },
+			"ap-southeast-1": { "AMI": "TODO" },
+			"ap-southeast-2": { "AMI": "TODO" },
+			"eu-west-1":      { "AMI": "TODO" },
+			"sa-east-1":      { "AMI": "TODO" },
+			"us-east-1":      { "AMI": " ami-e601908f" },
+			"us-west-1":      { "AMI": "TODO" },
+			"us-west-2":      { "AMI": "TODO" }
+		},
+      
+		"RegionZoneListMap": {
+			"ap-northeast-1": { "list": [ "ap-northeast-1b" , "ap-northeast-1c" ] },
+			"ap-southeast-1": { "list": [ "ap-southeast-1a" , "ap-southeast-1b" ] },
+			"ap-southeast-2": { "list": [ "ap-southeast-2a" , "ap-southeast-2b" ] },
+			"eu-west-1":	  { "list": [ "eu-west-1b" , "eu-west-1c" ] },
+			"sa-east-1":	  { "list": [ "sa-east-1a" , "sa-east-1b" ] },
+			"us-east-1":	  { "list": [ "us-east-1d" , "us-east-1e" ] },
+			"us-west-1":	  { "list": [ "us-west-1b" , "us-west-1c" ] },
+			"us-west-2":	  { "list": [ "us-west-2b" , "us-west-2c" ] }
+		}
+
+	},
+
+	"Resources" : {
+
+		"NotificationSNSTopic" : {
+			"Type" : "AWS::SNS::Topic"
+		},
+
+		"ESLaunchConfig" : {
+			"Type" : "AWS::AutoScaling::LaunchConfiguration",
+			"Properties" : {
+				"KeyName" : { "Ref" : "ParamKeyName" },
+				"ImageId": { "Fn::FindInMap": [ "ESImageMap", { "Ref": "AWS::Region" }, "AMI" ] },
+				"InstanceType" : "m1.medium",
+				"IamInstanceProfile" : { "Ref" : "ESInstanceProfile" },
+				"SecurityGroups" : [ { "Ref" : "ESSecurityGroup" } ],
+				"UserData" : { "Fn::Base64" : 
+					{ "Fn::Join" : [ "", [
+						"ES_CLUSTER_NAME=", { "Ref" : "ParamClusterName" }, "\n",
+						"ES_CLOUD_AWS_REGION=", { "Ref" : "AWS::Region" }, "\n",
+						"ES_DISCOVERY_EC2_GROUPS=", { "Ref" : "ESSecurityGroup" }, "\n",
+						"ES_GATEWAY_S3_BUCKET=", { "Ref" : "ParamClusterName" }
+					] ] } 
+				}
+			}
+		},
+
+		"ESScalingGroup" : {
+			"Type" : "AWS::AutoScaling::AutoScalingGroup",
+			"Properties" : {
+				"AvailabilityZones" : { "Fn::GetAZs" : ""},
+				"LaunchConfigurationName" : { "Ref" : "ESLaunchConfig" },
+				"MinSize" : { "Ref" : "ParamESMinSize" },
+				"MaxSize" : { "Ref" : "ParamESMaxSize" },
+				"NotificationConfiguration" : {
+					"TopicARN" : { "Ref" : "NotificationSNSTopic" },
+					"NotificationTypes" : [ 
+						"autoscaling:EC2_INSTANCE_LAUNCH", "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
+						"autoscaling:EC2_INSTANCE_TERMINATE", "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
+					]
+				},
+				"HealthCheckType" : "EC2",
+				"HealthCheckGracePeriod" : "90",
+				"Tags": [
+					{ "Key": "Name", "Value": { "Ref": "ParamClusterName" }, "PropagateAtLaunch" : "true" }
+				]
+			}
+		},
+
+		"ESPolicyIncrease" : {
+			"Type" : "AWS::AutoScaling::ScalingPolicy",
+			"Properties" : {
+				"AdjustmentType" : "ChangeInCapacity",
+				"AutoScalingGroupName" : { "Ref" : "ESScalingGroup" },
+				"Cooldown" : "60",
+				"ScalingAdjustment" : "1"
+			}
+		},
+		
+		"ESPolicyDecrease" : {
+			"Type" : "AWS::AutoScaling::ScalingPolicy",
+			"Properties" : {
+				"AdjustmentType" : "ChangeInCapacity",
+				"AutoScalingGroupName" : { "Ref" : "ESScalingGroup" },
+				"Cooldown" : "300",
+				"ScalingAdjustment" : "-1"
+			}
+		},
+
+		"ESAlarmHighCPU": {
+			"Type": "AWS::CloudWatch::Alarm",
+			"Properties": {
+				"AlarmDescription": "CPU > 70% for 1 minute",
+				"MetricName": "CPUUtilization",
+				"Namespace": "AWS/EC2",
+				"Statistic": "Average",
+				"Period": "60",
+				"EvaluationPeriods": "1",
+				"Threshold": "70",
+				"AlarmActions": [ { "Ref": "ESPolicyIncrease" } ],
+				"Dimensions": [
+					{
+						"Name": "AutoScalingGroupName",
+						"Value": { "Ref": "ESScalingGroup" }
+					}
+				],
+				"ComparisonOperator": "GreaterThanThreshold"
+			}
+		},
+
+		"ESAlarmLowCPU": {
+			"Type": "AWS::CloudWatch::Alarm",
+			"Properties": {
+				"AlarmDescription": "CPU < 40% for 1 minute",
+				"MetricName": "CPUUtilization",
+				"Namespace": "AWS/EC2",
+				"Statistic": "Average",
+				"Period": "60",
+				"EvaluationPeriods": "5",
+				"Threshold": "40",
+				"AlarmActions": [ { "Ref": "ESPolicyDecrease" } ],
+				"Dimensions": [
+					{
+						"Name": "AutoScalingGroupName",
+						"Value": { "Ref": "ESScalingGroup" }
+					}
+				],
+				"ComparisonOperator": "LessThanThreshold"
+			}
+		},
+
+	    "NewsELB" : {
+	        "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
+	        "Properties" : {
+	          "AvailabilityZones" : { "Fn::GetAZs" : ""},
+	          "Listeners" : [ 
+	             {
+	 	            "LoadBalancerPort" : "80",
+	 	            "InstancePort" : "8080",
+	 	            "Protocol" : "HTTP"
+	             }, 
+	             {
+	 	            "LoadBalancerPort" : "6397",
+	 	            "InstancePort" : "6397",
+	 	            "Protocol" : "TCP"
+	             }, 
+	             {
+	 	            "LoadBalancerPort" : "6497",
+	 	            "InstancePort" : "6497",
+	 	            "Protocol" : "TCP"
+	             }, 
+	             {
+	 	            "LoadBalancerPort" : "443",
+	 	            "InstancePort" : "8080",
+	 	            "SSLCertificateId" : "arn:aws:iam::081121675754:server-certificate/star.aws.barchart.com",
+	 	            "Protocol" : "HTTPS"
+	             } 
+	          ],
+	          "HealthCheck" : {
+	            "Target" : "HTTP:8080/",
+	            "HealthyThreshold" : "2",
+	            "UnhealthyThreshold" : "6",
+	            "Interval" : "10",
+	            "Timeout" : "5"
+	          }
+	        }
+	    },
+	
+		"NewsBalancerDNS": {
+			  "Type": "AWS::Route53::RecordSet",
+			  "Properties": {
+			      "Name": { "Fn::Join" : [ "", [ { "Ref": "ParamDomain" }, "." ] ] },
+			      "HostedZoneName": "aws.barchart.com.",
+			      "Comment": "CNAME for news load balancer",
+			      "Type": "CNAME",
+			      "TTL": "60",
+			      "ResourceRecords": [
+			          { "Fn::GetAtt" : [ "NewsELB", "DNSName" ] }
+			      ]
+			  }
+		},
+	    
+		"NewsLaunchConfig" : {
+			"Type" : "AWS::AutoScaling::LaunchConfiguration",
+			"Properties" : {
+				"KeyName" : { "Ref" : "ParamKeyName" },
+				"ImageId": { "Fn::FindInMap": [ "KarafImageMap", { "Ref": "AWS::Region" }, "AMI" ] },
+				"InstanceType" : "m1.medium",
+				"IamInstanceProfile" : { "Ref" : "NewsReaderProfile" },
+				"SecurityGroups" : [ { "Ref" : "NewsSecurityGroup" }, { "Ref" : "NewsServiceSecurityGroup" } ],
+				"UserData" : { "Fn::Base64" : 
+					{ "Fn::Join" : [ "", [
+						"{ barchart.config.identity = cluster.", { "Ref" : "ParamDomain" },
+						", barchart.config.elasticsearch.group = ", { "Ref" : "ESSecurityGroup" },
+						", barchart.config.hazelcast.group = ", { "Ref" : "NewsSecurityGroup" },
+						" }" 
+					] ] } 
+				}
+			}
+		},
+
+		"NewsScalingGroup" : {
+			"Type" : "AWS::AutoScaling::AutoScalingGroup",
+			"DependsOn" : "ESScalingGroup",
+			"Properties" : {
+				"AvailabilityZones" : { "Fn::GetAZs" : ""},
+				"LaunchConfigurationName" : { "Ref" : "NewsLaunchConfig" },
+				"MinSize" : { "Ref" : "ParamMinSize" },
+				"MaxSize" : { "Ref" : "ParamMaxSize" },
+				"NotificationConfiguration" : {
+					"TopicARN" : { "Ref" : "NotificationSNSTopic" },
+					"NotificationTypes" : [ 
+						"autoscaling:EC2_INSTANCE_LAUNCH", "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
+						"autoscaling:EC2_INSTANCE_TERMINATE", "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
+					]
+				},
+				"LoadBalancerNames" : [ { "Ref" : "NewsELB" } ],
+				"HealthCheckType" : "ELB",
+				"HealthCheckGracePeriod" : "90",
+				"Tags" : [ {
+					"Key" : "Name",
+					"Value" : { "Fn::Join" : [ "", [ "cluster.", { "Ref" : "ParamDomain" } ] ] },
+					"PropagateAtLaunch" : "true"
+				} ]
+			}
+		},
+
+		"NewsPolicyIncrease" : {
+			"Type" : "AWS::AutoScaling::ScalingPolicy",
+			"Properties" : {
+				"AdjustmentType" : "ChangeInCapacity",
+				"AutoScalingGroupName" : { "Ref" : "NewsScalingGroup" },
+				"Cooldown" : "60",
+				"ScalingAdjustment" : "1"
+			}
+		},
+		
+		"NewsPolicyDecrease" : {
+			"Type" : "AWS::AutoScaling::ScalingPolicy",
+			"Properties" : {
+				"AdjustmentType" : "ChangeInCapacity",
+				"AutoScalingGroupName" : { "Ref" : "NewsScalingGroup" },
+				"Cooldown" : "300",
+				"ScalingAdjustment" : "-1"
+			}
+		},
+
+		"NewsAlarmHighCPU": {
+			"Type": "AWS::CloudWatch::Alarm",
+			"Properties": {
+				"AlarmDescription": "CPU > 70% for 1 minute",
+				"MetricName": "CPUUtilization",
+				"Namespace": "AWS/EC2",
+				"Statistic": "Average",
+				"Period": "60",
+				"EvaluationPeriods": "1",
+				"Threshold": "70",
+				"AlarmActions": [ { "Ref": "NewsPolicyIncrease" } ],
+				"Dimensions": [
+					{
+						"Name": "AutoScalingGroupName",
+						"Value": { "Ref": "NewsScalingGroup" }
+					}
+				],
+				"ComparisonOperator": "GreaterThanThreshold"
+			}
+		},
+
+		"NewsAlarmLowCPU": {
+			"Type": "AWS::CloudWatch::Alarm",
+			"Properties": {
+				"AlarmDescription": "CPU < 40% for 1 minute",
+				"MetricName": "CPUUtilization",
+				"Namespace": "AWS/EC2",
+				"Statistic": "Average",
+				"Period": "60",
+				"EvaluationPeriods": "5",
+				"Threshold": "40",
+				"AlarmActions": [ { "Ref": "NewsPolicyDecrease" } ],
+				"Dimensions": [
+					{
+						"Name": "AutoScalingGroupName",
+						"Value": { "Ref": "NewsScalingGroup" }
+					}
+				],
+				"ComparisonOperator": "LessThanThreshold"
+			}
+		},
+		
+		"NewsFeedInstance" : {
+			"Type" : "AWS::EC2::Instance",
+			"DependsOn" : "NewsScalingGroup",
+			"Properties" : {
+				"KeyName" : { "Ref" : "ParamKeyName" },
+				"ImageId": { "Fn::FindInMap": [ "KarafImageMap", { "Ref": "AWS::Region" }, "AMI" ] },
+				"InstanceType" : "m1.medium",
+				"IamInstanceProfile" : { "Ref" : "NewsWriterProfile" },
+				"SecurityGroups" : [ { "Ref" : "NewsSecurityGroup" }, { "Ref" : "NewsFeedSecurityGroup" } ],
+				"Tags" : [ {
+					"Key" : "Name",
+					"Value" : { "Fn::Join" : [ "", [ "feed-01.", { "Ref" : "ParamDomain" } ] ] }
+				} ],
+				"UserData" : { "Fn::Base64" : 
+					{ "Fn::Join" : [ "", [
+						"{ barchart.config.identity = feed-01.", { "Ref" : "ParamDomain" },
+						", barchart.config.elasticsearch.group = ", { "Ref" : "ESSecurityGroup" },
+						", barchart.config.hazelcast.group = ", { "Ref" : "NewsSecurityGroup" },
+						" }" 
+					] ] } 
+				}
+			}
+		},
+		
+		"NewsFeedIP" : {
+			"Type" : "AWS::EC2::EIP",
+			"Properties" : {
+				"InstanceId" : { "Ref" : "NewsFeedInstance" }
+			}
+		},
+
+		"NewsSecurityGroup" : {
+			"Type" : "AWS::EC2::SecurityGroup",
+			"Properties" : {
+				"GroupDescription" : "News cluster",
+				"SecurityGroupIngress" : [ 
+					{
+						"IpProtocol" : "tcp",
+						"FromPort" : "22",
+						"ToPort" :   "22",
+						"CidrIp" :   "67.217.131.0/24"
+					},
+					{
+						"IpProtocol" : "tcp",
+						"FromPort" : "2222",
+						"ToPort" :   "2222",
+						"CidrIp" :   "67.217.131.0/24"
+					},
+					{
+						"IpProtocol" : "tcp",
+						"FromPort" : "8080",
+						"ToPort" :   "8080",
+						"CidrIp" :   "67.217.131.0/24"
+					}
+				]
+			}
+		},
+
+		"NewsServiceSecurityGroup" : {
+			"Type" : "AWS::EC2::SecurityGroup",
+			"Properties" : {
+				"GroupDescription" : "News service cluster",
+				"SecurityGroupIngress" : [ 
+					{
+						"IpProtocol" : "tcp",
+						"FromPort" : "8080",
+						"ToPort" :   "8080",
+						"SourceSecurityGroupOwnerId": {
+							"Fn::GetAtt": ["NewsELB", "SourceSecurityGroup.OwnerAlias"]
+						},
+						"SourceSecurityGroupName": {
+							"Fn::GetAtt": ["NewsELB", "SourceSecurityGroup.GroupName"]
+						}
+					},
+					{
+						"IpProtocol" : "tcp",
+						"FromPort" : "6397",
+						"ToPort" :   "6397",
+						"SourceSecurityGroupOwnerId": {
+							"Fn::GetAtt": ["NewsELB", "SourceSecurityGroup.OwnerAlias"]
+						},
+						"SourceSecurityGroupName": {
+							"Fn::GetAtt": ["NewsELB", "SourceSecurityGroup.GroupName"]
+						}
+					},
+					{
+						"IpProtocol" : "tcp",
+						"FromPort" : "6497",
+						"ToPort" :   "6497",
+						"SourceSecurityGroupOwnerId": {
+							"Fn::GetAtt": ["NewsELB", "SourceSecurityGroup.OwnerAlias"]
+						},
+						"SourceSecurityGroupName": {
+							"Fn::GetAtt": ["NewsELB", "SourceSecurityGroup.GroupName"]
+						}
+					}
+				]
+			}
+		},
+
+		"NewsFeedSecurityGroup" : {
+			"Type" : "AWS::EC2::SecurityGroup",
+			"Properties" : {
+				"GroupDescription" : "News feed reader",
+				"SecurityGroupIngress" : [ 
+					{
+						"IpProtocol" : "tcp",
+						"FromPort" : "20000",
+						"ToPort" :   "20000",
+						"CidrIp" :   "0.0.0.0/0"
+					}
+				]
+			}
+		},
+
+		"ESSecurityGroup" : {
+			"Type" : "AWS::EC2::SecurityGroup",
+			"DependsOn" : "NewsSecurityGroup",
+			"Properties" : {
+				"GroupDescription" : "ElasticSearch cluster",
+				"SecurityGroupIngress" : [ 
+					{
+						"IpProtocol" : "tcp",
+						"FromPort" : "22",
+						"ToPort" :   "22",
+						"CidrIp" :   "67.217.131.0/24"
+					},
+					{
+						"IpProtocol" : "tcp",
+						"FromPort" : "9200",
+						"ToPort" :   "9400",
+						"CidrIp" :   "67.217.131.0/24"
+					},
+					{
+						"IpProtocol" : "tcp",
+						"FromPort" : "9200",
+						"ToPort" :   "9400",
+						"SourceSecurityGroupName": { "Ref" : "NewsSecurityGroup"}
+					}
+				]
+			}
+		},
+		
+		"ESSecurityGroupIngress" : {
+			"Type" : "AWS::EC2::SecurityGroupIngress",
+			"Properties" : {
+				"GroupName" : { "Ref" : "ESSecurityGroup" },
+				"IpProtocol" : "tcp",
+				"FromPort" : "9200",
+				"ToPort" :   "9400",
+				"SourceSecurityGroupName": { "Ref" : "ESSecurityGroup"}
+			}
+		},
+
+		"NewsSecurityGroupIngress" : {
+			"Type" : "AWS::EC2::SecurityGroupIngress",
+			"Properties" : {
+				"GroupName" : { "Ref" : "NewsSecurityGroup" },
+				"IpProtocol" : "tcp",
+				"FromPort" : "9200",
+				"ToPort" :   "9400",
+				"SourceSecurityGroupName": { "Ref" : "ESSecurityGroup"}
+			}
+		},
+
+		"NewsWriterRole": {
+			"Type": "AWS::IAM::Role",
+			"Properties": {
+				"AssumeRolePolicyDocument": {
+					"Statement": [ {
+						"Effect": "Allow",
+						"Principal": {
+							"Service": [ "ec2.amazonaws.com" ]
+						},
+						"Action": [ "sts:AssumeRole" ]
+					} ]
+				},
+				"Path": "/",
+				"Policies": [ {
+					"PolicyName": "newswriter",
+					"PolicyDocument": {
+						"Statement": [
+							{
+								"Action": "s3:*",
+								"Effect": "Allow",
+								"Resource": [
+									{ "Fn::Join" : [ "", [ "arn:aws:s3:::", { "Ref" : "ParamNewsStore" } ] ] },
+									{ "Fn::Join" : [ "", [ "arn:aws:s3:::", { "Ref" : "ParamNewsStore" }, "/*" ] ] }
+								]
+							},
+							{
+								"Action": "s3:*",
+								"Effect": "Allow",
+								"Resource": [
+									{ "Fn::Join" : [ "", [ "arn:aws:s3:::", { "Ref" : "ParamMediaStore" } ] ] },
+									{ "Fn::Join" : [ "", [ "arn:aws:s3:::", { "Ref" : "ParamMediaStore" }, "/*" ] ] }
+								]
+							},
+							{
+								"Action": "EC2:Describe*",
+								"Effect": "Allow",
+								"Resource": "*"
+							}
+						]
+					}
+				} ]
+			}
+
+		},
+
+		"NewsWriterProfile": {
+			"Type": "AWS::IAM::InstanceProfile",
+			"Properties": {
+				"Path": "/",
+				"Roles": [ {
+					"Ref": "NewsWriterRole"
+				} ]
+			}
+		},
+		
+		"NewsReaderRole": {
+			"Type": "AWS::IAM::Role",
+			"Properties": {
+				"AssumeRolePolicyDocument": {
+					"Statement": [ {
+						"Effect": "Allow",
+						"Principal": {
+							"Service": [ "ec2.amazonaws.com" ]
+						},
+						"Action": [ "sts:AssumeRole" ]
+					} ]
+				},
+				"Path": "/",
+				"Policies": [ {
+					"PolicyName": "newswriter",
+					"PolicyDocument": {
+						"Statement": [
+							{
+								"Action": [
+									"s3:GetBucketAcl",
+									"s3:GetBucketLocation",
+									"s3:GetBucketLogging",
+									"s3:GetBucketNotification",
+									"s3:GetBucketPolicy",
+									"s3:GetBucketRequestPayment",
+									"s3:GetBucketVersioning",
+									"s3:GetBucketWebsite",
+									"s3:GetLifecycleConfiguration",
+									"s3:GetObject",
+									"s3:GetObjectAcl",
+									"s3:GetObjectTorrent",
+									"s3:GetObjectVersion",
+									"s3:GetObjectVersionAcl",
+									"s3:GetObjectVersionTorrent",
+									"s3:ListAllMyBuckets",
+									"s3:ListBucket",
+									"s3:ListBucketMultipartUploads",
+									"s3:ListBucketVersions",
+									"s3:ListMultipartUploadParts"
+								],
+								"Effect": "Allow",
+								"Resource": [
+									{ "Fn::Join" : [ "", [ "arn:aws:s3:::", { "Ref" : "ParamNewsStore" } ] ] },
+									{ "Fn::Join" : [ "", [ "arn:aws:s3:::", { "Ref" : "ParamNewsStore" }, "/*" ] ] }
+								]
+							},
+							{
+								"Action": "EC2:Describe*",
+								"Effect": "Allow",
+								"Resource": "*"
+							}
+						]
+					}
+				} ]
+			}
+
+		},
+
+		"NewsReaderProfile": {
+			"Type": "AWS::IAM::InstanceProfile",
+			"Properties": {
+				"Path": "/",
+				"Roles": [ {
+					"Ref": "NewsReaderRole"
+				} ]
+			}
+		},
+		
+		"ESInstanceRole": {
+			"Type": "AWS::IAM::Role",
+			"Properties": {
+				"AssumeRolePolicyDocument": {
+					"Statement": [ {
+						"Effect": "Allow",
+						"Principal": {
+							"Service": [ "ec2.amazonaws.com" ]
+						},
+						"Action": [ "sts:AssumeRole" ]
+					} ]
+				},
+				"Path": "/",
+				"Policies": [ {
+					"PolicyName": "esindexgateway",
+					"PolicyDocument": {
+						"Statement": [
+							{
+								"Action": "s3:*",
+								"Effect": "Allow",
+								"Resource": [
+									{ "Fn::Join" : [ "", [ "arn:aws:s3:::", { "Ref" : "ParamClusterName" } ] ] },
+									{ "Fn::Join" : [ "", [ "arn:aws:s3:::", { "Ref" : "ParamClusterName" }, "/*" ] ] }
+								]
+							},
+							{
+								"Action": "EC2:Describe*",
+								"Effect": "Allow",
+								"Resource": "*"
+							}
+						]
+					}
+				} ]
+			}
+
+		},
+
+		"ESInstanceProfile": {
+			"Type": "AWS::IAM::InstanceProfile",
+			"Properties": {
+				"Path": "/",
+				"Roles": [ {
+					"Ref": "ESInstanceRole"
+				} ]
+			}
+		}
+		
+	},
+
+	"Outputs" : {
+		"NotificationTopic" : {
+			"Value" : { "Ref" : "NotificationSNSTopic" }
+		}
+	}
+
+}
