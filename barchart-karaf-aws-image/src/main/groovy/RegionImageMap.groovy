@@ -66,4 +66,6 @@ folder.mkdirs()
 def file = new File( folder, "RegionImageMap.template" )
 file.write( result )
 
+println "@@@ result location : " + file.getAbsolutePath()
+
 ///////////////////////////////////////////
