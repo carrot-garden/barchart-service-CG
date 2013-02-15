@@ -9,6 +9,11 @@ package com.barchart.karaf.test.api;
 
 public interface HealthReport {
 
+	/**
+	 * Health report URL.
+	 * <p>
+	 * Used in load balancer cluster configuration.
+	 */
 	String PATH = "/health-report";
 
 }
