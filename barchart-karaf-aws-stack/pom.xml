@@ -1,12 +1,5 @@
-<!--
-
-    Copyright (C) 2011-2013 Barchart, Inc. <http://www.barchart.com/>
-
-    All rights reserved. Licensed under the OSI BSD License.
-
-    http://www.opensource.org/licenses/bsd-license.php
-
--->
+<!-- Copyright (C) 2011-2013 Barchart, Inc. <http://www.barchart.com/> All 
+	rights reserved. Licensed under the OSI BSD License. http://www.opensource.org/licenses/bsd-license.php -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
@@ -22,8 +15,8 @@
 	<groupId>com.barchart.karaf</groupId>
 	<artifactId>barchart-karaf-aws-stack</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
-	<!-- <packaging>jar</packaging> -->
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
+	<!-- <packaging>pom</packaging> -->
 
 	<description>amazon launcher</description>
 
@@ -54,7 +47,7 @@
 				<plugin>
 					<groupId>com.carrotgarden.maven</groupId>
 					<artifactId>carrot-maven-aws-plugin</artifactId>
-					<version>1.2.2</version>
+					<version>1.2.6</version>
 					<configuration>
 						<!-- external property -->
 						<amazonRegion>${amazonRegion}</amazonRegion>
@@ -85,9 +78,23 @@
 							<pluginExecutions>
 								<pluginExecution>
 									<pluginExecutionFilter>
+										<groupId>org.codehaus.groovy</groupId>
+										<artifactId>groovy-eclipse-compiler</artifactId>
+										<versionRange>[0,)</versionRange>
+										<goals>
+											<goal>add-groovy-build-paths</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
 										<groupId>org.apache.maven.plugins</groupId>
 										<artifactId>maven-compiler-plugin</artifactId>
-										<versionRange>[0,)</versionRange>
+										<versionRange>[0,)
+										</versionRange>
 										<goals>
 											<goal>compile</goal>
 											<goal>testCompile</goal>
@@ -107,7 +114,13 @@
 
 		<plugins>
 
-			<!-- groovy script development -->
+			<plugin>
+				<groupId>org.codehaus.groovy</groupId>
+				<artifactId>groovy-eclipse-compiler</artifactId>
+				<version>2.7.0-01</version>
+				<extensions>true</extensions>
+			</plugin>
+
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -151,7 +164,7 @@
 								<configuration>
 									<resources>
 										<resource>
-											<directory>${basedir}/src/main/template</directory>
+											<directory>${basedir}/src/main/resources</directory>
 											<filtering>true</filtering>
 										</resource>
 									</resources>
