@@ -12,12 +12,24 @@
 	        "Description" : "see https://github.com/barchart/barchart-configuration"
 	    },
 		    
+	    "ParamFeedIP" : {
+	        "Type" : "String",
+	        "Default" : "54.243.61.204",
+	        "Description" : "EIP to use for primary feed reader (several feeds require a fixed IP, changing this could cause feed outages!)"
+	    },
+		    
 		"ParamClusterName" : {
 			"Type" : "String",
 			"Default" : "news-index",
 			"Description" : "The unique search cluster name (also used as S3 bucket for index snapshots)"
 		},
 
+	    "ParamTopicName" : {
+	        "Type" : "String",
+	        "Default" : "barchart-application",
+	        "Description" : "see https://console.aws.amazon.com/sns/home?region=us-east-1"
+	    },
+      
 		"ParamNewsStore" : {
 			"Type" : "String",
 			"Default" : "news-store",
@@ -84,15 +96,23 @@
 			"us-east-1":      { "AMI": "ami-e601908f" },
 			"us-west-1":      { "AMI": "TODO" },
 			"us-west-2":      { "AMI": "TODO" }
+		},
+		
+		"ActiveAZMap": {
+			"ap-northeast-1": { "Zones": [] },
+			"ap-southeast-1": { "Zones": [] },
+			"ap-southeast-2": { "Zones": [] },
+			"eu-west-1":      { "Zones": [] },
+			"sa-east-1":      { "Zones": [] },
+			"us-east-1":      { "Zones" : [ "us-east-1c", "us-east-1d" ] },
+			"us-west-1":      { "Zones": [] },
+			"us-west-2":      { "Zones": [] }
 		}
+			
       
 	},
 
 	"Resources" : {
-
-		"NotificationSNSTopic" : {
-			"Type" : "AWS::SNS::Topic"
-		},
 
 		"ESLaunchConfig" : {
 			"Type" : "AWS::AutoScaling::LaunchConfiguration",
@@ -116,12 +136,14 @@
 		"ESScalingGroup" : {
 			"Type" : "AWS::AutoScaling::AutoScalingGroup",
 			"Properties" : {
-				"AvailabilityZones" : { "Fn::GetAZs" : ""},
+				"AvailabilityZones" : { "Fn::FindInMap": [ "ActiveAZMap", { "Ref": "AWS::Region" }, "Zones" ] },
 				"LaunchConfigurationName" : { "Ref" : "ESLaunchConfig" },
 				"MinSize" : { "Ref" : "ParamESMinSize" },
 				"MaxSize" : { "Ref" : "ParamESMaxSize" },
 				"NotificationConfiguration" : {
-					"TopicARN" : { "Ref" : "NotificationSNSTopic" },
+		            "TopicARN" : { "Fn::Join" : [ "", [ 
+			           "arn:aws:sns:", { "Ref" : "AWS::Region" }, ":081121675754:",  { "Ref" : "ParamTopicName" }
+			        ] ] },
 					"NotificationTypes" : [ 
 						"autoscaling:EC2_INSTANCE_LAUNCH", "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
 						"autoscaling:EC2_INSTANCE_TERMINATE", "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
@@ -200,7 +222,7 @@
 	    "NewsELB" : {
 	        "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
 	        "Properties" : {
-	          "AvailabilityZones" : { "Fn::GetAZs" : ""},
+              "AvailabilityZones" : { "Fn::FindInMap": [ "ActiveAZMap", { "Ref": "AWS::Region" }, "Zones" ] },
 	          "Listeners" : [ 
 	             {
 	 	            "LoadBalancerPort" : "80",
@@ -271,12 +293,14 @@
 			"Type" : "AWS::AutoScaling::AutoScalingGroup",
 			"DependsOn" : "ESScalingGroup",
 			"Properties" : {
-				"AvailabilityZones" : { "Fn::GetAZs" : ""},
+				"AvailabilityZones" : { "Fn::FindInMap": [ "ActiveAZMap", { "Ref": "AWS::Region" }, "Zones" ] },
 				"LaunchConfigurationName" : { "Ref" : "NewsLaunchConfig" },
 				"MinSize" : { "Ref" : "ParamMinSize" },
 				"MaxSize" : { "Ref" : "ParamMaxSize" },
 				"NotificationConfiguration" : {
-					"TopicARN" : { "Ref" : "NotificationSNSTopic" },
+		            "TopicARN" : { "Fn::Join" : [ "", [ 
+			           "arn:aws:sns:", { "Ref" : "AWS::Region" }, ":081121675754:",  { "Ref" : "ParamTopicName" }
+			        ] ] },
 					"NotificationTypes" : [ 
 						"autoscaling:EC2_INSTANCE_LAUNCH", "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
 						"autoscaling:EC2_INSTANCE_TERMINATE", "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
@@ -379,13 +403,26 @@
 			}
 		},
 		
-		"NewsFeedIP" : {
-			"Type" : "AWS::EC2::EIP",
+		"NewsFeedIPAssoc" : {
+			"Type" : "AWS::EC2::EIPAssociation",
 			"Properties" : {
-				"InstanceId" : { "Ref" : "NewsFeedInstance" }
+				"InstanceId" : { "Ref" : "NewsFeedInstance" },
+				"EIP" : { "Ref" : "ParamFeedIP" }
 			}
 		},
 
+		"NewsFeedDNS": {
+			  "Type": "AWS::Route53::RecordSet",
+			  "Properties": {
+			      "Name": { "Fn::Join" : [ "", [ "feed.", { "Ref": "ParamDomain" }, "." ] ] },
+			      "HostedZoneName": "aws.barchart.com.",
+			      "Comment": "CNAME for news load balancer",
+			      "Type": "A",
+			      "TTL": "60",
+			      "ResourceRecords": [ { "Ref" : "ParamFeedIP" } ]
+			  }
+		},
+	    
 		"NewsSecurityGroup" : {
 			"Type" : "AWS::EC2::SecurityGroup",
 			"Properties" : {
@@ -690,12 +727,6 @@
 			}
 		}
 		
-	},
-
-	"Outputs" : {
-		"NotificationTopic" : {
-			"Value" : { "Ref" : "NotificationSNSTopic" }
-		}
 	}
 
 }
