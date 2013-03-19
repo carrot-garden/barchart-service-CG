@@ -24,12 +24,6 @@
 			"Description" : "The unique search cluster name (also used as S3 bucket for index snapshots)"
 		},
 
-	    "ParamTopicName" : {
-	        "Type" : "String",
-	        "Default" : "barchart-application",
-	        "Description" : "see https://console.aws.amazon.com/sns/home?region=us-east-1"
-	    },
-      
 		"ParamNewsStore" : {
 			"Type" : "String",
 			"Default" : "news-store",
@@ -142,7 +136,7 @@
 				"MaxSize" : { "Ref" : "ParamESMaxSize" },
 				"NotificationConfiguration" : {
 		            "TopicARN" : { "Fn::Join" : [ "", [ 
-			           "arn:aws:sns:", { "Ref" : "AWS::Region" }, ":081121675754:",  { "Ref" : "ParamTopicName" }
+			           "arn:aws:sns:", { "Ref" : "AWS::Region" }, ":081121675754:barchart-scaling-events"
 			        ] ] },
 					"NotificationTypes" : [ 
 						"autoscaling:EC2_INSTANCE_LAUNCH", "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
@@ -299,7 +293,7 @@
 				"MaxSize" : { "Ref" : "ParamMaxSize" },
 				"NotificationConfiguration" : {
 		            "TopicARN" : { "Fn::Join" : [ "", [ 
-			           "arn:aws:sns:", { "Ref" : "AWS::Region" }, ":081121675754:",  { "Ref" : "ParamTopicName" }
+			           "arn:aws:sns:", { "Ref" : "AWS::Region" }, ":081121675754:barchart-scaling-events"
 			        ] ] },
 					"NotificationTypes" : [ 
 						"autoscaling:EC2_INSTANCE_LAUNCH", "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
@@ -438,6 +432,18 @@
 						"IpProtocol" : "tcp",
 						"FromPort" : "2222",
 						"ToPort" :   "2222",
+						"CidrIp" :   "67.217.131.0/24"
+					},
+					{
+						"IpProtocol" : "tcp",
+						"FromPort" : "6397",
+						"ToPort" :   "6397",
+						"CidrIp" :   "67.217.131.0/24"
+					},
+					{
+						"IpProtocol" : "tcp",
+						"FromPort" : "6497",
+						"ToPort" :   "6497",
 						"CidrIp" :   "67.217.131.0/24"
 					},
 					{
