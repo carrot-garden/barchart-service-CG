@@ -1,6 +1,7 @@
 <!-- Copyright (C) 2011-2013 Barchart, Inc. <http://www.barchart.com /> All 
 	rights reserved. Licensed under the OSI BSD License. http://www.opensource.org/licenses/bsd-license.php -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -395,7 +396,7 @@
 								<include>basic/pom.xml</include>
 							</pomIncludes>
 							<goals>
-								<!-- goals for child maven invocation -->
+								<!-- Goals for child maven invocation. -->
 								<goal>clean</goal>
 								<goal>install</goal>
 							</goals>
@@ -403,9 +404,8 @@
 						<executions>
 							<execution>
 								<id>integration-test</id>
-								<phase>package</phase>
 								<goals>
-									<!-- goals for parent maven invocation -->
+									<!-- Goals for this maven invocation. -->
 									<goal>install</goal>
 									<goal>run</goal>
 								</goals>
@@ -503,7 +503,8 @@
 									<defaultGroupname>${serviceUsername}</defaultGroupname>
 									<defineStatements>
 										<defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
-										<defineStatement>_binaries_in_noarch_packages_terminate_build 0</defineStatement>
+										<defineStatement>_binaries_in_noarch_packages_terminate_build
+											0</defineStatement>
 									</defineStatements>
 									<mappings>
 										<mapping>
