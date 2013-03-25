@@ -23,9 +23,10 @@
 
 		<exec executable="${executable}">
 
+			<arg value="release:clean" />
 			<arg value="release:prepare" />
 			<arg value="release:perform" />
-			
+
 		</exec>
 
 	</target>
