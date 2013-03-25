@@ -24,7 +24,7 @@
 
 		<!-- should be set by developer during interactive work to reflect current 
 			barchart-karaf-base-app -->
-		<integrationVersion>1.1.9-SNAPSHOT</integrationVersion>
+		<integrationVersion>1.2.0-SNAPSHOT</integrationVersion>
 
 		<projectJavaVersion>1.7</projectJavaVersion>
 
@@ -69,36 +69,6 @@
 		</dependency>
 
 	</dependencies>
-
-	<profiles>
-
-		<!-- developer-interactive / manual mode -->
-		<profile>
-			<id>build-human</id>
-			<activation>
-				<property>
-					<name>!env.JENKINS_HOME</name>
-				</property>
-			</activation>
-			<properties>
-				<projectIntegrationVersion>${integrationVersion}</projectIntegrationVersion>
-			</properties>
-		</profile>
-
-		<!-- continuous-integration / automatic mode -->
-		<profile>
-			<id>build-robot</id>
-			<activation>
-				<property>
-					<name>env.JENKINS_HOME</name>
-				</property>
-			</activation>
-			<properties>
-				<projectIntegrationVersion>@project.version@</projectIntegrationVersion>
-			</properties>
-		</profile>
-
-	</profiles>
 
 	<build>
 		<plugins>
