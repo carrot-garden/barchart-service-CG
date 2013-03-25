@@ -23,7 +23,7 @@
 		<url>https://github.com/barchart/barchart-service</url>
 		<connection>scm:git:git://github.com/barchart/barchart-service.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-service.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>master</tag>
 	</scm>
 
 	<description>folder layout for java-service-wrapper based applications</description>
