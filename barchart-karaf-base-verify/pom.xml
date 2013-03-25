@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>com.barchart.base</groupId>
 		<artifactId>barchart-archon</artifactId>
-		<version>2.3.9</version>
+		<version>2.5.0</version>
 		<relativePath />
 	</parent>
 
@@ -28,7 +28,7 @@
 
 		<projectJavaVersion>1.7</projectJavaVersion>
 
-		<projectKarafVersion>3.0.0-SNAPSHOT</projectKarafVersion>
+		<projectKarafVersion>3.0.0.RC1</projectKarafVersion>
 		<projectGogoVersion>0.10.0</projectGogoVersion>
 		<projectExamVersion>2.6.0</projectExamVersion>
 

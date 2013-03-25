@@ -53,7 +53,7 @@
 
 		<!-- KARAF -->
 
-		<karafVersion>3.0.0-SNAPSHOT</karafVersion>
+		<karafVersion>3.0.0.RC1</karafVersion>
 
 		<karafStartupFeature0 />
 		<karafStartupFeature1 />
