@@ -12,7 +12,7 @@
 	<echo message="basedir : ${basedir}" />
 
 	<target name="maven">
-		
+
 		<condition property="executable" value="mvn">
 			<os family="unix" />
 		</condition>
@@ -21,12 +21,13 @@
 		</condition>
 
 		<exec executable="${executable}">
-			
+
+			<arg value="release:clean" />
 			<arg value="release:prepare" />
 			<arg value="release:perform" />
-			
+
 			<arg value="--show-version" />
-			
+
 		</exec>
 	</target>
 
