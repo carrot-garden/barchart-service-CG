@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>com.barchart.karaf</groupId>
 		<artifactId>barchart-karaf-service</artifactId>
-		<version>1.0.2</version>
+		<version>1.0.3</version>
 		<relativePath>../barchart-karaf-service</relativePath>
 	</parent>
 
@@ -33,6 +33,10 @@
 		<karafBootupFeature3>scr</karafBootupFeature3>
 		<karafBootupFeature4>management</karafBootupFeature4>
 		<karafBootupFeature5>ssh</karafBootupFeature5>
+
+		<!-- Integration tests for base app. -->
+		<integrationFolder>${basedir}/..</integrationFolder>
+		<integrationProject>barchart-karaf-base-verify</integrationProject>
 
 	</properties>
 
@@ -117,30 +121,6 @@
 					<version>1.1.8</version>
 				</dependency>
 			</dependencies>
-		</profile>
-
-		<!-- Run integration tests inside base app. -->
-		<profile>
-			<id>integration</id>
-			<activation>
-				<file>
-					<exists>maven-integration.md</exists>
-				</file>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-invoker-plugin</artifactId>
-						<configuration>
-							<projectsDirectory>${basedir}/../.</projectsDirectory>
-							<pomIncludes>
-								<include>barchart-karaf-base-verify/pom.xml</include>
-							</pomIncludes>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 
 	</profiles>
