@@ -28,7 +28,9 @@
 
 		<projectJavaVersion>1.7</projectJavaVersion>
 
+		<!-- <projectKarafVersion>2.3.1</projectKarafVersion> -->
 		<projectKarafVersion>3.0.0.RC1</projectKarafVersion>
+
 		<projectGogoVersion>0.10.0</projectGogoVersion>
 		<projectExamVersion>2.6.0</projectExamVersion>
 
