@@ -16,6 +16,7 @@
 		<groupId>com.barchart.base</groupId>
 		<artifactId>barchart-archon</artifactId>
 		<version>2.5.2</version>
+		<relativePath/>
 	</parent>
 
 	<groupId>com.barchart.tanuki</groupId>
