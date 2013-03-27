@@ -33,6 +33,7 @@
 		<karafBootupFeature3>scr</karafBootupFeature3>
 		<karafBootupFeature4>management</karafBootupFeature4>
 		<karafBootupFeature5>ssh</karafBootupFeature5>
+		<karafBootupFeature6>obr</karafBootupFeature6>
 
 		<!-- Integration tests for base app. -->
 		<integrationFolder>${basedir}/..</integrationFolder>
