@@ -36,8 +36,8 @@
 		<karafBootupFeature6>obr</karafBootupFeature6>
 
 		<!-- Integration tests for base app. -->
-		<integrationFolder>${basedir}/..</integrationFolder>
-		<integrationProject>barchart-karaf-base-verify</integrationProject>
+		<integrationFolder>${basedir}/verify</integrationFolder>
+		<integrationProject>verify</integrationProject>
 
 	</properties>
 

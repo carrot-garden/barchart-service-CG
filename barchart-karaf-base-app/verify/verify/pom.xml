@@ -101,4 +101,38 @@
 		</plugins>
 	</build>
 
+	<profiles>
+
+		<!-- Properties for developer-interactive / manual mode. -->
+		<profile>
+			<id>build-human</id>
+			<activation>
+				<property>
+					<name>!env.JENKINS_HOME</name>
+				</property>
+			</activation>
+			<properties>
+				<!-- provided by developer -->
+				<projectIntegrationVersion>${integrationVersion}</projectIntegrationVersion>
+				<bundle.manifest.testing.phase>process-ignored</bundle.manifest.testing.phase>
+			</properties>
+		</profile>
+
+		<!-- Properties for continuous-integration / automatic mode. -->
+		<profile>
+			<id>build-robot</id>
+			<activation>
+				<property>
+					<name>env.JENKINS_HOME</name>
+				</property>
+			</activation>
+			<properties>
+				<!-- provided by invoker plug-in -->
+				<projectIntegrationVersion>@project.version@</projectIntegrationVersion>
+				<bundle.manifest.testing.phase>process-classes</bundle.manifest.testing.phase>
+			</properties>
+		</profile>
+
+	</profiles>
+
 </project>
