@@ -47,6 +47,7 @@ public class DropAndKillFeaturesTest extends TestAny {
 
 		final Path target = home.resolve("etc/feature.xml");
 
+		logFeatures();
 		assertFeatureNotInstalled(FEATURE);
 
 		log.info("\n\t drop");
@@ -59,6 +60,7 @@ public class DropAndKillFeaturesTest extends TestAny {
 			Thread.sleep(100);
 		}
 
+		logFeatures();
 		assertFeatureInstalled(FEATURE);
 		assertBundleInstalled(BUNDLE);
 
@@ -72,6 +74,7 @@ public class DropAndKillFeaturesTest extends TestAny {
 			Thread.sleep(100);
 		}
 
+		logFeatures();
 		assertFeatureNotInstalled(FEATURE);
 		assertBundleNotInstalled(BUNDLE);
 
