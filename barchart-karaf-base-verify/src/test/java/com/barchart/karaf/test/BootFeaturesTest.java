@@ -21,6 +21,7 @@ public class BootFeaturesTest extends TestAny {
 				"eventadmin", //
 				"scr", //
 				"management", //
+				"obr", //
 				"ssh" //
 		);
 	}

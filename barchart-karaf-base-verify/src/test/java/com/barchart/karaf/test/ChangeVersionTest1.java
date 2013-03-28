@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Option;
@@ -21,10 +22,10 @@ import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
  * <p>
  * See <a href="https://issues.apache.org/jira/browse/KARAF-2180">KARAF-2180</a?
  */
-// @Ignore
+@Ignore
 @RunWith(JUnit4TestRunner.class)
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
-public class ChangeVersionTest extends TestAny {
+public class ChangeVersionTest1 extends TestAny {
 
 	/**
 	 * Test bundle name.
