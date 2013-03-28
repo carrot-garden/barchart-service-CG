@@ -24,7 +24,7 @@
 		<module>../barchart-karaf-base-test01-feature</module>
 		
 		<!-- do not include, used by invoker plugin -->
-		<!-- <module>../barchart-karaf-ba se-verify</module> -->
+		<!-- <module>../barchart-karaf-base-verify</module> -->
 		
 		<!-- keep last -->
 		<module>../barchart-karaf-base-app</module>
