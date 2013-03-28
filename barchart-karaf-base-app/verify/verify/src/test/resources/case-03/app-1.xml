@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"
+	name="app-1">
+
+	<repository>file:etc/repo-1.xml</repository>
+
+	<feature name="app" version="1.0.0" install="auto">
+		<feature version="1.0.0-SNAPSHOT">repo-feature-A</feature>
+	</feature>
+
+</features>

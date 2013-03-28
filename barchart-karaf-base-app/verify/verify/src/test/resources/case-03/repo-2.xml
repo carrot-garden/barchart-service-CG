@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"
+	name="repo-2">
+
+	<feature name="repo-feature-A" version="1.0.1-SNAPSHOT"
+		install="none">
+
+		<bundle>mvn:com.barchart.test/barchart-karaf-base-test01/1.0.1-SNAPSHOT
+		</bundle>
+
+	</feature>
+
+</features>

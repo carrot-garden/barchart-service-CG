@@ -174,6 +174,13 @@ public class TestAny {
 		}
 	}
 
+	public void assertFeatureNotInstalled(final String featureName,
+			final String featureVersion) throws Exception {
+		if (isFeatureInstalled(featureName, featureVersion)) {
+			fail("Feature " + featureName + " is present.");
+		}
+	}
+
 	public void assertFeaturesInstalled(final String... expectedFeatures) {
 		final Set<String> expectedFeaturesSet = new HashSet<String>(
 				Arrays.asList(expectedFeatures));
@@ -439,7 +446,7 @@ public class TestAny {
 		log.info("\n bundles: \n{}", text);
 	}
 
-	public void logFeatures() throws Exception {
+	public void logFeatures(final String name) throws Exception {
 		final Feature[] featureArray = featureService.listFeatures();
 		final List<Feature> featureleList = Arrays.asList(featureArray);
 		Collections.sort(featureleList, FEATURE_SORT);
@@ -447,9 +454,9 @@ public class TestAny {
 		for (final Feature feature : featureleList) {
 			text.append("\t");
 			if (isFeatureInstalled(feature.getName())) {
-				text.append("+");
+				text.append("(+)");
 			} else {
-				text.append("-");
+				text.append("(-)");
 			}
 			text.append(" ");
 			text.append(feature.getName());
@@ -457,7 +464,7 @@ public class TestAny {
 			text.append(feature.getVersion());
 			text.append("\n");
 		}
-		log.info("\n features: \n{}", text);
+		log.info("\n {}: \n{}", name, text);
 	}
 
 	@ProbeBuilder

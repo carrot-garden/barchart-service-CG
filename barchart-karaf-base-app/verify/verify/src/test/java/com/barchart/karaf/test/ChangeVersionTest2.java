@@ -75,7 +75,7 @@ public class ChangeVersionTest2 extends TestAny {
 		/** Replacement target */
 		final Path target2 = home.resolve("etc/feature-2.xml");
 
-		logFeatures();
+		logFeatures("init");
 		assertFeatureNotInstalled(FEATURE);
 		assertBundleNotInstalled(BUNDLE);
 
@@ -90,7 +90,7 @@ public class ChangeVersionTest2 extends TestAny {
 			Thread.sleep(100);
 		}
 
-		logFeatures();
+		logFeatures("step 1");
 		assertNotNull("bundle 1 is here", bundle(BUNDLE, VERSION_1));
 		assertNull("bundle 2 is missing", bundle(BUNDLE, VERSION_2));
 
@@ -118,7 +118,7 @@ public class ChangeVersionTest2 extends TestAny {
 			Thread.sleep(100);
 		}
 
-		logFeatures();
+		logFeatures("step 2");
 		assertNotNull("bundle 2 is here", bundle(BUNDLE, VERSION_2));
 
 		log.info("\n\t kill 2");
@@ -132,7 +132,7 @@ public class ChangeVersionTest2 extends TestAny {
 			Thread.sleep(100);
 		}
 
-		logFeatures();
+		logFeatures("done");
 		assertBundleNotInstalled(BUNDLE);
 		assertFeatureNotInstalled(FEATURE);
 
