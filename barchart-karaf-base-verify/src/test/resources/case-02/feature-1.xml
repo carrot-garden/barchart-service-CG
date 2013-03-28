@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0" name="barchart-karaf-base-test01-feature">
-    <feature name="barchart-karaf-base-test01-feature" version="1.0.0-SNAPSHOT" description="barchart-karaf-base-test01-feature" install="auto">
-        <details>barchart-karaf-base-test01-feature</details>
-        <bundle>mvn:com.barchart.test/barchart-karaf-base-test01/1.0.0-SNAPSHOT</bundle>
-    </feature>
+
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"
+	name="barchart-karaf-base-test01-feature">
+	
+	<feature name="barchart-karaf-base-test01-feature" version="1.0.0-SNAPSHOT"
+		description="barchart-karaf-base-test01-feature" install="auto">
+		
+		<details>barchart-karaf-base-test01-feature</details>
+		
+		<bundle>mvn:com.barchart.test/barchart-karaf-base-test01/1.0.0-SNAPSHOT
+		</bundle>
+		
+	</feature>
+	
 </features>
