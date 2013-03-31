@@ -18,6 +18,13 @@
 
 	<description>Base Karaf Application.</description>
 
+	<scm>
+		<url>https://github.com/barchart/barchart-service</url>
+		<connection>scm:git:git://github.com/barchart/barchart-service.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-service.git</developerConnection>
+		<tag>master</tag>
+	</scm>
+
 	<properties>
 
 		<!-- Note: must setup 'karaf' user on target server. -->
