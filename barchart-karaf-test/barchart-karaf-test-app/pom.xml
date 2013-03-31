@@ -28,13 +28,6 @@
 
 	<dependencies>
 
-		<!-- remote config -->
-		<dependency>
-			<groupId>com.barchart.conf</groupId>
-			<artifactId>barchart-conf-sync-impl</artifactId>
-			<version>1.1.8</version>
-		</dependency>
-
 		<!-- tester modules -->
 		<dependency>
 			<groupId>com.barchart.karaf</groupId>

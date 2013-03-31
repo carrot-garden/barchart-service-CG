@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>com.barchart.karaf</groupId>
 		<artifactId>barchart-karaf-service</artifactId>
-		<version>1.0.4</version>
+		<version>1.0.5-SNAPSHOT</version>
 		<relativePath>../barchart-karaf-service</relativePath>
 	</parent>
 
@@ -23,17 +23,15 @@
 		<!-- Note: must setup 'karaf' user on target server. -->
 		<serviceUsername>karaf</serviceUsername>
 
-		<!-- Install these features during karaf startup. -->
-		<!-- Features available from karaf project by default. -->
-		<!-- https://github.com/apache/karaf/blob/trunk/assemblies/features/standard/src/main/feature/feature.xml -->
-		<!-- https://github.com/apache/karaf/blob/trunk/assemblies/features/enterprise/src/main/feature/feature.xml -->
+		<!-- Install during karaf feature service boot. -->
 		<karafBootupFeature0>standard</karafBootupFeature0>
 		<karafBootupFeature1>config</karafBootupFeature1>
 		<karafBootupFeature2>eventadmin</karafBootupFeature2>
 		<karafBootupFeature3>scr</karafBootupFeature3>
-		<karafBootupFeature4>management</karafBootupFeature4>
-		<karafBootupFeature5>ssh</karafBootupFeature5>
-		<karafBootupFeature6>obr</karafBootupFeature6>
+		<karafBootupFeature4>ssh</karafBootupFeature4>
+		<!-- <karafBootupFeature5>management</karafBootupFeature5> -->
+		<!-- <karafBootupFeature6>obr</karafBootupFeature6> -->
+		<karafBootupFeature9>barchart-conf-feature</karafBootupFeature9>
 
 		<!-- Integration tests for base app. -->
 		<integrationFolder>${basedir}/verify</integrationFolder>
@@ -43,10 +41,27 @@
 
 	<dependencies>
 
-		<!-- Required "feature" dependency. -->
-		<!-- See: ./src/main/feature/feature.xml -->
+		<!-- Around plugin ordering bug: 1) repeat parent 2) keep in order -->
 
-		<!-- STARTUP FEATURES -->
+		<!-- Karaf framework (distribution archive). -->
+		<dependency>
+			<groupId>org.apache.karaf.features</groupId>
+			<artifactId>framework</artifactId>
+			<version>${karafVersion}</version>
+			<type>kar</type>
+			<scope>compile</scope>
+		</dependency>
+		<!-- Karaf extensions (feature repository). -->
+		<dependency>
+			<groupId>org.apache.karaf.features</groupId>
+			<artifactId>standard</artifactId>
+			<version>${karafVersion}</version>
+			<classifier>features</classifier>
+			<type>xml</type>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- Karaf startup features - add to startup.properties -->
 
 		<!-- Amazon SNS logger -->
 		<dependency>
@@ -55,75 +70,21 @@
 			<version>1.1.2</version>
 			<classifier>features</classifier>
 			<type>xml</type>
+			<scope>compile</scope>
 		</dependency>
 
-		<!-- AUTO DEPLOY FEATURES -->
+		<!-- Features service boot features - add to org.apache.karaf.features.cfg -->
 
-		<!-- Common DS functions. -->
-		<dependency>
-			<groupId>com.carrotgarden.osgi</groupId>
-			<artifactId>carrot-osgi-anno-scr-core</artifactId>
-			<version>1.1.3</version>
-		</dependency>
-		<dependency>
-			<groupId>com.barchart.osgi</groupId>
-			<artifactId>barchart-osgi-conf</artifactId>
-			<version>1.1.3</version>
-		</dependency>
-		<dependency>
-			<groupId>com.barchart.osgi</groupId>
-			<artifactId>barchart-osgi-event</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.barchart.osgi</groupId>
-			<artifactId>barchart-osgi-factory-cm</artifactId>
-			<version>1.3.1</version>
-		</dependency>
-
-		<!-- Configration repository access. -->
+		<!-- Configuration repository functions. -->
 		<dependency>
 			<groupId>com.barchart.conf</groupId>
-			<artifactId>barchart-conf-sync-api</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-
-		<!-- Config deployer. -->
-		<dependency>
-			<groupId>com.barchart.conf</groupId>
-			<artifactId>barchart-conf-deployer</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-
-		<!-- Config update trigger. -->
-		<dependency>
-			<groupId>com.barchart.conf</groupId>
-			<artifactId>barchart-conf-touch</artifactId>
-			<version>1.1.3</version>
+			<artifactId>barchart-conf-feature</artifactId>
+			<version>1.2.0-SNAPSHOT</version>
+			<classifier>features</classifier>
+			<type>xml</type>
+			<scope>runtime</scope>
 		</dependency>
 
 	</dependencies>
-
-	<profiles>
-
-		<!-- Required dependencies specific for the project, to allow dependency 
-			override in the derived projects. -->
-		<profile>
-			<id>barchart-karaf-base-app</id>
-			<activation>
-				<file>
-					<exists>barchart-karaf-base-app.md</exists>
-				</file>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>com.barchart.conf</groupId>
-					<artifactId>barchart-conf-sync-impl</artifactId>
-					<version>1.1.8</version>
-				</dependency>
-			</dependencies>
-		</profile>
-
-	</profiles>
 
 </project>

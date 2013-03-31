@@ -1,13 +1,7 @@
-<!--
-
-    Copyright (C) 2011-2013 Barchart, Inc. <http://www.barchart.com />
-
-    All rights reserved. Licensed under the OSI BSD License.
-
-    http://www.opensource.org/licenses/bsd-license.php
-
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<!-- Copyright (C) 2011-2013 Barchart, Inc. <http://www.barchart.com /> All 
+	rights reserved. Licensed under the OSI BSD License. http://www.opensource.org/licenses/bsd-license.php -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -29,17 +23,19 @@
 		<url>https://github.com/barchart/barchart-service</url>
 		<connection>scm:git:git://github.com/barchart/barchart-service.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/barchart/barchart-service.git</developerConnection>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>master</tag>
+	</scm>
 
 	<properties>
 
-		<!-- note: avoid karaf.xxxxx name pattern in maven property names -->
+		<!-- NOTE: avoid karaf.xxxxx name pattern in maven property names -->
 
 		<!-- TANUKI -->
 
+		<!-- Main class managed by tanuki wrapper. -->
 		<mainClass>org.apache.karaf.main.Main</mainClass>
 
+		<!-- Properties to bake into tanuki wrapper configuration. -->
 		<javaParameter0>-Dkaraf.startLocalConsole=false</javaParameter0>
 		<javaParameter1>-Dkaraf.startRemoteShell=true</javaParameter1>
 		<javaParameter2>-Dkaraf.home=.</javaParameter2>
@@ -53,8 +49,10 @@
 
 		<!-- KARAF -->
 
+		<!-- Defines karaf distribution and plug-in version. -->
 		<karafVersion>3.0.0.RC1</karafVersion>
 
+		<!-- Features to include in startup.properties. -->
 		<karafStartupFeature0 />
 		<karafStartupFeature1 />
 		<karafStartupFeature2 />
@@ -66,6 +64,7 @@
 		<karafStartupFeature8 />
 		<karafStartupFeature9 />
 
+		<!-- Features to include in org.apache.karaf.features.cfg -->
 		<karafBootupFeature0 />
 		<karafBootupFeature1 />
 		<karafBootupFeature2 />
@@ -77,6 +76,7 @@
 		<karafBootupFeature8 />
 		<karafBootupFeature9 />
 
+		<!-- Features to include in repository ${karaf.base}/system -->
 		<karafInstallFeature0 />
 		<karafInstallFeature1 />
 		<karafInstallFeature2 />
@@ -88,22 +88,22 @@
 		<karafInstallFeature8 />
 		<karafInstallFeature9 />
 
-		<!-- will contain service dependencies -->
-		<serviceFeaturesFile>${project.artifactId}-${project.version}-features.xml</serviceFeaturesFile>
+		<!-- Collect service dependencies from pom.xml with packaging=bundle. -->
+		<serviceFeaturesFile>${project.artifactId}-${project.version}.xml</serviceFeaturesFile>
 
 	</properties>
 
 	<dependencies>
 
-		<!-- karaf base -->
+		<!-- Karaf framework (distribution archive). -->
 		<dependency>
 			<groupId>org.apache.karaf.features</groupId>
 			<artifactId>framework</artifactId>
 			<version>${karafVersion}</version>
 			<type>kar</type>
+			<scope>compile</scope>
 		</dependency>
-
-		<!-- karaf extensions -->
+		<!-- Karaf extensions (feature repository). -->
 		<dependency>
 			<groupId>org.apache.karaf.features</groupId>
 			<artifactId>standard</artifactId>
@@ -112,14 +112,14 @@
 			<type>xml</type>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.karaf.features</groupId>
-			<artifactId>enterprise</artifactId>
-			<version>${karafVersion}</version>
-			<classifier>features</classifier>
-			<type>xml</type>
-			<scope>runtime</scope>
-		</dependency>
+
+		<!-- Plugin debug. -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.karaf.tooling</groupId> -->
+		<!-- <artifactId>karaf-maven-plugin</artifactId> -->
+		<!-- <version>3.0.0-build003-SNAPSHOT</version> -->
+		<!-- <scope>test</scope> -->
+		<!-- </dependency> -->
 
 	</dependencies>
 
@@ -127,13 +127,15 @@
 
 		<plugins>
 
+			<!-- Extract distribution archive and generate feature descriptor. -->
 			<plugin>
 				<groupId>org.apache.karaf.tooling</groupId>
 				<artifactId>karaf-maven-plugin</artifactId>
 				<version>${karafVersion}</version>
+				<!-- <version>3.0.0-build003-SNAPSHOT</version> -->
 				<executions>
 
-					<!-- framework dependencies -->
+					<!-- Generate distribution archive. -->
 					<execution>
 						<id>generate-distribution</id>
 						<phase>prepare-package</phase>
@@ -141,6 +143,8 @@
 							<goal>install-kars</goal>
 						</goals>
 						<configuration>
+
+							<!-- Features to include in startup.properties. -->
 							<startupFeatures>
 								<feature>${karafStartupFeature0}</feature>
 								<feature>${karafStartupFeature1}</feature>
@@ -153,6 +157,8 @@
 								<feature>${karafStartupFeature8}</feature>
 								<feature>${karafStartupFeature9}</feature>
 							</startupFeatures>
+
+							<!-- Features to include in org.apache.karaf.features.cfg -->
 							<bootFeatures>
 								<feature>${karafBootupFeature0}</feature>
 								<feature>${karafBootupFeature1}</feature>
@@ -165,6 +171,8 @@
 								<feature>${karafBootupFeature8}</feature>
 								<feature>${karafBootupFeature9}</feature>
 							</bootFeatures>
+
+							<!-- Features to include in ${karaf.base}/system repository -->
 							<installedFeatures>
 								<feature>${karafInstallFeature0}</feature>
 								<feature>${karafInstallFeature1}</feature>
@@ -177,10 +185,11 @@
 								<feature>${karafInstallFeature8}</feature>
 								<feature>${karafInstallFeature9}</feature>
 							</installedFeatures>
+
 						</configuration>
 					</execution>
 
-					<!-- service dependencies -->
+					<!-- Generate service dependencies feature.xml from pom.xml packaging=bundle. -->
 					<execution>
 						<id>generate-descriptor</id>
 						<phase>prepare-package</phase>
@@ -197,7 +206,7 @@
 
 			</plugin>
 
-			<!-- copy karaf distribution -->
+			<!-- Copy karaf layout into tanuki layout. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -236,6 +245,8 @@
 					<configuration>
 						<lifecycleMappingMetadata>
 							<pluginExecutions>
+
+								<!-- Do not run karaf plugin in eclipse. -->
 								<pluginExecution>
 									<pluginExecutionFilter>
 										<groupId>org.apache.karaf.tooling</groupId>
@@ -250,6 +261,8 @@
 										<ignore />
 									</action>
 								</pluginExecution>
+
+								<!-- Do not run dependency plugin in eclipse. -->
 								<pluginExecution>
 									<pluginExecutionFilter>
 										<groupId>org.apache.maven.plugins</groupId>
@@ -264,6 +277,7 @@
 										<ignore />
 									</action>
 								</pluginExecution>
+
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>

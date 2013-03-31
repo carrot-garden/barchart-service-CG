@@ -27,6 +27,9 @@
 
 			<arg value="--debug" />
 
+			<arg value="--activate-profiles" />
+			<arg value="!integration" />
+
 		</exec>
 
 	</target>
