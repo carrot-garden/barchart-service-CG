@@ -17,38 +17,38 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<description>amazon image builder for karaf base application</description>
+	<description>Amazon image builder for karaf base application</description>
 
 	<properties>
 
-		<!-- region-dependent parameters -->
+		<!-- Amazon region-dependent parameters. -->
 		<stackName>karaf-image-${amazonRegion}-barchart-com</stackName>
 		<ParamHostName>karaf-image.${amazonRegion}.aws.barchart.com.</ParamHostName>
 
-		<!-- karaf application to deploy -->
+		<!-- Karaf base application to deploy -->
 		<karafGroup>com.barchart.karaf</karafGroup>
 		<karafArtifact>barchart-karaf-base-app</karafArtifact>
-		<karafVersion>1.1.9-SNAPSHOT</karafVersion>
+		<karafVersion>1.2.0</karafVersion>
 		<karafClassifier>tanuki-distro</karafClassifier>
 		<karafType>zip</karafType>
 
-		<!-- karaf application archive file name -->
+		<!-- Karaf application archive file name. -->
 		<karafFinalName>${karafArtifact}-${karafVersion}-${karafClassifier}.${karafType}</karafFinalName>
 
-		<!-- karaf user config template on local -->
+		<!-- Karaf user config template on local. -->
 		<karafTemplate>${user.home}/.karaf/barchart-karaf</karafTemplate>
 
-		<!-- location of build resources on local -->
+		<!-- Location of build resources on local. -->
 		<publishSource>${basedir}/target/publish</publishSource>
-		<!-- location of build resources on remote -->
+		<!-- Location of build resources on remote. -->
 		<publishTarget>/tmp/publish_${projectTimeFile}</publishTarget>
 
-		<!-- path to install script on remote -->
+		<!-- Path to install script on remote. -->
 		<publishInstall>${publishTarget}/install.sh</publishInstall>
 
-		<!-- location of logs on remote -->
+		<!-- Location of logs on remote. -->
 		<retrieveSource>/var/karaf/app/log</retrieveSource>
-		<!-- location of logs on local -->
+		<!-- Location of logs on local. -->
 		<retrieveTarget>./target/retrieve/log</retrieveTarget>
 
 	</properties>
@@ -57,7 +57,7 @@
 
 		<profile>
 
-			<!-- list karaf AMI id from all AWS regions -->
+			<!-- List karaf AMI id from all AWS regions. -->
 			<id>image-list</id>
 
 			<build>
@@ -72,20 +72,20 @@
 
 						<configuration>
 
-							<!-- see settings.xml -->
+							<!-- See settings.xml -->
 							<computeServerId>barchart-karaf-compute</computeServerId>
 
-							<!-- first, apply filter http://docs.aws.amazon.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeImages.html -->
+							<!-- First, apply filter http://docs.aws.amazon.com/AWSEC2/latest/APIReference/ApiReference-query-DescribeImages.html -->
 							<imageFilter>is-public=false</imageFilter>
 
-							<!-- second, apply regex -->
+							<!-- Second, apply regex -->
 							<imageRegex>.*java-karaf.*</imageRegex>
 
 						</configuration>
 
 						<executions>
 
-							<!-- collect all regions -->
+							<!-- Collect all regions. -->
 							<execution>
 								<id>image-list-ap-northeast-1</id>
 								<phase>package</phase>
@@ -167,7 +167,7 @@
 								</configuration>
 							</execution>
 
-							<!-- report the result -->
+							<!-- Report the result. -->
 							<execution>
 								<id>image-list-result</id>
 								<phase>package</phase>
@@ -197,7 +197,7 @@
 
 				<plugins>
 
-					<!-- copy config templates -->
+					<!-- Copy config templates. -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-resources-plugin</artifactId>
@@ -229,7 +229,7 @@
 						</executions>
 					</plugin>
 
-					<!-- copy karaf app distro -->
+					<!-- Copy karaf app distro. -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-dependency-plugin</artifactId>
@@ -260,29 +260,29 @@
 						</executions>
 					</plugin>
 
-					<!-- build image -->
+					<!-- Build the image. -->
 					<plugin>
 
 						<groupId>com.carrotgarden.maven</groupId>
 						<artifactId>carrot-maven-aws-plugin</artifactId>
-						<version>1.2.2</version>
+						<version>1.2.6</version>
 
 						<configuration>
 
-							<!-- used by all goals -->
+							<!-- Used by all goals. -->
 							<amazonRegion>${amazonRegion}</amazonRegion>
 
-							<!-- used by cloud-formation goals -->
+							<!-- Used by cloud-formation goals. -->
 							<stackName>${stackName}</stackName>
 							<stackServerId>barchart-karaf-stack</stackServerId>
 							<stackTemplateFile>${publishSource}/karaf-image.template</stackTemplateFile>
 
-							<!-- used by ssh goals -->
+							<!-- Used by ssh goals. -->
 							<sshUser>ubuntu</sshUser>
 							<sshHost>${ParamHostName}</sshHost>
 							<sshKeyFile>${user.home}/.ssh/barchart-karaf/barchart-karaf.pem</sshKeyFile>
 
-							<!-- used by elastic-compute goals -->
+							<!-- Used by elastic-compute goals. -->
 							<computeServerId>barchart-karaf-compute</computeServerId>
 							<imageName>java-karaf_${projectTimeFile}</imageName>
 							<imageDescription>base image of java with karaf ${karafFinalName}</imageDescription>
@@ -292,7 +292,7 @@
 
 						<executions>
 
-							<!-- create instance -->
+							<!-- Create instance. -->
 							<execution>
 								<id>stack-create</id>
 								<phase>package</phase>
@@ -301,7 +301,7 @@
 								</goals>
 							</execution>
 
-							<!-- copy install script -->
+							<!-- Copy install script. -->
 							<execution>
 								<id>ssh-publish</id>
 								<phase>package</phase>
@@ -318,7 +318,7 @@
 								</configuration>
 							</execution>
 
-							<!-- execute install script -->
+							<!-- Execute install script in the instance. -->
 							<execution>
 								<id>ssh-execute</id>
 								<phase>package</phase>
@@ -333,7 +333,7 @@
 								</configuration>
 							</execution>
 
-							<!-- retrieve startup logs -->
+							<!-- Retrieve karaf startup logs. -->
 							<execution>
 								<id>ssh-retrieve</id>
 								<phase>package</phase>
@@ -350,7 +350,7 @@
 								</configuration>
 							</execution>
 
-							<!-- create image form instance -->
+							<!-- Create image form instance. -->
 							<execution>
 								<id>image-create</id>
 								<phase>package</phase>
@@ -359,7 +359,7 @@
 								</goals>
 							</execution>
 
-							<!-- remove instance -->
+							<!-- Remove instance. -->
 							<execution>
 								<id>stack-delete</id>
 								<phase>package</phase>
