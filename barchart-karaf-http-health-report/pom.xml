@@ -1,12 +1,5 @@
-<!--
-
-    Copyright (C) 2011-2013 Barchart, Inc. <http://www.barchart.com/>
-
-    All rights reserved. Licensed under the OSI BSD License.
-
-    http://www.opensource.org/licenses/bsd-license.php
-
--->
+<!-- Copyright (C) 2011-2013 Barchart, Inc. <http://www.barchart.com/> All 
+	rights reserved. Licensed under the OSI BSD License. http://www.opensource.org/licenses/bsd-license.php -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
@@ -48,16 +41,10 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<scope>provided</scope>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- osgi spec -->
-		<dependency>
-			<groupId>com.carrotgarden.osgi</groupId>
-			<artifactId>carrot-osgi-anno-scr-core</artifactId>
-			<version>1.1.4</version>
-			<scope>provided</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
@@ -74,25 +61,6 @@
 	<build>
 
 		<plugins>
-		
-			<plugin>
-				<groupId>com.carrotgarden.maven</groupId>
-				<artifactId>carrot-maven-scr-plugin</artifactId>
-				<version>3.0.1-SNAPSHOT</version>
-				<configuration>
-					<enableDebugLogging>true</enableDebugLogging>
-					<enableInfoLogging>true</enableInfoLogging>
-					<enableErrorLogging>true</enableErrorLogging>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>clean</goal>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 
 			<plugin>
 				<groupId>org.apache.karaf.tooling</groupId>
@@ -108,7 +76,7 @@
 						<configuration>
 							<installMode>auto</installMode>
 							<startLevel>90</startLevel>
-							<outputFile>./target/${project.artifactId}-${project.version}-features.xml</outputFile>
+							<outputFile>./target/${project.artifactId}-${project.version}.xml</outputFile>
 						</configuration>
 					</execution>
 				</executions>
