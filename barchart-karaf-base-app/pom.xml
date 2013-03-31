@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>com.barchart.karaf</groupId>
 		<artifactId>barchart-karaf-service</artifactId>
-		<version>1.0.5-SNAPSHOT</version>
+		<version>1.0.5</version>
 		<relativePath>../barchart-karaf-service</relativePath>
 	</parent>
 
@@ -41,7 +41,7 @@
 
 	<dependencies>
 
-		<!-- Around plugin ordering bug: 1) repeat parent 2) keep in order -->
+		<!-- Around plug-in ordering bug: 1) repeat parent 2) keep in order -->
 
 		<!-- Karaf framework (distribution archive). -->
 		<dependency>
