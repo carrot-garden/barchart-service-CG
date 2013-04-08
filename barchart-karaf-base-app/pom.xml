@@ -25,6 +25,8 @@
 	</scm>
 
 	<properties>
+	
+		<projectJavaVersion>1.7</projectJavaVersion>
 
 		<!-- Note: must setup 'karaf' user on target server. -->
 		<serviceUsername>karaf</serviceUsername>
