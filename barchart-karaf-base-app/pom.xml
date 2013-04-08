@@ -1,6 +1,7 @@
 <!-- Copyright (C) 2011-2013 Barchart, Inc. <http://www.barchart.com /> All 
 	rights reserved. Licensed under the OSI BSD License. http://www.opensource.org/licenses/bsd-license.php -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -25,7 +26,7 @@
 	</scm>
 
 	<properties>
-	
+
 		<projectJavaVersion>1.7</projectJavaVersion>
 
 		<!-- Note: must setup 'karaf' user on target server. -->
@@ -84,14 +85,16 @@
 		<!-- Features service boot features - add to org.apache.karaf.features.cfg -->
 
 		<!-- Configuration repository functions. -->
-		<dependency>
-			<groupId>com.barchart.conf</groupId>
-			<artifactId>barchart-conf-feature</artifactId>
-			<version>1.2.1</version>
-			<classifier>features</classifier>
-			<type>xml</type>
-			<scope>runtime</scope>
-		</dependency>
+		<!-- 1) provide the default in the image /conf folder. -->
+		<!-- 2) instance must provide custom feature in the /instance folder. -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.barchart.conf</groupId> -->
+		<!-- <artifactId>barchart-conf-feature</artifactId> -->
+		<!-- <version>1.2.1</version> -->
+		<!-- <classifier>features</classifier> -->
+		<!-- <type>xml</type> -->
+		<!-- <scope>runtime</scope> -->
+		<!-- </dependency> -->
 
 	</dependencies>
 
