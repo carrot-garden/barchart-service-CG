@@ -231,7 +231,8 @@ public class TestAny {
 
 		return new Option[] {
 
-				systemProperty(IDENTITY_KEY).value(IDENTITY_VALUE),
+				/** Keep identity unknown. */
+				// systemProperty(IDENTITY_KEY).value(IDENTITY_VALUE),
 
 				karafDistributionConfiguration().frameworkUrl(karafUrl)
 						.name("Barchart Karaf").unpackDirectory(unpack),
