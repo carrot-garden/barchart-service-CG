@@ -42,7 +42,7 @@ def lastAMI( imageList ) {
 	if( imageList.isEmpty() ) {
 		"TODO"
 	} else {
-		imageList.sort { it.Name }.last().imageId
+		imageList.sort { it.name }.last().imageId
 	}
 }
 
