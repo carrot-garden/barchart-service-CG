@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0" name="barchart-conf-feature">
-    <feature name="barchart-conf-feature" version="1.2.1" description="barchart-conf-feature" install="auto">
-        <details>### barchart-conf-feature
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.2.0" name="barchart-conf-feature-remote">
+    <feature name="barchart-conf-feature-remote" version="1.2.2" description="barchart-conf-feature-remote" install="auto">
+        <details>### barchart-conf-feature-remote
 
 Karaf feature for configuration management functions.</details>
         <bundle start-level="40">mvn:com.barchart.osgi/barchart-osgi-conf/1.2.1</bundle>
@@ -22,7 +22,6 @@ Karaf feature for configuration management functions.</details>
         <bundle start-level="40">mvn:org.apache.geronimo.specs/geronimo-servlet_3.0_spec/1.0</bundle>
         <bundle start-level="40">mvn:org.apache.geronimo.specs/geronimo-jta_1.1_spec/1.1.1</bundle>
         <bundle start-level="40">mvn:com.barchart.conf/barchart-conf-touch/1.2.0</bundle>
-        <bundle start-level="40">mvn:com.barchart.conf/barchart-conf-deployer/1.2.0</bundle>
-        <bundle start-level="40">mvn:org.apache.felix/org.apache.felix.fileinstall/3.2.6</bundle>
+        <bundle start-level="40">mvn:com.barchart.conf/barchart-conf-deployer/1.2.1</bundle>
     </feature>
 </features>
