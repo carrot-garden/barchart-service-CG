@@ -73,6 +73,7 @@ echo "###"
 add-apt-repository --yes ppa:webupd8team/java
 apt-get --yes update
 apt-get --yes install oracle-jdk7-installer
+apt-get --yes install xorg
 apt-get --yes install mc tar wget zip unzip secure-delete
 apt-get --yes upgrade
 apt-get --yes dist-upgrade
